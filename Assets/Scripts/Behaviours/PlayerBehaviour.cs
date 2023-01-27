@@ -7,16 +7,16 @@ public class PlayerBehaviour : MonoBehaviour
 {
     [Header("Player Properties")]
     public Boundary boundary;
-    public float movementSpeed = 2.0f;
+    public float movementSpeed = 4.0f;
     public float verticalSpeed = 10.0f;
     public bool usingMobileInput = false;
     public int numberOfProjectiles;           //Number of projectiles to shoot.  \\
-    public BulletPattern DesiredPattern = BulletPattern.SINGLE;
-    public FireMode FireMode = FireMode.SINGLE;
+    public BulletPattern DesiredPattern = BulletPattern.SINGLE;//TBM
+    public FireMode FireMode = FireMode.SINGLE;//TBM
     
     public Rigidbody2D rb;
     public Camera camera;
-    public Transform bulletSpawnPoint;
+    public Transform bulletSpawnPoint;//TBM
 
     [Header("Bullet Properties")] 
     public float _fireRate = 0.2f;
@@ -33,16 +33,16 @@ public class PlayerBehaviour : MonoBehaviour
     float aimAngle;
     private Vector2 mousePosition;         // Helps us to aim                                      \\
     private Vector2 movementDirection;
-    private bool _bursting = false;
-    private bool _PressingShootKey = false;
+    private bool _bursting = false;//TBM
+    private bool _PressingShootKey = false;//TBM
    // private ScoreManager scoreManager;
-    private BulletManager bulletManager;
+    private BulletManager bulletManager;//TBM
     //private AudioSource _audioSource = null;
 
     void Start()
     {
         movementSpeed = 2.0f;
-        _fireRate = 0.25f;
+        _fireRate = 0.25f;// TBM
        // scoreManager = FindObjectOfType<ScoreManager>();
         bulletManager = FindObjectOfType<BulletManager>();
        // transform.position = new Vector2(0.0f, horizontalPos);
@@ -51,7 +51,7 @@ public class PlayerBehaviour : MonoBehaviour
         usingMobileInput = Application.platform == RuntimePlatform.Android ||
                            Application.platform == RuntimePlatform.IPhonePlayer;
     }
-    private bool CanShoot()
+    private bool CanShoot()//TBM
     {
         if (_fireTimer < _fireRate) return false;
         if (_bursting) return false;
@@ -75,7 +75,7 @@ void Update()
         Move();
         mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
 
-        switch (FireMode)
+        switch (FireMode) // TOOLS - TBM
         {
             case FireMode.AUTO:
                 _PressingShootKey = Input.GetKey(shootkey);
@@ -85,7 +85,7 @@ void Update()
                 break;
         }
 
-        // Increase Fire Timer
+        // Increase Fire Timer - TBM
         if (_fireTimer < _fireRate + 1.0f)
             _fireTimer += Time.deltaTime;
 
@@ -93,7 +93,7 @@ void Update()
         {
             if(CanShoot())
             {
-                SingleShot();
+                Fire();
 
                 _fireTimer = 0.0f;
 
@@ -106,6 +106,7 @@ void Update()
             
         }
 
+        // to be moved
         if(Input.GetKeyDown(cycleFireMode))
         {
             CycleFireMode();
@@ -114,17 +115,13 @@ void Update()
         {
             CyclePatternsType();
         }
-        //For Score system
-        //if (Input.GetKeyDown(KeyCode.K))
-        //{
-        //    scoreManager.AddPoints(10);
-        //}
+
 
     }
-
+    #region TO BE MOVED TO A NEW SCRIPT
     private void CycleFireMode() => FireMode = ((int)FireMode < 2) ? FireMode +1 : 0;
     private void CyclePatternsType() => DesiredPattern = ((int)DesiredPattern < 2) ? DesiredPattern + 1 : 0;
-
+    #endregion
 
     private void FixedUpdate()
     {
@@ -157,7 +154,8 @@ void Update()
         //transform.position = new Vector2(XclampedPosition, YclampedPosition);
     }
 
-    void SingleShot()
+    #region TO TO BE MOVED TO A NEW SCRIPT
+    void Fire()
     {
         int numofBullet = 5;
        // _canFire = Time.time + _fireRate;
@@ -196,6 +194,20 @@ void Update()
                 }
                 break;
             case BulletPattern.SHOTGUN:
+                {
+                    Vector2 direction = mousePosition - rb.position;
+                    float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+                    float angle = aimAngle;
+           
+                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle-60);
+                    var bullet2 = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle-30);
+                    var bullet3 = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle);
+                    var bullet4= bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle+30);
+                    var bulle5 = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle-30);
+
+
+                }
+
                 break;
             default:
                 break;
@@ -206,12 +218,13 @@ void Update()
     private IEnumerator BurstShot()
     {
         yield return new WaitForSeconds(_fireRate);
-        SingleShot();
+        Fire();
         yield return new WaitForSeconds(_fireRate);
-        SingleShot();
+        Fire();
         yield return new WaitForSeconds(_fireRate);
         _bursting = false;
     }
+    #endregion
 
 
     /*

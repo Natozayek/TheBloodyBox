@@ -93,7 +93,6 @@ GameObject:
   - component: {fileID: 120447254690425275}
   - component: {fileID: 120447254690425272}
   - component: {fileID: 120447254690425274}
-  - component: {fileID: 3773940414589066877}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -188,29 +187,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &3773940414589066877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 120447254690425222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f1d329d29427d942b52627a3c32529b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  horizontalBoundary:
-    min: 0
-    max: 0
-  verticalBoundary:
-    min: 0
-    max: 0
-  screenBounds:
-    min: 0
-    max: 0
-  horizontalSpeed: 0
-  verticalSpeed: 0
-  randomColor: {r: 0, g: 0, b: 0, a: 0}
-  bulletSpawnPoint: {fileID: 0}
-  fireRate: 0.2

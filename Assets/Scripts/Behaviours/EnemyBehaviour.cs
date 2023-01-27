@@ -11,9 +11,9 @@ public class EnemyBehaviour : MonoBehaviour
     public float verticalSpeed;
     public Color randomColor;
 
-    [Header("Bullet Properties")]
-    public Transform bulletSpawnPoint;
-    public float fireRate = 0.2f;
+    //[Header("Bullet Properties")]
+    //public Transform bulletSpawnPoint;
+    //public float fireRate = 0.2f;
     
     
     private BulletManager bulletManager;
@@ -22,10 +22,10 @@ public class EnemyBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        bulletManager = FindObjectOfType<BulletManager>();
-        ResetEnemy();
-        InvokeRepeating("FireBullets", 0.3f, fireRate);
+        //spriteRenderer = GetComponent<SpriteRenderer>();
+        //bulletManager = FindObjectOfType<BulletManager>();
+        //ResetEnemy();
+        //InvokeRepeating("FireBullets", 0.3f, fireRate);
     }
 
     // Update is called once per frame
@@ -37,31 +37,31 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void Move()
     {
-        var horizontalLength = horizontalBoundary.max - horizontalBoundary.min;
-        transform.position = new Vector3(transform.position.x - verticalSpeed * Time.deltaTime, Mathf.PingPong(Time.time * horizontalSpeed, horizontalLength) - horizontalBoundary.max, transform.position.z);
+        //var horizontalLength = horizontalBoundary.max - horizontalBoundary.min;
+        //transform.position = new Vector3(transform.position.x - verticalSpeed * Time.deltaTime, Mathf.PingPong(Time.time * horizontalSpeed, horizontalLength) - horizontalBoundary.max, transform.position.z);
             
     }
 
     public void CheckBounds()
     {
-        if (transform.position.x < screenBounds.min)
-        {
-            ResetEnemy();
-        }
+        //if (transform.position.x < screenBounds.min)
+        //{
+        //    ResetEnemy();
+        //}
     }
 
     public void ResetEnemy()
     {
-        var RandomYPosition2 = Random.Range(horizontalBoundary.min, horizontalBoundary.max);
-        var RandomXPosition2 = Random.Range(verticalBoundary.min, verticalBoundary.max);
-        horizontalSpeed = Random.Range(1.0f, 6.0f);
-        verticalSpeed = Random.Range(1.0f, 3.0f);
-        transform.position = new Vector3(RandomXPosition2, RandomYPosition2, 0.0f);
+        //var RandomYPosition2 = Random.Range(horizontalBoundary.min, horizontalBoundary.max);
+        //var RandomXPosition2 = Random.Range(verticalBoundary.min, verticalBoundary.max);
+        //horizontalSpeed = Random.Range(1.0f, 6.0f);
+        //verticalSpeed = Random.Range(1.0f, 3.0f);
+        //transform.position = new Vector3(RandomXPosition2, RandomYPosition2, 0.0f);
 
-        List<Color> colorList = new List<Color>() {Color.red, Color.yellow, Color.magenta, Color.cyan, Color.white, Color.white};
+        //List<Color> colorList = new List<Color>() {Color.red, Color.yellow, Color.magenta, Color.cyan, Color.white, Color.white};
 
-        randomColor = colorList[Random.Range(0, 6)];
-        spriteRenderer.material.SetColor("_Color", randomColor);
+        //randomColor = colorList[Random.Range(0, 6)];
+        //spriteRenderer.material.SetColor("_Color", randomColor);
     }
 
     void FireBullets()

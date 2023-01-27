@@ -123,7 +123,7 @@ public class BulletManager : MonoBehaviour
                         AimShoot(firePoint.position, bullet, angle);
                         break;
                     case BulletType.SHOTGUN:
-                        SpreadShot();
+                        SpreadShot(bullet);
                         break;
 
                 }
@@ -175,8 +175,9 @@ public class BulletManager : MonoBehaviour
             bulletRb.AddForce(firePoint.up * projectileSpeed, ForceMode2D.Impulse);
     }
 
-    public void SpreadShot()
+    public void SpreadShot(GameObject bullet)
     {
-
+        Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+        bulletRb.AddForce(firePoint.up * projectileSpeed, ForceMode2D.Impulse);
     }
 }
