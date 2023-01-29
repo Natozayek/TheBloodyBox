@@ -571,10 +571,9 @@ GameObject:
   m_Component:
   - component: {fileID: 521419583}
   - component: {fileID: 521419582}
-  - component: {fileID: 521419581}
   - component: {fileID: 521419580}
   m_Layer: 0
-  m_Name: GameController
+  m_Name: BulletController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -604,19 +603,6 @@ MonoBehaviour:
   angleStepFixed: 360
   IncrementalAngle: 90
   projectileSpread: 0
---- !u!114 &521419581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 521419579}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6424c88dbbba147940be5da45f877d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyNumber: 1
 --- !u!114 &521419582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1417,10 +1403,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a66cd9733814fd40a760cbe1d6648d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyNumber: 6
+  intermission: 60
+  enemyKillsCounter: 0
+  waveGoal: 20
+  enemyOnMap: 0
+  enemyNumber: 1
   enemyList: []
   enemyPrefab: {fileID: 0}
-  spawnRate: 1
+  spawnRate: 2
   canSpawnEnemy: 1
   spawnLocations:
   - {fileID: 301208434}

@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class EnemyBehaviour2 : MonoBehaviour
 {
+    public static EnemyBehaviour2 Instance;
     public static event Action<EnemyBehaviour2> OnDestroyedEnemy;
     [SerializeField] float health, maxtHealth = 100f;
     [SerializeField] float speed = 5f;
@@ -13,6 +14,10 @@ public class EnemyBehaviour2 : MonoBehaviour
     Transform target;
     Vector2 Direction;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         health = maxtHealth;
@@ -29,13 +34,7 @@ public class EnemyBehaviour2 : MonoBehaviour
             rb.rotation = angle;
             Direction = tempDirection;
         }
-        if(health <= 0)
-        {
-            rb.velocity = Vector3.zero;
-            speed = 0;
-            DeathSequence();
-        }
-        
+  
     }
     private void FixedUpdate()
     {
@@ -48,19 +47,36 @@ public class EnemyBehaviour2 : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
+
+       
         health -= damageAmount;
+
+        if (health <= 0)
+        {
+            rb.velocity = Vector3.zero;
+            speed = 0;
+            //EnemyCount.Instance.EnemyKilled();
+            DeathSequence();
+
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Bullet"))
+        if (other.CompareTag("Bullet"))
         {
             TakeDamage(50);
+            if (health <= 0)
+            {
+                this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            }
         }
     }
     private void DeathSequence()
     {
         //play animation
-        Destroy(gameObject, 1);
+        Destroy(this.gameObject, 0.5f);
+        SpawnManager.Instance.NotifyKill();
     }
 }
+
