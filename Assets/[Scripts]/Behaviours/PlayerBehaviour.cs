@@ -6,21 +6,18 @@ using UnityEngine;
 public class PlayerBehaviour : MonoBehaviour
 {
     [Header("Player Properties")]
-    public Boundary boundary;
-    public float movementSpeed = 4.0f;
-    public float verticalSpeed = 10.0f;
-    public bool usingMobileInput = false;
-    public int numberOfProjectiles;           //Number of projectiles to shoot.  \\
+    [SerializeField]private float movementSpeed;
+    [SerializeField]private bool usingMobileInput = false;
+    //public int numberOfProjectiles;           //Number of projectiles to shoot.  \\
     public BulletPattern DesiredPattern = BulletPattern.SINGLE;//TBM
     public FireMode FireMode = FireMode.SINGLE;//TBM
     
-    public Rigidbody2D rb;
-    public Camera camera;
+    private Rigidbody2D rb;
+    private Camera camera;
     public Transform bulletSpawnPoint;//TBM
 
     [Header("Bullet Properties")] 
     public float _fireRate = 0.2f;
-    //private float _canFire = -1f;
 
     [Header("Inputs")]
     [SerializeField] private KeyCode shootkey = KeyCode.Space;
@@ -41,12 +38,14 @@ public class PlayerBehaviour : MonoBehaviour
 
     void Start()
     {
-        movementSpeed = 2.0f;
+        rb = GetComponent<Rigidbody2D>();
+
         _fireRate = 0.25f;// TBM
-       // scoreManager = FindObjectOfType<ScoreManager>();
+
+        // scoreManager = FindObjectOfType<ScoreManager>();
         bulletManager = FindObjectOfType<BulletManager>();
-       // transform.position = new Vector2(0.0f, horizontalPos);
         camera = Camera.main;
+
         // Platform Detection for input
         usingMobileInput = Application.platform == RuntimePlatform.Android ||
                            Application.platform == RuntimePlatform.IPhonePlayer;
@@ -136,7 +135,7 @@ void Update()
         foreach (var touch in Input.touches)
         {
             var destination = camera.ScreenToWorldPoint(touch.position);
-            transform.position = Vector2.Lerp(transform.position, destination, Time.deltaTime * verticalSpeed);
+            transform.position = Vector2.Lerp(transform.position, destination, Time.deltaTime * movementSpeed);
         }
     }
 
@@ -181,7 +180,7 @@ void Update()
                 break;
             case BulletPattern.INCREMENTAL:
                 {
-                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.INCREMENTAL, numberOfProjectiles, 0);
+                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.INCREMENTAL, 0, 0);
                 }
                 break;
             case BulletPattern.SINGLE:

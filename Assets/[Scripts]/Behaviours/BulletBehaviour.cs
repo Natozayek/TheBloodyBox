@@ -45,11 +45,10 @@ public class BulletBehaviour: MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        //if ((bulletType == BulletType.PLAYER) ||
-        //    (bulletType == BulletType.ENEMY && other.gameObject.CompareTag("Player")))
-        //{
-        //    bulletManager.ReturnBullet(this.gameObject, bulletType);
-        //}
+        if (other.CompareTag("Enemy"))
+        {
+            bulletManager.ReturnBullet(this.gameObject, bulletType);
+        }
         
     }
 

@@ -29,6 +29,12 @@ public class EnemyBehaviour2 : MonoBehaviour
             rb.rotation = angle;
             Direction = tempDirection;
         }
+        if(health <= 0)
+        {
+            rb.velocity = Vector3.zero;
+            speed = 0;
+            DeathSequence();
+        }
         
     }
     private void FixedUpdate()
@@ -42,6 +48,19 @@ public class EnemyBehaviour2 : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
+        health -= damageAmount;
+    }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.CompareTag("Bullet"))
+        {
+            TakeDamage(50);
+        }
+    }
+    private void DeathSequence()
+    {
+        //play animation
+        Destroy(gameObject, 1);
     }
 }
