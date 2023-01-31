@@ -19,6 +19,9 @@ public class BulletBehaviour: MonoBehaviour
     public ScreenBounds bounds;
     public BulletType bulletType;
     private BulletManager bulletManager;
+    public Vector3 targetPosition;
+    public float speed = 5;
+    private Rigidbody2D rb;
 
 
     void Start()
@@ -30,7 +33,7 @@ public class BulletBehaviour: MonoBehaviour
     {
         CheckBounds();
     }
-
+  
     void CheckBounds()
     {
         if ((transform.position.x > bounds.horizontal.max) ||

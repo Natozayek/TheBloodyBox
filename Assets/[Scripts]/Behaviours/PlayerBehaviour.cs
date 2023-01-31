@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -167,10 +168,12 @@ void Update()
                     Vector2 direction = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
                     float angle = aimAngle;
-                    var centerBullet = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SINGLE, 1, angle);
+                    var centerBullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SINGLE, 1, angle);
+                    centerBullet.GetComponent<BulletBehaviour>().bulletType = BulletType.SINGLE;
                     for (int i = 0; i <numofBullet ; i++)
                     {
-                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SPIRAL, i, angle);
+                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SPIRAL, i, angle);
+                        bullet.GetComponent<BulletBehaviour>().bulletType = BulletType.SPIRAL;
                         angle += angleStep;
                     }
                  
@@ -180,7 +183,7 @@ void Update()
                 break;
             case BulletPattern.INCREMENTAL:
                 {
-                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.INCREMENTAL, 0, 0);
+                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, new Vector3(0f,0f,0f), BulletType.INCREMENTAL, 0, 0);
                 }
                 break;
             case BulletPattern.SINGLE:
@@ -188,21 +191,27 @@ void Update()
                     Vector2 direction = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
                     float angle = aimAngle;
-                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SINGLE, 1, angle);
-
+                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SINGLE, 1, angle);
+                    bullet.GetComponent<BulletBehaviour>().bulletType = BulletType.SINGLE;
                 }
                 break;
             case BulletPattern.SHOTGUN:
                 {
-                    Vector2 direction = mousePosition - rb.position;
-                    float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+                    Vector3 _targetPosition, _targetPosition2, _targetPosition3;
+                    Vector3 mouseDirection = mousePosition - rb.position;
+                    float aimAngle = Mathf.Atan2(mouseDirection.y, mouseDirection.x) * Mathf.Rad2Deg - 90f;
                     float angle = aimAngle;
-           
-                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle-60);
-                    var bullet2 = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle-30);
-                    var bullet3 = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle);
-                    var bullet4= bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle+30);
-                    var bulle5 = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SHOTGUN, 1, angle-30);
+                    var direction = Quaternion.Euler(0, 0, -30f) * (mouseDirection - transform.position); //-30 
+                    var direction2 = Quaternion.Euler(0, 0, 0f) * (mouseDirection - transform.position); //-0
+                    var direction3 = Quaternion.Euler(0, 0, 30f) * (mouseDirection - transform.position); //30 
+
+                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position,direction, BulletType.SHOTGUN, 1, angle);
+                    var bullet2 = bulletManager.GetBullet(bulletSpawnPoint.position, direction2, BulletType.SHOTGUN, 1, angle);
+                    var bullet3 = bulletManager.GetBullet(bulletSpawnPoint.position, direction3, BulletType.SHOTGUN, 1, angle);
+
+                    bullet.GetComponent<BulletBehaviour>().bulletType = BulletType.SHOTGUN;
+                    bullet2.GetComponent<BulletBehaviour>().bulletType = BulletType.SHOTGUN;
+                    bullet3.GetComponent<BulletBehaviour>().bulletType = BulletType.SHOTGUN;
 
 
                 }

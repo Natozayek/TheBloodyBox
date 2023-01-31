@@ -591,12 +591,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21fe11d480a073e45b7174892c0420cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBulletNumber: 1000
+  playerBulletNumber: 100
   playerBulletCount: 0
   activePlayerBullets: 0
-  enemyBulletNumber: 50
-  enemyBulletCount: 0
-  activeShotgunBullets: 0
   angle: 0
   projectileSpeed: 10
   firePoint: {fileID: 981357560}
@@ -1336,7 +1333,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 5
   usingMobileInput: 0
-  DesiredPattern: 2
+  DesiredPattern: 3
   FireMode: 0
   bulletSpawnPoint: {fileID: 981357560}
   _fireRate: 0.2
@@ -1398,7 +1395,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1636294635}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a66cd9733814fd40a760cbe1d6648d0, type: 3}
   m_Name: 
@@ -1407,6 +1404,7 @@ MonoBehaviour:
   enemyKillsCounter: 0
   waveGoal: 20
   enemyOnMap: 0
+  isEndless: 0
   enemyNumber: 1
   enemyList: []
   enemyPrefab: {fileID: 0}

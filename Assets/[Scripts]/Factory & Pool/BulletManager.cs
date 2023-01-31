@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [System.Serializable]
@@ -7,13 +9,9 @@ public class BulletManager : MonoBehaviour
 {
     [Header("Bullet Properties")]
     [Range(10, 1000)]
-    public int playerBulletNumber = 1000;
+    public int playerBulletNumber = 100;
     public int playerBulletCount = 0;
     public int activePlayerBullets = 0;
-    [Range(10, 200)]
-    public int enemyBulletNumber = 200;
-    public int enemyBulletCount = 0;
-    public int activeShotgunBullets = 0;
 
     private BulletFactory factory;
     private Queue<GameObject> playerBulletPool;
@@ -52,7 +50,7 @@ public class BulletManager : MonoBehaviour
     {
         for (int i = 0; i < playerBulletNumber; i++)
         {
-            playerBulletPool.Enqueue(factory.CreateBullet(BulletType.SPIRAL));
+            playerBulletPool.Enqueue(factory.CreateBullet());
              
         }
         playerBulletCount = playerBulletPool.Count;
@@ -60,7 +58,7 @@ public class BulletManager : MonoBehaviour
     }
 
 
-    public GameObject GetBullet(Vector3 startPosition, BulletType type, int _numberOfProjectiles, float angle)
+    public GameObject GetBullet(Vector3 startPosition, Vector3 targetPos, BulletType type, int _numberOfProjectiles, float angle)
     {
         GameObject bullet = null;
         switch (type)
@@ -69,7 +67,7 @@ public class BulletManager : MonoBehaviour
                 {
                     if (playerBulletPool.Count < 1)
                     {
-                        playerBulletPool.Enqueue(factory.CreateBullet(BulletType.SPIRAL));
+                        playerBulletPool.Enqueue(factory.CreateBullet());
                     }
                     {
                         bullet = playerBulletPool.Dequeue();
@@ -84,7 +82,7 @@ public class BulletManager : MonoBehaviour
                 {
                     if (playerBulletPool.Count < 1)
                     {
-                        playerBulletPool.Enqueue(factory.CreateBullet(BulletType.SINGLE));
+                        playerBulletPool.Enqueue(factory.CreateBullet());
                     }
                     {
                         bullet = playerBulletPool.Dequeue();
@@ -98,7 +96,7 @@ public class BulletManager : MonoBehaviour
             case BulletType.SHOTGUN:
                 if (playerBulletPool.Count < 1)
                 {
-                    playerBulletPool.Enqueue(factory.CreateBullet(BulletType.SHOTGUN));
+                    playerBulletPool.Enqueue(factory.CreateBullet());
                 }
                 {
                     bullet = playerBulletPool.Dequeue();
@@ -115,21 +113,25 @@ public class BulletManager : MonoBehaviour
                 switch (type)
                 {
                     case BulletType.SPIRAL:
+                        bullet.GetComponent<BulletBehaviour>().bulletType = type;
                         threeSixtyAngleShoot(startPosition, bullet, angle);
                         break;
 
-
                     case BulletType.SINGLE:
-                        AimShoot(firePoint.position, bullet, angle);
+                        bullet.GetComponent<BulletBehaviour>().bulletType = type;
+                        AimShoot(bullet);
                         break;
                     case BulletType.SHOTGUN:
-                        SpreadShot(bullet);
+                       bullet.GetComponent<BulletBehaviour>().bulletType = type;
+                       SpreadShot(targetPos, bullet);
                         break;
 
                 }
                 return bullet;
         }
-    
+
+
+
     public void ReturnBullet(GameObject bullet, BulletType type)
      {
             bullet.SetActive(false);
@@ -169,15 +171,18 @@ public class BulletManager : MonoBehaviour
             bullet.GetComponent<Rigidbody2D>().velocity = new Vector3(projectileMoveDirection.x, projectileMoveDirection.y, 0);
 
     }
-    public void AimShoot(Vector3 startPosition, GameObject bullet, float angle)
+    public void AimShoot(GameObject bullet)
     {
+            
             Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
             bulletRb.AddForce(firePoint.up * projectileSpeed, ForceMode2D.Impulse);
+             
     }
-
-    public void SpreadShot(GameObject bullet)
+    private void SpreadShot(Vector3 direction, GameObject bullet)
     {
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
-        bulletRb.AddForce(firePoint.up * projectileSpeed, ForceMode2D.Impulse);
+        bulletRb.AddForce(direction * 2f, ForceMode2D.Impulse);
     }
+
+
 }
