@@ -12,18 +12,18 @@ public class SpawnManager : MonoBehaviour
     public int enemyOnMap = 0;
     public int waveNumber;
     public static SpawnManager Instance;
+    public bool intermissionOn = false;
 
     
     [Range(1, 100)]
     public int enemyNumber = 1;
 
     [SerializeField]private List<GameObject> enemyList;
-    [SerializeField]private GameObject enemyPrefab;
+    [SerializeField]public GameObject enemyPrefab;
     [SerializeField] private float spawnRate = 2f;
     [SerializeField] public bool isEndless = false;
     [SerializeField] private bool canSpawnEnemy = true;
     [SerializeField] private Transform[] spawnLocations;
-
 
     private void Awake()
     {
@@ -31,7 +31,6 @@ public class SpawnManager : MonoBehaviour
     }
     void Start()
     {
-        
         enemyPrefab = Resources.Load<GameObject>("Prefabs/Enemy");
         BuildEnemyList();
         waveNumber = 1;
@@ -40,7 +39,6 @@ public class SpawnManager : MonoBehaviour
     public void BuildEnemyList()
     {
         enemyList = new List<GameObject>();
-
         for (var i = 0; i < enemyNumber; i++)
         {
             var enemy = enemyPrefab;
@@ -52,19 +50,17 @@ public class SpawnManager : MonoBehaviour
     {
         //Make 3 2 1 timer to start wave 1; With are you ready button
         //Accumulate points to improve fire rate, bullet damage in initial weapon (pistol single), weapons drop ( spiral, shotgun) + needing 3 more (grenades, bazooka, mele last)
-        
-
         if (enemyKillsCounter >= waveGoal)// Set waves 
         {
+            intermissionOn = true;
             UIManager.instance.IntermissionTimer.gameObject.SetActive(true);
-            
             intermission = intermission - Time.deltaTime;
+
 
             if (intermission < 0f)
             {
                 SetNextWave();
             }
-        
             UIManager.instance.DecreaseTimer(intermission);
             //Destroy all enemies in the scene
             //Give a minute to upgrade do things
@@ -87,9 +83,12 @@ public class SpawnManager : MonoBehaviour
         waveGoal = waveGoal + 10;
         UIManager.instance.IncreaseGoalNumber(waveGoal);
         UIManager.instance.ResetEnemiesKilled();
-
+        UIManager.instance.IntermissionTimer.gameObject.SetActive(false);
+        intermission = 60;
+        UIManager.instance.IntermissionTimerN = intermission;
         //Release enemies
         canSpawnEnemy = true;
+        intermissionOn = false;
         intermission = 60;
 
         //Increase Enemy stats for next wave

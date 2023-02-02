@@ -31,14 +31,13 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Private Variables")]
     private Transform bulletSpawnPoint;//TBM
     private float _fireTimer = 0.0f;
-    float aimAngle;
     private Vector2 mousePosition;         // Helps us to aim                                      \\
     private Vector2 movementDirection;
     private bool _bursting = false;//TBM
     private bool _PressingShootKey = false;//TBM
-   // private ScoreManager scoreManager;
+    // private ScoreManager scoreManager;
     private BulletManager bulletManager;//TBM
- //private AudioSource _audioSource = null;
+    //private AudioSource _audioSource = null;
     private Rigidbody2D rb;
     private Camera camera;
 
@@ -46,7 +45,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         bulletManager = FindObjectOfType<BulletManager>();
         // scoreManager = FindObjectOfType<ScoreManager>();
-        health = FindObjectOfType<PlayerHealth>().GetComponent<HealthBarController>();
+        health = FindObjectOfType<HealthBarController>().GetComponent<HealthBarController>();
         bulletSpawnPoint = GameObject.Find("firePoint").transform;
         rb = GetComponent<Rigidbody2D>();
         _fireRate = 0.25f;// TBM
