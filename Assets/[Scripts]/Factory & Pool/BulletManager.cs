@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 
 [System.Serializable]
 public class BulletManager : MonoBehaviour
@@ -61,10 +62,11 @@ public class BulletManager : MonoBehaviour
     public GameObject GetBullet(Vector3 startPosition, Vector3 targetPos, BulletType type, int _numberOfProjectiles, float angle)
     {
         GameObject bullet = null;
-        switch (type)
-        {
-            case BulletType.SPIRAL:
+    
+                switch (type)
                 {
+                       case BulletType.SPIRAL:
+                          {
                     if (playerBulletPool.Count < 1)
                     {
                         playerBulletPool.Enqueue(factory.CreateBullet());
@@ -75,11 +77,11 @@ public class BulletManager : MonoBehaviour
                         playerBulletCount = playerBulletPool.Count;
                         activePlayerBullets++;
                     }
-
+                    bullet.GetComponent<BulletBehaviour>().bulletType = type;
                 }
-                break;
-            case BulletType.SINGLE:
-                {
+                          break;
+                        case BulletType.SINGLE:
+                          {
                     if (playerBulletPool.Count < 1)
                     {
                         playerBulletPool.Enqueue(factory.CreateBullet());
@@ -90,22 +92,25 @@ public class BulletManager : MonoBehaviour
                         playerBulletCount = playerBulletPool.Count;
                         activePlayerBullets++;
                     }
-
+                    bullet.GetComponent<BulletBehaviour>().bulletType = type;
                 }
-                break;
-            case BulletType.SHOTGUN:
-                if (playerBulletPool.Count < 1)
-                {
-                    playerBulletPool.Enqueue(factory.CreateBullet());
+                          break;
+                         case BulletType.SHOTGUN:
+                         {
+                    if (playerBulletPool.Count < 1)
+                    {
+                        playerBulletPool.Enqueue(factory.CreateBullet());
+                    }
+                    {
+                        bullet = playerBulletPool.Dequeue();
+                        // stats
+                        playerBulletCount = playerBulletPool.Count;
+                        activePlayerBullets++;
+                    }
+                    bullet.GetComponent<BulletBehaviour>().bulletType = type;
                 }
-                {
-                    bullet = playerBulletPool.Dequeue();
-                    // stats
-                    playerBulletCount = playerBulletPool.Count;
-                    activePlayerBullets++;
+                          break;
                 }
-                break;
-        }
                
                 bullet.SetActive(true);
                 bullet.transform.position = startPosition;
@@ -113,17 +118,15 @@ public class BulletManager : MonoBehaviour
                 switch (type)
                 {
                     case BulletType.SPIRAL:
-                        bullet.GetComponent<BulletBehaviour>().bulletType = type;
                         threeSixtyAngleShoot(startPosition, bullet, angle);
                         break;
 
-                    case BulletType.SINGLE:
-                        bullet.GetComponent<BulletBehaviour>().bulletType = type;
-                        AimShoot(bullet);
+                    case BulletType.SINGLE:                   
+                        AimShoot(bullet, angle);
                         break;
+
                     case BulletType.SHOTGUN:
-                       bullet.GetComponent<BulletBehaviour>().bulletType = type;
-                       SpreadShot(targetPos, bullet);
+                       SpreadShot(targetPos, bullet, angle);
                         break;
 
                 }
@@ -139,24 +142,31 @@ public class BulletManager : MonoBehaviour
             switch (type)
             {
                 case BulletType.SPIRAL:
+                {
                     playerBulletPool.Enqueue(bullet);
                     //stats
                     playerBulletCount = playerBulletPool.Count;
                     activePlayerBullets--;
-                    break;
+                }
+                break;
                 case BulletType.SINGLE:
+                {
                     playerBulletPool.Enqueue(bullet);
                     //stats
                     playerBulletCount = playerBulletPool.Count;
                     activePlayerBullets--;
-                    break;
+                }
+                break;
                 case BulletType.SHOTGUN:
-                playerBulletPool.Enqueue(bullet);
-                //stats
-                playerBulletCount = playerBulletPool.Count;
-                activePlayerBullets--;
-                    break;
-            }
+                {
+                    playerBulletPool.Enqueue(bullet);
+                    //stats
+                    playerBulletCount = playerBulletPool.Count;
+                    activePlayerBullets--;
+                }
+                break;
+
+        }
      } 
     public void threeSixtyAngleShoot(Vector3 startPosition, GameObject bullet, float angle)
     {
@@ -169,19 +179,20 @@ public class BulletManager : MonoBehaviour
             Vector3 projectileMoveDirection = (projectileVector - startPosition).normalized * projectileSpeed;
 
             bullet.GetComponent<Rigidbody2D>().velocity = new Vector3(projectileMoveDirection.x, projectileMoveDirection.y, 0);
+            bullet.GetComponent<Rigidbody2D>().rotation = -angle;
 
     }
-    public void AimShoot(GameObject bullet)
+    public void AimShoot(GameObject bullet, float angle)
     {
-            
             Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
             bulletRb.AddForce(firePoint.up * projectileSpeed, ForceMode2D.Impulse);
-             
+            bullet.GetComponent<Rigidbody2D>().rotation = angle;
     }
-    private void SpreadShot(Vector3 direction, GameObject bullet)
+    private void SpreadShot(Vector3 direction, GameObject bullet, float angle)
     {
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
         bulletRb.AddForce(direction * 2f, ForceMode2D.Impulse);
+        bullet.GetComponent<Rigidbody2D>().rotation = angle;
     }
 
 

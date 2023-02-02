@@ -6,23 +6,24 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [Range(10f, 120f)]
-    [SerializeField] private float intermission = 0f;
+    [SerializeField] public float intermission = 30f;
     public int enemyKillsCounter = 0;
     [SerializeField]public int waveGoal;
     public int enemyOnMap = 0;
-    private int waveNumber;
+    public int waveNumber;
     public static SpawnManager Instance;
 
-    public bool isEndless = false;
+    
     [Range(1, 100)]
     public int enemyNumber = 1;
 
     [SerializeField]private List<GameObject> enemyList;
     [SerializeField]private GameObject enemyPrefab;
     [SerializeField] private float spawnRate = 2f;
+    [SerializeField] public bool isEndless = false;
     [SerializeField] private bool canSpawnEnemy = true;
     [SerializeField] private Transform[] spawnLocations;
-    // Start is called before the first frame update
+
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class SpawnManager : MonoBehaviour
     }
     void Start()
     {
+        
         enemyPrefab = Resources.Load<GameObject>("Prefabs/Enemy");
         BuildEnemyList();
         waveNumber = 1;
@@ -54,14 +56,16 @@ public class SpawnManager : MonoBehaviour
 
         if (enemyKillsCounter >= waveGoal)// Set waves 
         {
-            intermission = intermission + Time.deltaTime;
+            UIManager.instance.IntermissionTimer.gameObject.SetActive(true);
+            
+            intermission = intermission - Time.deltaTime;
 
-            if (intermission > 20f)
+            if (intermission < 0f)
             {
                 SetNextWave();
             }
         
-            Debug.Log(intermission);
+            UIManager.instance.DecreaseTimer(intermission);
             //Destroy all enemies in the scene
             //Give a minute to upgrade do things
             //set new goal
@@ -76,11 +80,21 @@ public class SpawnManager : MonoBehaviour
     {
         enemyKillsCounter = 0;
         enemyOnMap = 0;
+
+        //Wave specifications 
         waveNumber++;
+        UIManager.instance.IncreaseWaves();
         waveGoal = waveGoal + 10;
+        UIManager.instance.IncreaseGoalNumber(waveGoal);
+        UIManager.instance.ResetEnemiesKilled();
+
+        //Release enemies
         canSpawnEnemy = true;
-        intermission = 0;
-        //Increase stats of enemies
+        intermission = 60;
+
+        //Increase Enemy stats for next wave
+        enemyPrefab.GetComponent<EnemyBehaviour>().maxtHealth += enemyPrefab.GetComponent<EnemyBehaviour>().maxtHealth * 0.2f;
+        enemyPrefab.GetComponent<EnemyBehaviour>().speed += enemyPrefab.GetComponent<EnemyBehaviour>().speed * 0.2f;
         StartCoroutine(Spawner());
     }
 
@@ -112,8 +126,8 @@ public class SpawnManager : MonoBehaviour
             }
 
             
-        }
-        while (canSpawnEnemy && isEndless)
+        }//Waves
+        while (canSpawnEnemy && isEndless) 
         {
             yield return wait;
             int rand = Random.Range(0, enemyList.Count);
@@ -125,14 +139,9 @@ public class SpawnManager : MonoBehaviour
                 Instantiate(enemy, spawnLocations[locationIndex].position, Quaternion.identity);
                 locationIndex++;
                 enemyOnMap++;
-
-                if (enemyOnMap >= waveGoal)// For future modes  == Keeping track of data;
-                {
-                    canSpawnEnemy = false;
-                }
             }
 
 
-        }
+        }//Endless
     }
 }

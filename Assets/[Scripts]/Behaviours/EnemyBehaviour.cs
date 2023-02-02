@@ -1,71 +1,84 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    public Boundary horizontalBoundary;
-    public Boundary verticalBoundary;
-    public Boundary screenBounds;
-    public float horizontalSpeed;
-    public float verticalSpeed;
-    public Color randomColor;
+    public static EnemyBehaviour Instance;
+    //public static event Action<EnemyBehaviour> OnDestroyedEnemy;
+    [SerializeField] public float health, maxtHealth = 100f;
+    [SerializeField] public float speed = 5f;
+    Rigidbody2D rb;
+    Transform target;
+    Vector2 Direction;
 
-    //[Header("Bullet Properties")]
-    //public Transform bulletSpawnPoint;
-    //public float fireRate = 0.2f;
-    
-    
-    private BulletManager bulletManager;
-    private SpriteRenderer spriteRenderer;
-
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
-        //spriteRenderer = GetComponent<SpriteRenderer>();
-        //bulletManager = FindObjectOfType<BulletManager>();
-        //ResetEnemy();
-        //InvokeRepeating("FireBullets", 0.3f, fireRate);
+        health = maxtHealth;
+        target = GameObject.Find("Player").transform;
+        rb = GetComponent<Rigidbody2D>();
     }
-
     // Update is called once per frame
     void Update()
     {
-        Move();
-        CheckBounds();
+        if(target != null)
+        {
+            Vector3 tempDirection = (target.position - transform.position).normalized;
+            float angle = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg - 90f;
+            rb.rotation = angle;
+            Direction = tempDirection;
+        }
+  
+    }
+    private void FixedUpdate()
+    {
+        if (target != null)
+        {
+            rb.velocity = new Vector2(Direction.x, Direction.y) * speed;
+        }
+       
     }
 
-    public void Move()
+    public void TakeDamage(float damageAmount)
     {
-        //var horizontalLength = horizontalBoundary.max - horizontalBoundary.min;
-        //transform.position = new Vector3(transform.position.x - verticalSpeed * Time.deltaTime, Mathf.PingPong(Time.time * horizontalSpeed, horizontalLength) - horizontalBoundary.max, transform.position.z);
-            
+
+       
+        health -= damageAmount;
+
+        if (health <= 0)
+        {
+            rb.velocity = Vector3.zero;
+            speed = 0;
+            //EnemyCount.Instance.EnemyKilled();
+            DeathSequence();
+
+        }
     }
 
-    public void CheckBounds()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        //if (transform.position.x < screenBounds.min)
-        //{
-        //    ResetEnemy();
-        //}
+        if (other.CompareTag("Bullet"))
+        {
+            TakeDamage(50);
+            if (health <= 0)
+            {
+                this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            }
+        }
     }
-
-    public void ResetEnemy()
+    private void DeathSequence()
     {
-        //var RandomYPosition2 = Random.Range(horizontalBoundary.min, horizontalBoundary.max);
-        //var RandomXPosition2 = Random.Range(verticalBoundary.min, verticalBoundary.max);
-        //horizontalSpeed = Random.Range(1.0f, 6.0f);
-        //verticalSpeed = Random.Range(1.0f, 3.0f);
-        //transform.position = new Vector3(RandomXPosition2, RandomYPosition2, 0.0f);
-
-        //List<Color> colorList = new List<Color>() {Color.red, Color.yellow, Color.magenta, Color.cyan, Color.white, Color.white};
-
-        //randomColor = colorList[Random.Range(0, 6)];
-        //spriteRenderer.material.SetColor("_Color", randomColor);
-    }
-
-    void FireBullets()
-    {
-        //var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, BulletType.SPIRAL, 1.0f);
+        //play animation
+        Destroy(this.gameObject, 0.5f);
+        SpawnManager.Instance.NotifyKill();
+        UIManager.instance.IncreaseEnemiesKilled();
+        
     }
 }
+

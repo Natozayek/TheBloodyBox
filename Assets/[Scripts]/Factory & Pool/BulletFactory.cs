@@ -10,7 +10,6 @@ public class BulletFactory : MonoBehaviour
 
     // Sprite Textures
     private Sprite playerBulletSprite;
-    private Sprite enemyBulletSprite;
 
     // Bullet Parent
     private Transform bulletParent;

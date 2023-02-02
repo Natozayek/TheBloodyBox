@@ -20,7 +20,7 @@ public class Blink : MonoBehaviour
             for (float i = 1f; i >= 0.5f; i -= Time.deltaTime)
             {
                 // set color with i as alpha
-                GetComponent<Renderer>().material.color = new Color(1, 1, 1, i);
+                gameObject.GetComponent<Image>().color = new Color(1, 1, 1, i);
                 yield return null;
             }
             fadeAway = false;
@@ -32,7 +32,7 @@ public class Blink : MonoBehaviour
             for (float i = 0.5f; i <= 1f; i += Time.deltaTime)
             {
                 // set color with i as alpha
-                GetComponent<Renderer>().material.color = new Color(1, 1, 1, i);
+                gameObject.GetComponent<Image>().color = new Color(1, 1, 1, i);
                 yield return null;
             }
         }

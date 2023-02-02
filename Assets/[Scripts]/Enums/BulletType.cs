@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public enum BulletType 
 {
     SPIRAL,
-    INCREMENTAL,
     SINGLE,
     SHOTGUN,
 }
