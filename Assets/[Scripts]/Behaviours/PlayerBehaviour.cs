@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
@@ -13,8 +14,10 @@ public class PlayerBehaviour : MonoBehaviour
     public BulletType DesiredPattern = BulletType.SPIRAL;//TBM
     public FireMode FireMode = FireMode.SINGLE;//TBM
     [SerializeField] int numberOfProjectiles = 5;
-  
-   
+
+    [Header("HealthSystem")]
+    public HealthBarController health;
+
 
     [Header("Bullet Properties")] 
     public float _fireRate = 0.2f;
@@ -41,12 +44,15 @@ public class PlayerBehaviour : MonoBehaviour
 
     void Start()
     {
+        bulletManager = FindObjectOfType<BulletManager>();
+        // scoreManager = FindObjectOfType<ScoreManager>();
+        health = FindObjectOfType<PlayerHealth>().GetComponent<HealthBarController>();
         bulletSpawnPoint = GameObject.Find("firePoint").transform;
         rb = GetComponent<Rigidbody2D>();
         _fireRate = 0.25f;// TBM
 
-        // scoreManager = FindObjectOfType<ScoreManager>();
-        bulletManager = FindObjectOfType<BulletManager>();
+   
+        
         camera = Camera.main;
 
         // Platform Detection for input
@@ -220,7 +226,21 @@ void Update()
         _bursting = false;
     }
     #endregion
+    void OnCollisionStay2D(Collision2D other)
+    {
 
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            health.TakeDamage(1);
+            if (health.value <= 0)
+            {
+                SceneManager.LoadScene("Waves");
+                //soundManager.PlaySoundFX(SoundFX.HURT, SoundChannel.PLAYER_HURT_FX);
+
+                //TODO: Play the hurt sound
+            }
+        }
+    }
 
     /*
      * 

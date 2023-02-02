@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 public class EnemyBehaviour : MonoBehaviour
 {
     public static EnemyBehaviour Instance;
+    [SerializeField]private GameObject healthBarController;
+    private EnemyHealthBarController controller;
     //public static event Action<EnemyBehaviour> OnDestroyedEnemy;
     [SerializeField] public float health, maxtHealth = 100f;
     [SerializeField] public float speed = 5f;
@@ -20,6 +22,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
     void Start()
     {
+       controller = healthBarController.GetComponent<EnemyHealthBarController>();
         health = maxtHealth;
         target = GameObject.Find("Player").transform;
         rb = GetComponent<Rigidbody2D>();
@@ -66,6 +69,15 @@ public class EnemyBehaviour : MonoBehaviour
         if (other.CompareTag("Bullet"))
         {
             TakeDamage(50);
+            if (controller != null)
+            {
+                controller.TakeDamage(50);
+            }
+            else
+            {
+                Debug.Log("null");
+            }
+           
             if (health <= 0)
             {
                 this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
