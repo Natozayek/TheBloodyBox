@@ -136,7 +136,7 @@ public class BulletManager : MonoBehaviour
     public void ReturnBullet(GameObject bullet, BulletType type)
      {
         bullet.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-            bullet.SetActive(false);
+        bullet.SetActive(false);
 
             switch (type)
             {
@@ -190,7 +190,7 @@ public class BulletManager : MonoBehaviour
     private void SpreadShot(Vector3 direction, GameObject bullet, float angle)
     {
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
-        bulletRb.AddForce(direction * 2f, ForceMode2D.Impulse);
+        bulletRb.AddForce(direction/ (projectileSpeed/5) , ForceMode2D.Impulse);
         bullet.GetComponent<Rigidbody2D>().rotation = angle;
     }
 

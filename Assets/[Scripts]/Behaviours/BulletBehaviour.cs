@@ -26,6 +26,7 @@ public class BulletBehaviour: MonoBehaviour
 
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
         bulletManager = FindObjectOfType<BulletManager>();
     }
 
@@ -41,6 +42,7 @@ public class BulletBehaviour: MonoBehaviour
             (transform.position.y > bounds.vertical.max) ||
             (transform.position.y < bounds.vertical.min))
         {
+            rb.velocity = Vector2.zero;
             bulletManager.ReturnBullet(this.gameObject, bulletType);
         }
     }
@@ -50,6 +52,7 @@ public class BulletBehaviour: MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
+            rb.velocity = Vector2.zero;
             bulletManager.ReturnBullet(this.gameObject, bulletType);
         }
         
