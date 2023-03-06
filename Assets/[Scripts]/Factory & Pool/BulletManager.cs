@@ -14,7 +14,7 @@ public class BulletManager : MonoBehaviour
     public int playerBulletCount = 0;
     public int activePlayerBullets = 0;
 
-    private BulletFactory factory;
+    private Factory factory;
     private Queue<GameObject> playerBulletPool;
     private Queue<GameObject> ShotgunBulletPool;
     public float angle = 0f;
@@ -44,7 +44,7 @@ public class BulletManager : MonoBehaviour
     {
         playerBulletPool = new Queue<GameObject>(); // creates an empty queue container
         ShotgunBulletPool = new Queue<GameObject>(); // creates an empty queue container
-        factory = GameObject.FindObjectOfType<BulletFactory>();
+        factory = GameObject.FindObjectOfType<Factory>();
         BuildBulletPools();
     }
     void BuildBulletPools()
@@ -137,6 +137,7 @@ public class BulletManager : MonoBehaviour
 
     public void ReturnBullet(GameObject bullet, BulletType type)
      {
+        bullet.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             bullet.SetActive(false);
 
             switch (type)

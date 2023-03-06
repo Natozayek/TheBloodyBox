@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
+    public EnemyType enemType;
     public GameObject stainPrefab;
     public static EnemyBehaviour Instance;
     [SerializeField]private EnemyHealthBarController healthBarController;
     [SerializeField] public float health, maxtHealth = 100f;
     [SerializeField] public float speed = 5f;
+    private EnemyManager enemyManager;
     Rigidbody2D rb;
     Transform target;
     Vector2 Direction;
@@ -20,7 +22,8 @@ public class EnemyBehaviour : MonoBehaviour
     }
     void Start()
     {
-        stainPrefab = Resources.Load<GameObject>("Prefabs/BloodStain");
+        enemyManager = FindObjectOfType<EnemyManager>();
+        
         health = maxtHealth;
         target = GameObject.Find("Player").transform;
         rb = GetComponent<Rigidbody2D>();
@@ -64,6 +67,7 @@ public class EnemyBehaviour : MonoBehaviour
             {
                 this.gameObject.GetComponent<Collider2D>().isTrigger = false;
                 this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+
             }
 
             TakeDamage(50);
@@ -83,13 +87,19 @@ public class EnemyBehaviour : MonoBehaviour
     {
         //play animation
         float rand = Random.Range(1, 360);
-        GameObject blood;
-        blood =  Instantiate(stainPrefab, transform.position, Quaternion.identity);
-        blood.transform.Rotate(0, 0, rand);
-        Destroy(this.gameObject, 0.1f);
+        this.gameObject.SetActive(false);
+        stainPrefab.GetComponent<Transform>().position = this.gameObject.transform.position;
+        stainPrefab.SetActive(true);
+        stainPrefab.transform.Rotate(0, 0, rand);
+        
         SpawnManager.Instance.NotifyKill();
         UIManager.instance.IncreaseEnemiesKilled();
         
+    }
+
+    internal void ReturnEnemy()
+    {
+        enemyManager.ReturnEnemy(this.gameObject, enemType);
     }
 }
 

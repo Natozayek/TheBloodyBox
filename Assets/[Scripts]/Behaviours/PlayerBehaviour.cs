@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using static UnityEngine.GraphicsBuffer;
+
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -165,7 +165,7 @@ void Update()
                     Vector2 direction = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
                     float angle = aimAngle;
-                    //var centerBullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SINGLE, 1, angle);
+                   
                     for (int i = 0; i < numofBullet; i++)
                     {
                         var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SPIRAL, 1, angle);

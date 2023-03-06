@@ -13,6 +13,8 @@ public class SpawnManager : MonoBehaviour
     public int waveNumber;
     public static SpawnManager Instance;
     public bool intermissionOn = false;
+    private EnemyManager enemyManager;
+    public EnemyType enemyType;
 
     
     [Range(1, 100)]
@@ -31,21 +33,11 @@ public class SpawnManager : MonoBehaviour
     }
     void Start()
     {
-        enemyPrefab = Resources.Load<GameObject>("Prefabs/Enemy");
-        BuildEnemyList();
         waveNumber = 1;
+        enemyManager = FindObjectOfType<EnemyManager>();
         StartCoroutine(Spawner());
     }
-    public void BuildEnemyList()
-    {
-        enemyList = new List<GameObject>();
-        for (var i = 0; i < enemyNumber; i++)
-        {
-            var enemy = enemyPrefab;
-            enemyList.Add(enemy);
-      
-        }
-    }
+
     private void Update()
     {
         //Make 3 2 1 timer to start wave 1; With are you ready button
@@ -108,13 +100,12 @@ public class SpawnManager : MonoBehaviour
         while(canSpawnEnemy && !isEndless)
         {
             yield return wait;
-            int rand = Random.Range(0, enemyList.Count);
-            GameObject enemy = enemyList[rand];
+          //  int rand = Random.Range(0, enemyList.Count);
             int locationIndex = 0;
             for (int i = 0;  i < spawnLocations.Length ; i++)
             {
-             
-                    Instantiate(enemy, spawnLocations[locationIndex].position, Quaternion.identity);
+                    enemyManager.GetEnemy(spawnLocations[locationIndex].position, enemyType);
+               
                     locationIndex++;
                     enemyOnMap++;
                 
@@ -129,15 +120,19 @@ public class SpawnManager : MonoBehaviour
         while (canSpawnEnemy && isEndless) 
         {
             yield return wait;
-            int rand = Random.Range(0, enemyList.Count);
-            GameObject enemy = enemyList[rand];
+            //  int rand = Random.Range(0, enemyList.Count);
             int locationIndex = 0;
             for (int i = 0; i < spawnLocations.Length; i++)
             {
+                enemyManager.GetEnemy(spawnLocations[locationIndex].position, enemyType);
 
-                Instantiate(enemy, spawnLocations[locationIndex].position, Quaternion.identity);
                 locationIndex++;
                 enemyOnMap++;
+
+                if (enemyOnMap >= waveGoal)// For future modes  == Keeping track of data;
+                {
+                    canSpawnEnemy = false;
+                }
             }
 
 
