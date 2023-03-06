@@ -6,21 +6,20 @@ public class EnemyManager : MonoBehaviour
 {
     [Header("Enemy Properties")]
     [Range(10, 1000)]
+    [SerializeField] public Queue<GameObject> enemyPool =  new Queue<GameObject>();
     public int numberOfEnemies = 100;
     public int enemyCount = 0;
     public int ActiveEnemies = 0;
 
     private Factory factory;
-    private Queue<GameObject> enemyPool;
+   
 
     [Header("Private Variables")]
     private Vector3 startPoint;
 
-
-    // Start is called before the first frame update
     void Start()
     {
-        enemyPool = new Queue<GameObject>(); // creates an empty queue container
+        //enemyPool = new Queue<GameObject>(); // creates an empty queue container
         factory = GameObject.FindObjectOfType<Factory>();
         BuildEnemyPool();
     }

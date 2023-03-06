@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
+    private SpawnManager spawnManager;
     public EnemyType enemType;
     public GameObject stainPrefab;
     public static EnemyBehaviour Instance;
@@ -23,6 +24,7 @@ public class EnemyBehaviour : MonoBehaviour
     void Start()
     {
         enemyManager = FindObjectOfType<EnemyManager>();
+        spawnManager = FindObjectOfType<SpawnManager>();
         
         health = maxtHealth;
         target = GameObject.Find("Player").transform;
@@ -31,6 +33,10 @@ public class EnemyBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(spawnManager.intermissionOn)
+        {
+            DeathSequence();
+        }
         if(target != null)
         {
             Vector3 tempDirection = (target.position - transform.position).normalized;
@@ -53,7 +59,8 @@ public class EnemyBehaviour : MonoBehaviour
         if (health <= 0)
         {
             rb.velocity = Vector3.zero;
-            speed = 0;
+            health = 0;
+         
             DeathSequence();
 
         }
@@ -63,14 +70,13 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (other.CompareTag("Bullet"))
         {
-            if (health <= 0)
+            if (health >= 1)
             {
-                this.gameObject.GetComponent<Collider2D>().isTrigger = false;
-                this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                TakeDamage(50);
 
             }
 
-            TakeDamage(50);
+            
             if (healthBarController != null)
             {
                 healthBarController.TakeDamage(50);
@@ -88,6 +94,7 @@ public class EnemyBehaviour : MonoBehaviour
         //play animation
         float rand = Random.Range(1, 360);
         this.gameObject.SetActive(false);
+        
         stainPrefab.GetComponent<Transform>().position = this.gameObject.transform.position;
         stainPrefab.SetActive(true);
         stainPrefab.transform.Rotate(0, 0, rand);

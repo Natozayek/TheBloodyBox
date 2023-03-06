@@ -10,8 +10,8 @@ public class StainRemover : MonoBehaviour
     private bool doOnce = false;
     [SerializeField] GameObject EnemyPrefab;
 
-    float timeElapsed;
-    float lerpDuration = 50;
+    float timeElapsed = 0;
+   [SerializeField] float lerpDuration = 29;
 
     void Update()
     {
@@ -19,17 +19,32 @@ public class StainRemover : MonoBehaviour
         
             if (SpawnManager.Instance.intermissionOn)
             {
-                       if (timeElapsed < lerpDuration)
+                      timer = timer+ Time.deltaTime;
+                       if (timer > 1.0f)
                        {
                            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, alpha);
                            alpha -= Time.deltaTime;
-                           timeElapsed += Time.deltaTime;
+                           timer = 0;
+                            lerpDuration--;
+                            
                        }
-                        else
+                        else if(lerpDuration <= 0)
                         {
-                        EnemyPrefab.GetComponent<EnemyBehaviour>().ReturnEnemy();
+
+                        lerpDuration = 20;
+                        alpha = 1;
+                        this.gameObject.SetActive(false);
+                        gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, alpha);
+                     
+                         EnemyPrefab.GetComponent<EnemyBehaviour>().ReturnEnemy();
+                
+                        
                         }      
             }
+            else
+        {
+            timeElapsed = 0;
+        }
     }
 
 

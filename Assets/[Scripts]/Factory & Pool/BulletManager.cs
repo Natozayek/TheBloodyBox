@@ -16,7 +16,6 @@ public class BulletManager : MonoBehaviour
 
     private Factory factory;
     private Queue<GameObject> playerBulletPool;
-    private Queue<GameObject> ShotgunBulletPool;
     public float angle = 0f;
 
     [Header("Projectile Settings")]
@@ -43,7 +42,6 @@ public class BulletManager : MonoBehaviour
     void Start()
     {
         playerBulletPool = new Queue<GameObject>(); // creates an empty queue container
-        ShotgunBulletPool = new Queue<GameObject>(); // creates an empty queue container
         factory = GameObject.FindObjectOfType<Factory>();
         BuildBulletPools();
     }

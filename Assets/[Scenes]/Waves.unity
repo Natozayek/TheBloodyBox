@@ -275,7 +275,7 @@ RectTransform:
   - {fileID: 880597331}
   - {fileID: 1284198329}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -427,7 +427,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7756158332005391078, guid: 9326a3fcdbab71049bda6d923dd1cb38, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7756158332005391078, guid: 9326a3fcdbab71049bda6d923dd1cb38, type: 3}
       propertyPath: m_AnchorMax.x
@@ -587,7 +587,7 @@ Transform:
   - {fileID: 1931776722}
   - {fileID: 50252540}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &301208433
 GameObject:
@@ -869,6 +869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 2918410691271083767, guid: a8a3a10f729a06b478fe88bfcaea10f2, type: 3}
   EnemyPrefab: {fileID: 6702200235774169610, guid: af67bd039755f624f9f16101bf32dbc3, type: 3}
+  bulletParent: {fileID: 1361954900}
 --- !u!4 &521419583
 Transform:
   m_ObjectHideFlags: 0
@@ -1041,7 +1042,7 @@ Transform:
   - {fileID: 2064545408}
   - {fileID: 1361954900}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &602945163
 GameObject:
@@ -2044,7 +2045,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1361954900}
   m_Layer: 0
-  m_Name: Bullets
+  m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2177,16 +2178,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a66cd9733814fd40a760cbe1d6648d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intermission: 60
+  intermission: 30
   enemyKillsCounter: 0
   waveGoal: 20
   enemyOnMap: 0
   waveNumber: 0
   intermissionOn: 0
+  enemyManager: {fileID: 0}
   enemyType: 0
+  poolCount: 0
   enemyNumber: 1
   enemyList: []
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 6702200235774169610, guid: af67bd039755f624f9f16101bf32dbc3, type: 3}
   spawnRate: 2
   isEndless: 0
   canSpawnEnemy: 1
@@ -2280,7 +2283,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1816184525
 GameObject:

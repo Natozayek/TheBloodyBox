@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -10,11 +11,14 @@ public class SpawnManager : MonoBehaviour
     public int enemyKillsCounter = 0;
     [SerializeField]public int waveGoal;
     public int enemyOnMap = 0;
-    public int waveNumber;
+    public int waveNumber = 1;
     public static SpawnManager Instance;
     public bool intermissionOn = false;
-    private EnemyManager enemyManager;
+
+    [SerializeField]private EnemyManager enemyManager;
     public EnemyType enemyType;
+    public int poolCount;
+    
 
     
     [Range(1, 100)]
@@ -33,7 +37,8 @@ public class SpawnManager : MonoBehaviour
     }
     void Start()
     {
-        waveNumber = 1;
+        
+        
         enemyManager = FindObjectOfType<EnemyManager>();
         StartCoroutine(Spawner());
     }
@@ -76,16 +81,37 @@ public class SpawnManager : MonoBehaviour
         UIManager.instance.IncreaseGoalNumber(waveGoal);
         UIManager.instance.ResetEnemiesKilled();
         UIManager.instance.IntermissionTimer.gameObject.SetActive(false);
-        intermission = 60;
+        intermission = 30;
         UIManager.instance.IntermissionTimerN = intermission;
         //Release enemies
         canSpawnEnemy = true;
         intermissionOn = false;
-        intermission = 60;
+        
 
         //Increase Enemy stats for next wave
-        enemyPrefab.GetComponent<EnemyBehaviour>().maxtHealth += enemyPrefab.GetComponent<EnemyBehaviour>().maxtHealth * 0.2f;
-        enemyPrefab.GetComponent<EnemyBehaviour>().speed += enemyPrefab.GetComponent<EnemyBehaviour>().speed * 0.2f;
+        poolCount = enemyManager.enemyPool.Count;
+        Debug.Log(poolCount);
+
+        for (int i = 0; i < poolCount; i++)
+        {
+            if (enemyManager.enemyPool.ElementAt(i).gameObject != null)
+            {
+                enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().maxtHealth += enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().maxtHealth * 0.20f; ;
+                enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().health = enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().maxtHealth;
+                enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().speed += enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().speed * 0.2f;
+               // = (int)enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().maxtHealth;
+            }
+            //Debug.Log(enemyManager.enemyPool.ElementAt(i).gameObject.CompareTag("Enemy"));// += enemyManager.enemyPool.ElementAt(i).gameObject.GetComponent<EnemyBehaviour>().maxtHealth * 0.2f;
+            //enemyManager.enemyPool.ElementAt(i).gameObject.GetComponent<EnemyBehaviour>().speed += enemyManager.enemyPool.ElementAt(i).gameObject.GetComponent<EnemyBehaviour>().speed * 0.2f;
+        }
+
+        for (int i = 0; i < poolCount; i++)
+        {
+            enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyHealthBarController>().resetHeath();
+
+        }
+
+
         StartCoroutine(Spawner());
     }
 

@@ -15,7 +15,7 @@ public class EnemyHealthBarController : MonoBehaviour
 
     void Start()
     {
-        enemyPrefab = GetComponentInParent<EnemyBehaviour>();
+       // enemyPrefab = GetComponentInParent<EnemyBehaviour>();
         healthBar = GetComponentInChildren<Slider>();
         resetHeath();
     }
@@ -23,6 +23,7 @@ public class EnemyHealthBarController : MonoBehaviour
 
     public void resetHeath()
     {
+        healthBar.maxValue = enemyPrefab.maxtHealth;
         healthBar.value = enemyPrefab.maxtHealth;
         value = (int)healthBar.value;
     }

@@ -5,18 +5,16 @@ using UnityEngine;
 [System.Serializable]
 public class Factory : MonoBehaviour
 {
-    // Bullet Prefab
+    // Objects prefabs
     public GameObject bulletPrefab;
     public GameObject EnemyPrefab;
 
-    // Sprite Textures
-    private Sprite playerBulletSprite;
 
-    // Bullet Parent
-    private Transform bulletParent;
+    // Parents
+    [SerializeField]private Transform bulletParent;
     private Transform enemyParent;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         Initialize();
@@ -24,7 +22,6 @@ public class Factory : MonoBehaviour
 
     private void Initialize()
     {
-        bulletParent = GameObject.Find("Bullets").transform;
         enemyParent = GameObject.Find("Enemy").transform;
     }
 
@@ -38,7 +35,7 @@ public class Factory : MonoBehaviour
 
     public GameObject CreateEnemy()
     {
-        GameObject enemyPrefab = Instantiate(EnemyPrefab, Vector3.zero, Quaternion.identity, bulletParent);
+        GameObject enemyPrefab = Instantiate(EnemyPrefab, Vector3.zero, Quaternion.identity, enemyParent);
         enemyPrefab.SetActive(false);
         return enemyPrefab;
     }
