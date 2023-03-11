@@ -11,7 +11,7 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Player Properties")]
     [SerializeField]private float movementSpeed;
     [SerializeField]private bool usingMobileInput = false;
-    public BulletType DesiredPattern = BulletType.SPIRAL;//TBM
+    public BulletType DesiredPattern = BulletType.SINGLE;//TBM
     public FireMode FireMode = FireMode.SINGLE;//TBM
     [SerializeField] int numberOfProjectiles = 5;
 
@@ -125,7 +125,7 @@ void Update()
     }
     #region TO BE MOVED TO A NEW SCRIPT
     private void CycleFireMode() => FireMode = ((int)FireMode < 2) ? FireMode +1 : 0;
-    private void CyclePatternsType() => DesiredPattern = ((int)DesiredPattern < 2) ? DesiredPattern + 1 : 0;
+    public void CyclePatternsType() => DesiredPattern = ((int)DesiredPattern < 2) ? DesiredPattern + 1 : 0;
     #endregion
 
     private void FixedUpdate()
@@ -159,22 +159,7 @@ void Update()
 
         switch (DesiredPattern)
         {
-            case BulletType.SPIRAL:
-                {
-                    float angleStep = 360 / numofBullet;
-                    Vector2 direction = mousePosition - rb.position;
-                    float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
-                    float angle = aimAngle;
-                   
-                    for (int i = 0; i < numofBullet; i++)
-                    {
-                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SPIRAL, 1, angle);
-                        angle += angleStep;
-                    }
-                 
-                }
-                bulletManager.angle = 0.0f;
-                break;
+         
             case BulletType.SINGLE:
                 {
                     Vector2 direction = mousePosition - rb.position;
@@ -211,6 +196,23 @@ void Update()
 
                 break;
 
+            case BulletType.SPIRAL:
+                {
+                    float angleStep = 360 / numofBullet;
+                    Vector2 direction = mousePosition - rb.position;
+                    float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+                    float angle = aimAngle;
+
+                    for (int i = 0; i < numofBullet; i++)
+                    {
+                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SPIRAL, 1, angle);
+                        angle += angleStep;
+                    }
+
+                }
+                bulletManager.angle = 0.0f;
+                break;
+
         }
 
 
@@ -241,65 +243,41 @@ void Update()
         }
     }
 
-    /*
-     * 
-     * 
-     * ﻿
-[Header("Inputs")]
-[SerializeField] private KeyCode shootkey = KeyCode.Mouse®;
-[Header("Weapon Logic")]
-[SerializeField] private FireMode fireMode = FireMode.Semi; [SerializeField] private float fireRate = 0.88f;
-[Header("Weapon Sources")]
-[SerializeField] private AudioClip shootSound = null; [SerializeField] private Animator _weaponAnimator = null;
-private float _fireTimer
-0.0f;
-private bool _shootInput = false;
+    public void increaseBulletPower()
+    {
+        Debug.Log("IncreaseBulletPower");
+    }
+    public void increaseBulletSpeed()
+    {
+        Debug.Log("increaseBulletSpeed");
+    }
+    public void increaseMAXHP()
+    {
+        Debug.Log("increaseMAXHP");
+    }
+    public void SpeedUP()
+    {
+        Debug.Log("SpeedUP");
+    }
+    public void FireRateUP()
+    {
+        Debug.Log("FireRateUP");
+    }
 
-private void Awake()
-{
-}
-_audioSource = GetComponent<AudioSource>();
-     * private bool CanShoot()
-if (_fireTimer < _fireRate) return false;
-if (_bursting) return false;
-return true;
-}
-void Update()
-switch (_fireMode)
-{
-case FireMode.Auto:
-_shootInput = Input.GetKey(_shootkey); break;
-default:
-_shootInput = Input.GetKeyDown(_shootkey); break;
-// Increase Fire Timer
-if (_fireTimer < _fireRate + 1.0f)
-_fireTimer += Time.deltaTime;
-// Shoot
-if (_shootInput)
-if (CanShoot())
-{
-// Shoot
-Shoot();
-// Reset Fire Timer
-_fireTimer = 0.0f;
-// Burst
-if (_fireMode == FireMode.Burst)
-{
-_bursting = true;
-StartCoroutine (BurstFire());
-}
-// Fire Mode
-if (Input.GetKeyDown(_cycleFireModeKey))
-CycelFireMode();
-// Shoot Weapon Logic
-private void Shoot()
-{
-_audioSource.PlayOneShot (_shootSound);
-_weaponAnimator.play("UMPFire", -1, 0);
-Debug.Log("Bang!");
-}
-     * 
-     */
+    public void ChangeBulletPattern()
+    {
+        Debug.Log("ChangeBulletPattern");
+        //  CyclePatternsType(); 
+    }
+    public void DoubleShotActive()
+    {
+        Debug.Log("DoubleShotActive");
+    }
+    public void BurstShotActive()
+    {
+        Debug.Log("BurstShotActive");
+        //   CycleFireMode();
+    }
 }
 
 

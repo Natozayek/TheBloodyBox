@@ -7,15 +7,16 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [Range(10f, 120f)]
-    [SerializeField] public float intermission = 30f;
+    [SerializeField] public float intermission = 60f;
     public int enemyKillsCounter = 0;
     [SerializeField]public int waveGoal;
     public int enemyOnMap = 0;
     public int waveNumber = 1;
     public static SpawnManager Instance;
     public bool intermissionOn = false;
+    [SerializeField]private GameObject PowerUpUI;
 
-    [SerializeField]private EnemyManager enemyManager;
+    private EnemyManager enemyManager;
     public EnemyType enemyType;
     public int poolCount;
     
@@ -53,6 +54,10 @@ public class SpawnManager : MonoBehaviour
             UIManager.instance.IntermissionTimer.gameObject.SetActive(true);
             intermission = intermission - Time.deltaTime;
 
+            if(intermission == 50)
+            {
+                PowerUpUI.gameObject.SetActive(true);
+            }
 
             if (intermission < 0f)
             {
@@ -81,7 +86,7 @@ public class SpawnManager : MonoBehaviour
         UIManager.instance.IncreaseGoalNumber(waveGoal);
         UIManager.instance.ResetEnemiesKilled();
         UIManager.instance.IntermissionTimer.gameObject.SetActive(false);
-        intermission = 30;
+        intermission = 60;
         UIManager.instance.IntermissionTimerN = intermission;
         //Release enemies
         canSpawnEnemy = true;
