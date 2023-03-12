@@ -72,7 +72,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             if (health >= 1)
             {
-                TakeDamage(50);
+                TakeDamage(BulletBehaviour.instance.damage);
 
             }
 

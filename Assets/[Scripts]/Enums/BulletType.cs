@@ -4,9 +4,10 @@ using System.Collections.Generic;
 [System.Serializable]
 public enum BulletType
 {
-    SPIRAL,
+    
     SINGLE,
     SHOTGUN,
+    SPIRAL
 }
 
 [System.Serializable]

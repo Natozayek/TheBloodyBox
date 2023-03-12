@@ -15,6 +15,7 @@ public struct ScreenBounds
 
 public class BulletBehaviour: MonoBehaviour
 {
+    static public BulletBehaviour instance;
     [Header("Bullet Properties")]
     public ScreenBounds bounds;
     public BulletType bulletType;
@@ -22,8 +23,13 @@ public class BulletBehaviour: MonoBehaviour
     public Vector3 targetPosition;
     public float speed = 5;
     private Rigidbody2D rb;
+    public float damage = 30;
 
 
+     void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();

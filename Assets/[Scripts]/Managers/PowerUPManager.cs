@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 using Random = System.Random;
 
 public class PowerUPManager : MonoBehaviour
@@ -11,18 +13,24 @@ public class PowerUPManager : MonoBehaviour
    //  [SerializeField] AudioSource itemSelected;
      [SerializeField] private SpawnManager spawnManagerReference;
      [SerializeField] private GameObject parentOjbect;
-        
+     [SerializeField] private TextMeshProUGUI nameOfPowerUP;
       public float waveRound;
-      public ItemType type;
+      public ItemType typeX;
       Random _R = new Random();
+    Sprite[] Xprites;
+    
+
+
     //Type of Power up items
     public enum ItemType
     {
             BulletPowerPlus,
             BulletSpeedPlus,
             IncreaseMaxHP,
+            IncreaseMaxStrenght,
             SPEEDUP,
             FIRERATEUP,
+
             DOUBLESHOT,
             BURSTSHOT,
             CHANGEBULLET,
@@ -34,14 +42,14 @@ public class PowerUPManager : MonoBehaviour
     {
         playerReference = FindObjectOfType<PlayerBehaviour>();
         spawnManagerReference = FindObjectOfType<SpawnManager>();
-        
-
+        Xprites = Resources.LoadAll<Sprite>("Sprites/PowerUps");
     }
+
     private void OnEnable()
     {
        waveRound = spawnManagerReference.waveNumber;
         var itemTYPE = RandomizePowerUPForDisplay();
-        type = itemTYPE;
+        typeX = itemTYPE;
     }
     private void OnDisable()
     { 
@@ -53,10 +61,10 @@ public class PowerUPManager : MonoBehaviour
 
 
     //Function to execute ability on collision with pick-up prefab
-    public  void OnItemPickUp(ItemType type)
+    public  void OnItemPickUp()
     {
-
-            switch (type)
+        var selectedType = typeX;
+            switch (selectedType)
             {
                 case ItemType.BulletPowerPlus:
                 playerReference.increaseBulletPower();
@@ -67,26 +75,35 @@ public class PowerUPManager : MonoBehaviour
             case ItemType.IncreaseMaxHP:
                 playerReference.increaseMAXHP();
                 break;
+            case ItemType.IncreaseMaxStrenght:
+                playerReference.IncreaseStrength();
+                break;
             case ItemType.SPEEDUP:
                 playerReference.SpeedUP();
                 break;
+            case ItemType.FIRERATEUP:
+                playerReference.FireRateUP();
+                break;
+
+
+                //TOP POWER UPS
 
             case ItemType.CHANGEBULLET:
                  playerReference.ChangeBulletPattern();
                 break;
 
-                case ItemType.FIRERATEUP:
-                playerReference.FireRateUP();
-                    break;
-
                 case ItemType.DOUBLESHOT:
                 playerReference.DoubleShotActive();
                     break;
             case ItemType.BURSTSHOT:
-                playerReference.BurstShotActive();
+                playerReference.SetBurstShotActive();
                 break;
 
+            case ItemType.AUTOSHOT:
+                playerReference.SetAutomaticShot();
+                break;
             }
+
            // itemSelected.Play();
             //GetComponent<SpriteRenderer>().enabled = false;
             //this.gameObject.SetActive(false);
@@ -122,40 +139,67 @@ public class PowerUPManager : MonoBehaviour
     public ItemType RandomizePowerUPForDisplay()
     {
         var type = RandomEnumValue<ItemType>();
-        SetImageType(type);
+        SetImageTypeAndText(type);
         return type;
     }
-    public void SetImageType(ItemType type)
+    public void SetImageTypeAndText(ItemType type)
     {
+
         switch (type)
         {
+            
 
             case ItemType.BulletPowerPlus:
-                this.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Achivement");
-                break;
-            case ItemType.BulletSpeedPlus:
-                this.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Achivement");
-                break;
-            case ItemType.IncreaseMaxHP:
-                this.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Achivement");
-                break;
-            case ItemType.SPEEDUP:
-                this.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Achivement");
+
+                this.gameObject.GetComponent<Image>().sprite = Xprites[11];
+                nameOfPowerUP.text = "Radioactive Touch: \n Increases the Projectile damage. ";
                 break;
 
-            case ItemType.CHANGEBULLET:
-                this.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Achivement");
+            case ItemType.BulletSpeedPlus:
+
+                this.gameObject.GetComponent<Image>().sprite = Xprites[4];
+                nameOfPowerUP.text = "Extended Momentum: \n Increase the Projectile speed.";
+                break;
+
+            case ItemType.IncreaseMaxHP:
+                this.gameObject.GetComponent<Image>().sprite = Xprites[12];
+                nameOfPowerUP.text = "Self-Sustenance: \n Increases Player's Max HP  \n Restores HP. ";
+                break;
+
+            case ItemType.IncreaseMaxStrenght:
+                this.gameObject.GetComponent<Image>().sprite = Xprites[3];
+                nameOfPowerUP.text = "Immunity: \n Increases Player's Max Strength. ";
+                break;
+
+            case ItemType.SPEEDUP:
+                this.gameObject.GetComponent<Image>().sprite = Xprites[0];
+                nameOfPowerUP.text = "Accelerated Evolution: \n Increases Player's Max Speed. \n ";
                 break;
 
             case ItemType.FIRERATEUP:
-                this.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Achivement");
+                this.gameObject.GetComponent<Image>().sprite = Xprites[13];
+                nameOfPowerUP.text = "Trigger happy: \n Increased fire rate. ";
                 break;
 
+            case ItemType.CHANGEBULLET:
+                this.gameObject.GetComponent<Image>().sprite = Xprites[2];
+                nameOfPowerUP.text = "Enhanced bullet: \n Gives the player a new projectile pattern.  ";
+                break;
+
+          
+
             case ItemType.DOUBLESHOT:
-                this.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Achivement");
+                this.gameObject.GetComponent<Image>().sprite = Xprites[1];
+                nameOfPowerUP.text = "Double powered: \n Shoot extra bullet. ";
                 break;
             case ItemType.BURSTSHOT:
-                this.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Achivement");
+                this.gameObject.GetComponent<Image>().sprite = Xprites[5];
+                nameOfPowerUP.text = "The Three Musketeers: \n Activate burst shot mode. ";
+                break;
+
+            case ItemType.AUTOSHOT:
+                this.gameObject.GetComponent<Image>().sprite = Xprites[14];
+                nameOfPowerUP.text = "Unstoppable: \n Activate Automatic shot mode. ";
                 break;
         }
 

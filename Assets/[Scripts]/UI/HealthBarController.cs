@@ -8,22 +8,24 @@ public class HealthBarController : MonoBehaviour
 {
     [Header("Health properties")] 
     public int value;
-
-    
+    public int InitialHealth = 100;
+    public int MaxHealth;
 
     [Header("Display properties")] 
     public Slider healthBar;
 
+
     void Start()
     {
+        MaxHealth = InitialHealth;
         healthBar = GetComponentInChildren<Slider>();
-        resetHeath();
+        SetHealth();
     }
 
 
-    public void resetHeath()
+    public void SetHealth()
     {
-        healthBar.value = 100;
+        healthBar.value = InitialHealth;
         value = (int)healthBar.value;
     }
 
@@ -43,14 +45,20 @@ public class HealthBarController : MonoBehaviour
     {
         healthBar.value += healingAmount;
 
-        if (healthBar.value >100)
+        if (healthBar.value > MaxHealth)
         {
-            healthBar.value = 100;
+            healthBar.value = MaxHealth;
         }
 
         value = (int)healthBar.value;
     }
 
+    public void IncreasMaxHP()
+    {
+        
+        healthBar.value = MaxHealth * 1.2f;
+        value = (int)healthBar.value;
+    }
  
 }
 

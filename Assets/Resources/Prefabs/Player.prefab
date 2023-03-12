@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2514646654358342689}
   - component: {fileID: 1554678682838913807}
   - component: {fileID: 5305443494335582490}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -151,7 +151,8 @@ MonoBehaviour:
   usingMobileInput: 0
   DesiredPattern: 0
   FireMode: 0
-  numberOfProjectiles: 20
+  numberOfProjectiles: 5
+  health: {fileID: 0}
   _fireRate: 0.2
   shootkey: 32
   cycleFireMode: 113
@@ -166,7 +167,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2514646656023766842}
   - component: {fileID: 2514646656023766843}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: firePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

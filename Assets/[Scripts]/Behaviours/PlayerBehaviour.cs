@@ -40,6 +40,7 @@ public class PlayerBehaviour : MonoBehaviour
     //private AudioSource _audioSource = null;
     private Rigidbody2D rb;
     private Camera camera;
+    [SerializeField] BulletBehaviour[] bullets;
 
     void Start()
     {
@@ -49,6 +50,8 @@ public class PlayerBehaviour : MonoBehaviour
         bulletSpawnPoint = GameObject.Find("firePoint").transform;
         rb = GetComponent<Rigidbody2D>();
         _fireRate = 0.25f;// TBM
+
+        bullets = FindObjectsOfType<BulletBehaviour>();
 
    
         
@@ -245,15 +248,15 @@ void Update()
 
     public void increaseBulletPower()
     {
-        Debug.Log("IncreaseBulletPower");
+        BulletBehaviour.instance.damage = BulletBehaviour.instance.damage * 1.02f;
     }
     public void increaseBulletSpeed()
     {
-        Debug.Log("increaseBulletSpeed");
+        BulletBehaviour.instance.speed += 0.25f;
     }
     public void increaseMAXHP()
     {
-        Debug.Log("increaseMAXHP");
+        health.IncreasMaxHP();
     }
     public void SpeedUP()
     {
@@ -273,10 +276,20 @@ void Update()
     {
         Debug.Log("DoubleShotActive");
     }
-    public void BurstShotActive()
+    public void SetBurstShotActive()
     {
         Debug.Log("BurstShotActive");
         //   CycleFireMode();
+    }
+    public void IncreaseStrength()
+    {
+        Debug.Log("IncreaseStrength");
+        //   CycleFireMode();
+    }
+
+    public void SetAutomaticShot()
+    {
+        Debug.Log("SetAutomaticShot");
     }
 }
 
