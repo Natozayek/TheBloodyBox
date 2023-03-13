@@ -35,7 +35,8 @@ public class BulletManager : MonoBehaviour
 
     [Header("Private Variables")]
     private Vector3 startPoint;                 
-    private const float radius = 1f;   
+    private const float radius = 1f;
+    Sprite[] Xprites;
 
 
     // Start is called before the first frame update
@@ -44,6 +45,7 @@ public class BulletManager : MonoBehaviour
         playerBulletPool = new Queue<GameObject>(); // creates an empty queue container
         factory = GameObject.FindObjectOfType<Factory>();
         BuildBulletPools();
+        Xprites = Resources.LoadAll<Sprite>("Sprites/Bullets");
     }
     void BuildBulletPools()
     {
@@ -116,15 +118,27 @@ public class BulletManager : MonoBehaviour
                 switch (type)
                 {
                     case BulletType.SPIRAL:
-                        threeSixtyAngleShoot(startPosition, bullet, angle);
+                        bullet.GetComponent<SpriteRenderer>().sprite = Xprites[3];
+                        bullet.GetComponent<SpriteRenderer>().color =  Color.white;
+                        bullet.GetComponent<Transform>().localScale = new Vector3(1,0.5f, 1);
+
+                threeSixtyAngleShoot(startPosition, bullet, angle);
                         break;
 
-                    case BulletType.SINGLE:                   
-                        AimShoot(bullet, angle);
-                        break;
+                    case BulletType.SINGLE:
+                bullet.GetComponent<SpriteRenderer>().sprite = Xprites[2];
+                bullet.GetComponent<SpriteRenderer>().color = Color.white;
+                bullet.GetComponent<Transform>().localScale = new Vector3(1, 0.5f, 1);
+
+                AimShoot(bullet, angle);
+                
+                break;
 
                     case BulletType.SHOTGUN:
-                       SpreadShot(targetPos, bullet, angle);
+                bullet.GetComponent<SpriteRenderer>().sprite = Xprites[1];
+                bullet.GetComponent<SpriteRenderer>().color = Color.white;
+                bullet.GetComponent<Transform>().localScale = new Vector3(1, 1, 1);
+                SpreadShot(targetPos, bullet, angle);
                         break;
 
                 }

@@ -25,11 +25,13 @@ public class PlayerBehaviour : MonoBehaviour
 
     [Header("Bullet Properties")]
     public float _fireRate;
+    private float _autoFireRate = 0.1f;
+    private float _customFireRate = 1.0f;
 
     [Header("Inputs")]
     [SerializeField] private KeyCode shootkey = KeyCode.Space;
-    [SerializeField] private KeyCode cycleFireMode = KeyCode.Q;
-    [SerializeField] private KeyCode  cyclePatterMode = KeyCode.E;
+    //[SerializeField] private KeyCode cycleFireMode = KeyCode.Q;
+    //[SerializeField] private KeyCode  cyclePatterMode = KeyCode.E;
 
 
     [Header("Private Variables")]
@@ -53,7 +55,7 @@ public class PlayerBehaviour : MonoBehaviour
         health = FindObjectOfType<HealthBarController>().GetComponent<HealthBarController>();
         bulletSpawnPoint = GameObject.Find("firePoint").transform;
         rb = GetComponent<Rigidbody2D>();
-        _fireRate = 0.15f;
+       // _fireRate = 0.15f;
         camera = Camera.main;
 
 
@@ -63,9 +65,28 @@ public class PlayerBehaviour : MonoBehaviour
     }
     private bool CanShoot()//TBM
     {
-        if (_fireTimer < _fireRate) return false;
-        if (_bursting) return false;
-        return true;
+        if (_fireTimer < _fireRate)
+        { return false;
+            Debug.Log("Cant fire");
+        }
+
+       else if (_bursting)
+        {
+            Debug.Log("Cant fire");
+            return false;
+        }
+        else if(_fireTimer > _fireRate)
+        {
+            Debug.Log("Can fire");
+            return true;
+        }
+        else
+        {
+            Debug.Log("Cant fire");
+            return false;
+        }
+        
+        
     }
 
 void Update()
@@ -91,13 +112,23 @@ void Update()
                 break;
         }
 
+        if(FireMode == FireMode.AUTO)
+        {
+            _fireRate = _autoFireRate;
+        }
+        if(FireMode == FireMode.SINGLE)
+        {
+            _fireRate = _customFireRate;
+        }
+        
+       
         // Increase Fire Timer - TBM
-        if (_fireTimer < _fireRate + 1.0f)
+        if (_fireTimer < _fireRate + 1f)
             _fireTimer += Time.deltaTime;
 
         if (_PressingShootKey)
         {
-            if(CanShoot())
+            if(CanShoot() == true && FireMode != FireMode.AUTO || CanShoot() == true && FireMode == FireMode.AUTO)
             {
                 if(DoubleShootOn)
                 {
@@ -118,18 +149,14 @@ void Update()
                     StartCoroutine(BurstShot());
                 }
             }
+            else
+            {
+                Debug.Log("CantShoot");
+            }
             
         }
 
-        // to be moved
-        if(Input.GetKeyDown(cycleFireMode))
-        {
-            CycleFireMode();
-        }
-        if (Input.GetKeyDown(cyclePatterMode))
-        {
-            CyclePatternsType();
-        }
+
 
 
     }
@@ -234,11 +261,11 @@ void Update()
     }
     private IEnumerator BurstShot()
     {
-        yield return new WaitForSeconds(_fireRate);
+        yield return new WaitForSeconds(_fireRate - 0.5f);
         Fire();
-        yield return new WaitForSeconds(_fireRate);
+        yield return new WaitForSeconds(_fireRate -0.5f);
         Fire();
-        yield return new WaitForSeconds(_fireRate);
+        yield return new WaitForSeconds(_fireRate - 0.5f);
         _bursting = false;
     }
     #endregion
@@ -294,7 +321,7 @@ void Update()
     }
     public void FireRateUP()
     {
-        _fireRate += 0.25f;
+        _customFireRate -= 0.1f;
     }
 
     public void ChangeBulletPattern()
