@@ -17,7 +17,7 @@ public class PowerUPManager : MonoBehaviour
       public float waveRound;
       public ItemType typeX;
       Random _R = new Random();
-    Sprite[] Xprites;
+      Sprite[] Xprites;
     
 
 
@@ -68,21 +68,27 @@ public class PowerUPManager : MonoBehaviour
             {
                 case ItemType.BulletPowerPlus:
                 playerReference.increaseBulletPower();
+                parentOjbect.SetActive(false);
                     break;
             case ItemType.BulletSpeedPlus:
                 playerReference.increaseBulletSpeed();
+                parentOjbect.SetActive(false);
                 break;
             case ItemType.IncreaseMaxHP:
                 playerReference.increaseMAXHP();
+                parentOjbect.SetActive(false);
                 break;
             case ItemType.IncreaseMaxStrenght:
                 playerReference.IncreaseStrength();
+                parentOjbect.SetActive(false);
                 break;
             case ItemType.SPEEDUP:
                 playerReference.SpeedUP();
+                parentOjbect.SetActive(false);
                 break;
             case ItemType.FIRERATEUP:
                 playerReference.FireRateUP();
+                parentOjbect.SetActive(false);
                 break;
 
 
@@ -90,17 +96,21 @@ public class PowerUPManager : MonoBehaviour
 
             case ItemType.CHANGEBULLET:
                  playerReference.ChangeBulletPattern();
+                parentOjbect.SetActive(false);
                 break;
 
                 case ItemType.DOUBLESHOT:
                 playerReference.DoubleShotActive();
-                    break;
+                parentOjbect.SetActive(false);
+                break;
             case ItemType.BURSTSHOT:
                 playerReference.SetBurstShotActive();
+                parentOjbect.SetActive(false);
                 break;
 
             case ItemType.AUTOSHOT:
                 playerReference.SetAutomaticShot();
+                parentOjbect.SetActive(false);
                 break;
             }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -10,17 +11,20 @@ public class PlayerBehaviour : MonoBehaviour
 {
     [Header("Player Properties")]
     [SerializeField]private float movementSpeed;
+    [Range(0f, 0.5f)]
+    [SerializeField] private float maxStregth;
     [SerializeField]private bool usingMobileInput = false;
     public BulletType DesiredPattern = BulletType.SINGLE;//TBM
     public FireMode FireMode = FireMode.SINGLE;//TBM
     [SerializeField] int numberOfProjectiles = 5;
+    
 
     [Header("HealthSystem")]
     public HealthBarController health;
 
 
-    [Header("Bullet Properties")] 
-    public float _fireRate = 0.2f;
+    [Header("Bullet Properties")]
+    public float _fireRate;
 
     [Header("Inputs")]
     [SerializeField] private KeyCode shootkey = KeyCode.Space;
@@ -29,18 +33,18 @@ public class PlayerBehaviour : MonoBehaviour
 
 
     [Header("Private Variables")]
-    private Transform bulletSpawnPoint;//TBM
+    private Transform bulletSpawnPoint;
     private float _fireTimer = 0.0f;
-    private Vector2 mousePosition;         // Helps us to aim                                      \\
+    private Vector2 mousePosition;         // Helps us to aim 
     private Vector2 movementDirection;
-    private bool _bursting = false;//TBM
-    private bool _PressingShootKey = false;//TBM
+    private bool _bursting = false;
+    private bool _PressingShootKey = false;
     // private ScoreManager scoreManager;
-    private BulletManager bulletManager;//TBM
+    private BulletManager bulletManager;
     //private AudioSource _audioSource = null;
     private Rigidbody2D rb;
     private Camera camera;
-    [SerializeField] BulletBehaviour[] bullets;
+    [SerializeField]private bool DoubleShootOn = false;
 
     void Start()
     {
@@ -49,13 +53,9 @@ public class PlayerBehaviour : MonoBehaviour
         health = FindObjectOfType<HealthBarController>().GetComponent<HealthBarController>();
         bulletSpawnPoint = GameObject.Find("firePoint").transform;
         rb = GetComponent<Rigidbody2D>();
-        _fireRate = 0.25f;// TBM
-
-        bullets = FindObjectsOfType<BulletBehaviour>();
-
-   
-        
+        _fireRate = 0.15f;
         camera = Camera.main;
+
 
         // Platform Detection for input
         usingMobileInput = Application.platform == RuntimePlatform.Android ||
@@ -68,8 +68,6 @@ public class PlayerBehaviour : MonoBehaviour
         return true;
     }
 
-
-// Update is called once per frame
 void Update()
   {
         if (usingMobileInput)
@@ -101,7 +99,16 @@ void Update()
         {
             if(CanShoot())
             {
-                Fire();
+                if(DoubleShootOn)
+                {
+                    Fire();
+                    StartCoroutine(DoubleShotOn());
+                }
+                else
+                {
+                    Fire();
+                }
+     
 
                 _fireTimer = 0.0f;
 
@@ -220,6 +227,11 @@ void Update()
 
 
     }
+    private IEnumerator DoubleShotOn()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Fire();
+    }
     private IEnumerator BurstShot()
     {
         yield return new WaitForSeconds(_fireRate);
@@ -235,24 +247,42 @@ void Update()
 
         if (other.gameObject.CompareTag("Enemy"))
         {
-            health.TakeDamage(1);
+            health.TakeDamage(1.0f - maxStregth);
+            //TODO: Play the hurt sound
             if (health.value <= 0)
             {
-                SceneManager.LoadScene("Waves");
-                //soundManager.PlaySoundFX(SoundFX.HURT, SoundChannel.PLAYER_HURT_FX);
-
-                //TODO: Play the hurt sound
+                //Set active Game over Menu, Give restart or return to main options
+               
             }
         }
     }
 
     public void increaseBulletPower()
     {
-        BulletBehaviour.instance.damage = BulletBehaviour.instance.damage * 1.02f;
+
+            
+        for (int i = 0; i < bulletManager.playerBulletPool.Count; i++)
+        {
+            if (bulletManager.playerBulletPool.ElementAt(i).gameObject != null)
+            {
+                bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().damage += bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().damage * 0.15f;
+
+              
+
+            }
+        }
     }
     public void increaseBulletSpeed()
     {
-        BulletBehaviour.instance.speed += 0.25f;
+        for (int i = 0; i < bulletManager.playerBulletPool.Count; i++)
+        {
+            if (bulletManager.playerBulletPool.ElementAt(i).gameObject != null)
+            {
+                bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().speed += bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().speed * 0.05f;
+
+                Debug.Log(bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().speed);
+            }
+        }
     }
     public void increaseMAXHP()
     {
@@ -260,36 +290,52 @@ void Update()
     }
     public void SpeedUP()
     {
-        Debug.Log("SpeedUP");
+        movementSpeed += movementSpeed * 0.1f;
     }
     public void FireRateUP()
     {
-        Debug.Log("FireRateUP");
+        _fireRate += 0.25f;
     }
 
     public void ChangeBulletPattern()
     {
-        Debug.Log("ChangeBulletPattern");
-        //  CyclePatternsType(); 
+          if (DesiredPattern == BulletType.SINGLE)
+          {
+            CyclePatternsType();
+            return;
+          }
+          if (DesiredPattern == BulletType.SHOTGUN)
+        {
+            CyclePatternsType();
+            return;
+        }
+        if (DesiredPattern == BulletType.SPIRAL)
+        {
+            return ;
+        }
     }
     public void DoubleShotActive()
     {
-        Debug.Log("DoubleShotActive");
+        if (!DoubleShootOn)
+        {
+            DoubleShootOn = true;
+        }
     }
     public void SetBurstShotActive()
     {
-        Debug.Log("BurstShotActive");
-        //   CycleFireMode();
+        FireMode = FireMode.BURST;
     }
     public void IncreaseStrength()
     {
-        Debug.Log("IncreaseStrength");
-        //   CycleFireMode();
+        if(maxStregth < 0.5f)
+        {
+            maxStregth += 0.1f;
+        }
     }
 
     public void SetAutomaticShot()
     {
-        Debug.Log("SetAutomaticShot");
+        FireMode = FireMode.AUTO;
     }
 }
 

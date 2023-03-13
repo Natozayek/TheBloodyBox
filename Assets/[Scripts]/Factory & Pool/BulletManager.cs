@@ -15,7 +15,7 @@ public class BulletManager : MonoBehaviour
     public int activePlayerBullets = 0;
 
     private Factory factory;
-    private Queue<GameObject> playerBulletPool;
+    public Queue<GameObject> playerBulletPool;
     public float angle = 0f;
 
     [Header("Projectile Settings")]

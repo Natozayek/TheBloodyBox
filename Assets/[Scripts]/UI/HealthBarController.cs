@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class HealthBarController : MonoBehaviour
 {
     [Header("Health properties")] 
-    public int value;
-    public int InitialHealth = 100;
-    public int MaxHealth;
+    public float value;
+    public float InitialHealth = 100;
+    public float MaxHealth;
 
     [Header("Display properties")] 
     public Slider healthBar;
@@ -29,7 +29,7 @@ public class HealthBarController : MonoBehaviour
         value = (int)healthBar.value;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         healthBar.value -= damage;
 
@@ -41,7 +41,7 @@ public class HealthBarController : MonoBehaviour
         value = (int)healthBar.value;
     }
 
-    public void HealPlayer(int healingAmount)
+    public void HealPlayer(float healingAmount)
     {
         healthBar.value += healingAmount;
 
