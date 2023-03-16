@@ -25,12 +25,12 @@ public class SpawnManager : MonoBehaviour
     [Range(1, 100)]
     public int enemyNumber = 1;
 
-    [SerializeField]private List<GameObject> enemyList;
     [SerializeField]public GameObject enemyPrefab;
     [SerializeField] private float spawnRate = 2f;
     [SerializeField] public bool isEndless = false;
     [SerializeField] private bool canSpawnEnemy = true;
     [SerializeField] private Transform[] spawnLocations;
+    [SerializeField]public bool isPowerUpSelected = false;
 
     private void Awake()
     {
@@ -54,7 +54,7 @@ public class SpawnManager : MonoBehaviour
             UIManager.instance.IntermissionTimer.gameObject.SetActive(true);
             intermission = intermission - Time.deltaTime;
 
-            if(intermission == 50)
+            if(intermission <= 41 && !isPowerUpSelected)
             {
                 PowerUpUI.gameObject.SetActive(true);
             }
@@ -88,6 +88,7 @@ public class SpawnManager : MonoBehaviour
         UIManager.instance.IntermissionTimer.gameObject.SetActive(false);
         intermission = 60;
         UIManager.instance.IntermissionTimerN = intermission;
+        isPowerUpSelected = false;
         //Release enemies
         canSpawnEnemy = true;
         intermissionOn = false;

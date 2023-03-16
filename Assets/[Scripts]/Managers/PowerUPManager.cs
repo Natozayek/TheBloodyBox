@@ -68,26 +68,38 @@ public class PowerUPManager : MonoBehaviour
             {
                 case ItemType.BulletPowerPlus:
                 playerReference.increaseBulletPower();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                     break;
             case ItemType.BulletSpeedPlus:
                 playerReference.increaseBulletSpeed();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
             case ItemType.IncreaseMaxHP:
                 playerReference.increaseMAXHP();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
             case ItemType.IncreaseMaxStrenght:
                 playerReference.IncreaseStrength();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
             case ItemType.SPEEDUP:
                 playerReference.SpeedUP();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
             case ItemType.FIRERATEUP:
                 playerReference.FireRateUP();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
 
@@ -95,21 +107,28 @@ public class PowerUPManager : MonoBehaviour
                 //TOP POWER UPS
 
             case ItemType.CHANGEBULLET:
-                 playerReference.ChangeBulletPattern();
+                playerReference.ChangeBulletPattern();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
 
                 case ItemType.DOUBLESHOT:
                 playerReference.DoubleShotActive();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
             case ItemType.BURSTSHOT:
                 playerReference.SetBurstShotActive();
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
 
             case ItemType.AUTOSHOT:
                 playerReference.SetAutomaticShot();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
             }

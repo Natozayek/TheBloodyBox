@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -37,6 +38,7 @@ public class BulletManager : MonoBehaviour
     private Vector3 startPoint;                 
     private const float radius = 1f;
     Sprite[] Xprites;
+    [SerializeField] private AI_Level_Manager levelManager;
 
 
     // Start is called before the first frame update
@@ -44,6 +46,7 @@ public class BulletManager : MonoBehaviour
     {
         playerBulletPool = new Queue<GameObject>(); // creates an empty queue container
         factory = GameObject.FindObjectOfType<Factory>();
+        levelManager = FindObjectOfType<AI_Level_Manager>();
         BuildBulletPools();
         Xprites = Resources.LoadAll<Sprite>("Sprites/Bullets");
     }
@@ -52,6 +55,7 @@ public class BulletManager : MonoBehaviour
         for (int i = 0; i < playerBulletNumber; i++)
         {
             playerBulletPool.Enqueue(factory.CreateBullet());
+           
              
         }
         playerBulletCount = playerBulletPool.Count;
@@ -113,6 +117,7 @@ public class BulletManager : MonoBehaviour
                 }
                
                 bullet.SetActive(true);
+                //levelManager.ListOfBullets.Add(bullet.GetComponent<BulletBehaviour>());
                 bullet.transform.position = startPosition;
 
                 switch (type)
@@ -150,6 +155,7 @@ public class BulletManager : MonoBehaviour
     public void ReturnBullet(GameObject bullet, BulletType type)
      {
         bullet.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        //levelManager.ListOfBullets.Remove(bullet.GetComponent<BulletBehaviour>());
         bullet.SetActive(false);
 
             switch (type)

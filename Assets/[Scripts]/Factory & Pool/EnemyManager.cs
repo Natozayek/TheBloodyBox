@@ -10,16 +10,16 @@ public class EnemyManager : MonoBehaviour
     public int numberOfEnemies = 100;
     public int enemyCount = 0;
     public int ActiveEnemies = 0;
-
     private Factory factory;
-   
+    [SerializeField] private AI_Level_Manager levelManager;
 
     [Header("Private Variables")]
     private Vector3 startPoint;
 
     void Start()
     {
-        //enemyPool = new Queue<GameObject>(); // creates an empty queue container
+
+        levelManager = FindObjectOfType<AI_Level_Manager>();
         factory = GameObject.FindObjectOfType<Factory>();
         BuildEnemyPool();
     }
@@ -79,6 +79,7 @@ public class EnemyManager : MonoBehaviour
         }
 
         enemy.SetActive(true);
+       // levelManager.ListOfEnemies.Add(enemy.GetComponent<EnemyBehaviour>());
         enemy.transform.position = startPosition;
         return enemy;
         //switch (type)
@@ -104,6 +105,7 @@ public class EnemyManager : MonoBehaviour
     public void ReturnEnemy(GameObject enemy, EnemyType type)
     {
         enemy.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        //levelManager.ListOfEnemies.Remove(enemy.GetComponent<EnemyBehaviour>());
         enemy.SetActive(false);
 
         switch (type)

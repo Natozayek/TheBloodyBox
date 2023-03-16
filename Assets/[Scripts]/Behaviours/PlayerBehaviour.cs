@@ -24,15 +24,12 @@ public class PlayerBehaviour : MonoBehaviour
 
 
     [Header("Bullet Properties")]
-    public float _fireRate;
+    [SerializeField] private float _fireRate;
     private float _autoFireRate = 0.1f;
     private float _customFireRate = 1.0f;
 
     [Header("Inputs")]
     [SerializeField] private KeyCode shootkey = KeyCode.Space;
-    //[SerializeField] private KeyCode cycleFireMode = KeyCode.Q;
-    //[SerializeField] private KeyCode  cyclePatterMode = KeyCode.E;
-
 
     [Header("Private Variables")]
     private Transform bulletSpawnPoint;
@@ -41,21 +38,20 @@ public class PlayerBehaviour : MonoBehaviour
     private Vector2 movementDirection;
     private bool _bursting = false;
     private bool _PressingShootKey = false;
-    // private ScoreManager scoreManager;
     private BulletManager bulletManager;
-    //private AudioSource _audioSource = null;
     private Rigidbody2D rb;
     private Camera camera;
-    [SerializeField]private bool DoubleShootOn = false;
+    private bool DoubleShootOn = false;
+
+    [SerializeField] private KeyCode cycleFireMode = KeyCode.Q;
+    [SerializeField] private KeyCode  cyclePatterMode = KeyCode.E;
 
     void Start()
     {
         bulletManager = FindObjectOfType<BulletManager>();
-        // scoreManager = FindObjectOfType<ScoreManager>();
         health = FindObjectOfType<HealthBarController>().GetComponent<HealthBarController>();
         bulletSpawnPoint = GameObject.Find("firePoint").transform;
         rb = GetComponent<Rigidbody2D>();
-       // _fireRate = 0.15f;
         camera = Camera.main;
 
 
@@ -63,30 +59,15 @@ public class PlayerBehaviour : MonoBehaviour
         usingMobileInput = Application.platform == RuntimePlatform.Android ||
                            Application.platform == RuntimePlatform.IPhonePlayer;
     }
-    private bool CanShoot()//TBM
+    private bool CanShoot()
     {
-        if (_fireTimer < _fireRate)
-        { return false;
-            Debug.Log("Cant fire");
-        }
-
-       else if (_bursting)
-        {
-            Debug.Log("Cant fire");
-            return false;
-        }
-        else if(_fireTimer > _fireRate)
-        {
-            Debug.Log("Can fire");
-            return true;
-        }
+        if (_fireTimer < _fireRate) { return false;}
+        else if (_bursting) { return false;}
+        else if(_fireTimer > _fireRate) { return true;}
         else
         {
-            Debug.Log("Cant fire");
             return false;
         }
-        
-        
     }
 
 void Update()
@@ -123,7 +104,7 @@ void Update()
         
        
         // Increase Fire Timer - TBM
-        if (_fireTimer < _fireRate + 1f)
+        if (_fireTimer < _fireRate + 0.5f)
             _fireTimer += Time.deltaTime;
 
         if (_PressingShootKey)
@@ -151,14 +132,20 @@ void Update()
             }
             else
             {
-                Debug.Log("CantShoot");
+                //Do nothing
             }
             
         }
 
-
-
-
+        // to be moved
+        if (Input.GetKeyDown(cycleFireMode))
+        {
+            CycleFireMode();
+        }
+        if (Input.GetKeyDown(cyclePatterMode))
+        {
+            CyclePatternsType();
+        }
     }
     #region TO BE MOVED TO A NEW SCRIPT
     private void CycleFireMode() => FireMode = ((int)FireMode < 2) ? FireMode +1 : 0;
@@ -172,17 +159,17 @@ void Update()
         float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
         rb.rotation = aimAngle;// 
     }
-    public void MobileInput()
+    public void MobileInput() //REWORK MOBILE INPUT ADD JOYSTICK
     {
         foreach (var touch in Input.touches)
         {
             var destination = camera.ScreenToWorldPoint(touch.position);
-            transform.position = Vector2.Lerp(transform.position, destination, Time.deltaTime * movementSpeed);
+            //transform.position = Vector2.Lerp(transform.position, destination, Time.deltaTime * movementSpeed);
         }
     }
     public void ConventionalInput()
     {
-        movementDirection.x = Input.GetAxisRaw("Horizontal");
+        movementDirection.x = Input.GetAxisRaw("Horizontal"); // CHANGE FOR JOYSTICK.HORIZONTAL
         movementDirection.y = Input.GetAxisRaw("Vertical");
         
     }
@@ -261,11 +248,11 @@ void Update()
     }
     private IEnumerator BurstShot()
     {
-        yield return new WaitForSeconds(_fireRate - 0.5f);
+        yield return new WaitForSeconds(_fireRate - 0.8f);
         Fire();
-        yield return new WaitForSeconds(_fireRate -0.5f);
+        yield return new WaitForSeconds(_fireRate -0.8f);
         Fire();
-        yield return new WaitForSeconds(_fireRate - 0.5f);
+        yield return new WaitForSeconds(_fireRate - 0.8f);
         _bursting = false;
     }
     #endregion

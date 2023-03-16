@@ -13,7 +13,7 @@ public struct ScreenBounds
 
 
 
-public class BulletBehaviour: MonoBehaviour
+public class BulletBehaviour : MonoBehaviour
 {
     static public BulletBehaviour instance;
     [Header("Bullet Properties")]
@@ -25,10 +25,21 @@ public class BulletBehaviour: MonoBehaviour
     private Rigidbody2D rb;
     public float damage = 30;
 
-
-     void Awake()
+    public AI_Level_Manager _LevelController;
+    void Awake()
     {
         instance = this;
+        _LevelController = FindObjectOfType<AI_Level_Manager>();
+    }
+    private void OnEnable()
+    {
+       
+        _LevelController.ListOfBullets.Add(this.gameObject.GetComponent<BulletBehaviour>());
+        
+    }
+    private void OnDisable()
+    {
+        _LevelController.ListOfBullets.Remove(this.gameObject.GetComponent<BulletBehaviour>());
     }
     void Start()
     {

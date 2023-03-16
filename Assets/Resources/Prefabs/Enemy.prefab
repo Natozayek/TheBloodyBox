@@ -161,7 +161,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 1, g: 0.696386, b: 0, a: 1}
   m_FlipX: 0
@@ -232,7 +232,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aedb886eba4c12f41a5ab0eff94ad121, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stainPrefab: {fileID: 2388902188081135715, guid: 1d6579e1fa950aa49b93ae86c27d38c2, type: 3}
+  position: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  acceleration: {x: 0, y: 0, z: 0}
+  DetectionRadius: 3
+  _LevelController: {fileID: 0}
+  _Controller: {fileID: 0}
+  enemType: 0
+  stainPrefab: {fileID: 0}
   healthBarController: {fileID: 8315522597871324645}
   health: 0
   maxtHealth: 100

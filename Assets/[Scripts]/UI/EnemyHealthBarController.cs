@@ -28,7 +28,7 @@ public class EnemyHealthBarController : MonoBehaviour
         value = (int)healthBar.value;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         healthBar.value -= damage;
 
@@ -40,7 +40,7 @@ public class EnemyHealthBarController : MonoBehaviour
         value = (int)healthBar.value;
     }
 
-    public void HealPlayer(int healingAmount)
+    public void HealPlayer(float healingAmount)
     {
         healthBar.value += healingAmount;
 

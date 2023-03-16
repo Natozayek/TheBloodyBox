@@ -55,8 +55,11 @@ public class HealthBarController : MonoBehaviour
 
     public void IncreasMaxHP()
     {
-        
+        healthBar.maxValue = MaxHealth * 1.2f;
+        MaxHealth = MaxHealth * 1.2f;
+        InitialHealth = MaxHealth;
         healthBar.value = MaxHealth * 1.2f;
+
         value = (int)healthBar.value;
     }
  

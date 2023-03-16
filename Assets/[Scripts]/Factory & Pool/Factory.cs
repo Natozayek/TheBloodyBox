@@ -12,7 +12,8 @@ public class Factory : MonoBehaviour
 
     // Parents
     [SerializeField]private Transform bulletParent;
-    private Transform enemyParent;
+    [SerializeField]private Transform enemyParent;
+
 
 
     void Start()
@@ -23,6 +24,8 @@ public class Factory : MonoBehaviour
     private void Initialize()
     {
         enemyParent = GameObject.Find("Enemy").transform;
+        bulletParent = GameObject.Find("Bullet").transform;
+      
     }
 
     public GameObject CreateBullet()
