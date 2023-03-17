@@ -10,14 +10,14 @@ using UnityEngine.UIElements;
 public class PlayerBehaviour : MonoBehaviour
 {
     [Header("Player Properties")]
-    [SerializeField]private float movementSpeed;
+    [SerializeField]public float movementSpeed;
     [Range(0f, 0.5f)]
     [SerializeField] private float maxStregth;
     [SerializeField]private bool usingMobileInput = false;
     public BulletType DesiredPattern = BulletType.SINGLE;//TBM
     public FireMode FireMode = FireMode.SINGLE;//TBM
     [SerializeField] int numberOfProjectiles = 5;
-    
+    public bool isMoving = false;
 
     [Header("HealthSystem")]
     public HealthBarController health;
@@ -35,11 +35,11 @@ public class PlayerBehaviour : MonoBehaviour
     private Transform bulletSpawnPoint;
     private float _fireTimer = 0.0f;
     private Vector2 mousePosition;         // Helps us to aim 
-    private Vector2 movementDirection;
+    public Vector2 movementDirection;
     private bool _bursting = false;
     private bool _PressingShootKey = false;
     private BulletManager bulletManager;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     private Camera camera;
     private bool DoubleShootOn = false;
 
@@ -72,6 +72,19 @@ public class PlayerBehaviour : MonoBehaviour
 
 void Update()
   {
+        if (movementDirection.x == 1 || movementDirection.y == 1 || movementDirection.x == - 1 || movementDirection.y == -1)
+        {
+            isMoving = true;
+            
+        }
+        if(movementDirection.x == 0 && movementDirection.y == 0)
+        {
+            isMoving = false;
+           
+        }
+        Debug.Log(isMoving);
+
+        //  WrapAround(gameObject.transform.position, -25.0f, 15);
         if (usingMobileInput)
         {
             MobileInput();
@@ -350,6 +363,21 @@ void Update()
     public void SetAutomaticShot()
     {
         FireMode = FireMode.AUTO;
+    }
+
+    void WrapAround(Vector3 vector, float min, float max)
+    {
+        vector.x = WrapAroundFloat(vector.x, min, max);
+        vector.y = WrapAroundFloat(vector.y, min, max);
+        vector.z = WrapAroundFloat(vector.z, min, max);
+    }
+    public float WrapAroundFloat(float value, float min, float max)
+    {
+        if (value > max)
+            value = min;
+        else if (value < min)
+            value = max;
+        return value;
     }
 }
 

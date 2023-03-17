@@ -11,15 +11,13 @@ public class EnemyManager : MonoBehaviour
     public int enemyCount = 0;
     public int ActiveEnemies = 0;
     private Factory factory;
-    [SerializeField] private AI_Level_Manager levelManager;
+ 
 
     [Header("Private Variables")]
     private Vector3 startPoint;
 
     void Start()
     {
-
-        levelManager = FindObjectOfType<AI_Level_Manager>();
         factory = GameObject.FindObjectOfType<Factory>();
         BuildEnemyPool();
     }

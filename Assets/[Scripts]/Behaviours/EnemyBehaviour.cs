@@ -13,7 +13,8 @@ public class EnemyBehaviour : MonoBehaviour
     public AI_Level_Manager _LevelController;
     public AI_Controller _Controller;
     Vector3 _Wander_Target;
-    
+    float timer;
+    float z;
     
     public EnemyType enemType;
     public GameObject stainPrefab;
@@ -35,18 +36,15 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Awake()
     {
-      
         Instance = this;
-       
         isChasing = true;
         isEvading = false;
+        _LevelController = FindObjectOfType<AI_Level_Manager>();
+        _Controller = FindObjectOfType<AI_Controller>();
     }
 
     private void OnEnable()
-
     {
-        _LevelController = FindObjectOfType<AI_Level_Manager>();
-        _Controller = FindObjectOfType<AI_Controller>();
         _LevelController.ListOfEnemies.Add(this.gameObject.GetComponent<EnemyBehaviour>());
     }
     private void OnDisable()
@@ -57,7 +55,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         enemyManager = FindObjectOfType<EnemyManager>();
         spawnManager = FindObjectOfType<SpawnManager>();
-        
+        z = transform.position.z;
         health = maxtHealth;
         target = GameObject.Find("Player").transform;
         rb = GetComponent<Rigidbody2D>();
@@ -65,7 +63,8 @@ public class EnemyBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-     
+        position.z = 0;
+        z = 0;
         if (spawnManager.intermissionOn)
         {
             DeathSequence();
@@ -77,6 +76,20 @@ public class EnemyBehaviour : MonoBehaviour
             rb.rotation = angle;
             Direction = tempDirection;
         }
+
+        timer = timer + Time.deltaTime;
+
+        if(timer >= 5 && !isChasing)
+        {
+            isChasing = true;
+            timer = 0;
+        }
+
+
+        position.z = 0;
+        z = 0;
+    
+
     }
 
     public IEnumerator  StopEvasion()
@@ -90,19 +103,18 @@ public class EnemyBehaviour : MonoBehaviour
     private void FixedUpdate()
     {
 
-        if (!isChasing)
-        {
-            AI_Movement();
+        //if (!isChasing)
+        //{
+        //    AI_Movement();
 
 
-        }
+        //}
         if (isChasing)
         {
             Chase();
         }
 
 
-        
     }
 
     private void AI_Movement()
@@ -117,13 +129,15 @@ public class EnemyBehaviour : MonoBehaviour
         transform.position = position;
     }
 
-    private void Chase()
+    public Vector3 Chase()
     {
         if (target != null)//is not evading)
         {
             rb.velocity = new Vector2(Direction.x, Direction.y) * speed;
+            velocity = rb.velocity;
+           
         }
-    
+        return velocity;
     }
 
     public void TakeDamage(float damageAmount)
@@ -144,10 +158,10 @@ public class EnemyBehaviour : MonoBehaviour
         if (other.CompareTag("Bullet"))
             
         {
-            if(isChasing)
+            if(isChasing || isEvading)
             {
                 isChasing = false;
-                StartCoroutine(StartChasing());
+                timer = 0;
 
                 if (health >= 1)
                 {
@@ -167,33 +181,16 @@ public class EnemyBehaviour : MonoBehaviour
                 return;
             }
 
-            if (!isChasing)
-            {
-                if (health >= 1)
-                {
-                    TakeDamage(other.gameObject.GetComponent<BulletBehaviour>().damage);
-
-                }
-
-
-                if (healthBarController != null)
-                {
-                    healthBarController.TakeDamage(other.gameObject.GetComponent<BulletBehaviour>().damage);
-                }
-                else
-                {
-                    Debug.Log("null");
-                }
-            }
+          
            
         }
     }
 
-    private IEnumerator StartChasing()
-    {
-        yield return new WaitForSeconds(5);
-        isChasing = true;
-    }
+    //private IEnumerator StartChasing()
+    //{
+    //    yield return new WaitForSeconds(5);
+    //    isChasing = true;
+    //}
 
     private void DeathSequence()
     {
@@ -214,14 +211,6 @@ public class EnemyBehaviour : MonoBehaviour
     {
         enemyManager.ReturnEnemy(this.gameObject, enemType);
     }
-
-    public void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-
-        Gizmos.DrawWireSphere(transform.position, DetectionRadius-1);
-    }
-
 
     protected Vector3 Wander()
     {
@@ -331,8 +320,6 @@ public class EnemyBehaviour : MonoBehaviour
 
    public Vector3 Evade(Vector3 bulletTarget)
     {
-        isEvading = true;
-        Debug.Log(isEvading);
         acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
         velocity = velocity + acceleration * Time.deltaTime;
         velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
@@ -372,7 +359,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     bool isOnFOV(Vector3 vec)
     {
-
         return Vector3.Angle(this.velocity, -vec - this.position) <= _Controller._Max_Field_Of_View;
     }
 }

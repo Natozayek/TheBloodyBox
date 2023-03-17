@@ -24,7 +24,7 @@ public class BulletBehaviour : MonoBehaviour
     public float speed = 5;
     private Rigidbody2D rb;
     public float damage = 30;
-
+    float timer;
     public AI_Level_Manager _LevelController;
     void Awake()
     {
@@ -35,11 +35,13 @@ public class BulletBehaviour : MonoBehaviour
     {
        
         _LevelController.ListOfBullets.Add(this.gameObject.GetComponent<BulletBehaviour>());
+        timer = 0;
         
     }
     private void OnDisable()
     {
         _LevelController.ListOfBullets.Remove(this.gameObject.GetComponent<BulletBehaviour>());
+        timer = 0;
     }
     void Start()
     {
@@ -47,9 +49,18 @@ public class BulletBehaviour : MonoBehaviour
         bulletManager = FindObjectOfType<BulletManager>();
     }
 
-    private void FixedUpdate()
+     void Update()
     {
-        CheckBounds();
+        timer = timer + Time.deltaTime;
+
+        if(timer >= 10.0f)
+        {
+            rb.velocity = Vector2.zero;
+            bulletManager.ReturnBullet(this.gameObject, bulletType);
+            timer = 0;
+        }
+
+        //CheckBounds();
     }
   
     void CheckBounds()

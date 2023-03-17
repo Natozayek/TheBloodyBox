@@ -15,19 +15,6 @@ public class Factory : MonoBehaviour
     [SerializeField]private Transform enemyParent;
 
 
-
-    void Start()
-    {
-        Initialize();
-    }
-
-    private void Initialize()
-    {
-        enemyParent = GameObject.Find("Enemy").transform;
-        bulletParent = GameObject.Find("Bullet").transform;
-      
-    }
-
     public GameObject CreateBullet()
     {
         GameObject bullet = Instantiate(bulletPrefab, Vector3.zero, Quaternion.identity, bulletParent);
