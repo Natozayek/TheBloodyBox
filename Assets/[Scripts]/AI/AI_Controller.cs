@@ -28,4 +28,8 @@ public class AI_Controller : MonoBehaviour
     public float _Avoidance_Radius;
     public float _Avoidance_Priority;
 
+    //Chase Variables
+    public float _Chase_Radius;
+    public float _Chase_Priority;
+
 }

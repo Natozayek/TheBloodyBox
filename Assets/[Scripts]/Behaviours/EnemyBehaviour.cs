@@ -42,7 +42,6 @@ public class EnemyBehaviour : MonoBehaviour
         _LevelController = FindObjectOfType<AI_Level_Manager>();
         _Controller = FindObjectOfType<AI_Controller>();
     }
-
     private void OnEnable()
     {
         _LevelController.ListOfEnemies.Add(this.gameObject.GetComponent<EnemyBehaviour>());
@@ -53,18 +52,25 @@ public class EnemyBehaviour : MonoBehaviour
     }
     void Start()
     {
+        //Enemy properties initialization
         enemyManager = FindObjectOfType<EnemyManager>();
         spawnManager = FindObjectOfType<SpawnManager>();
         z = transform.position.z;
         health = maxtHealth;
         target = GameObject.Find("Player").transform;
         rb = GetComponent<Rigidbody2D>();
+        position = transform.position;
+
+        //Set target to be chased
+        if (target != null)//is not evading)
+        {
+            rb.velocity = new Vector2(Direction.x, Direction.y) * speed;
+            velocity = rb.velocity;
+
+        }
     }
-    // Update is called once per frame
     void Update()
     {
-        position.z = 0;
-        z = 0;
         if (spawnManager.intermissionOn)
         {
             DeathSequence();
@@ -77,6 +83,11 @@ public class EnemyBehaviour : MonoBehaviour
             Direction = tempDirection;
         }
 
+        if (isChasing)
+        {
+            AI_Movement();
+        }
+
         timer = timer + Time.deltaTime;
 
         if(timer >= 5 && !isChasing)
@@ -85,61 +96,20 @@ public class EnemyBehaviour : MonoBehaviour
             timer = 0;
         }
 
-
         position.z = 0;
         z = 0;
     
 
     }
-
-    public IEnumerator  StopEvasion()
-    {
-  
-        yield return new WaitForSeconds(2);
-        isEvading = false;
-        isChasing = true;
-    }
-
-    private void FixedUpdate()
-    {
-
-        //if (!isChasing)
-        //{
-        //    AI_Movement();
-
-
-        //}
-        if (isChasing)
-        {
-            Chase();
-        }
-
-
-    }
-
     private void AI_Movement()
     {
-        position = transform.position;
         acceleration = Combine();
         acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
         velocity = velocity + acceleration * Time.deltaTime;
         velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
         position = position + velocity * Time.deltaTime;
-        WrapAround(ref position, -_LevelController.bounds, _LevelController.bounds);
         transform.position = position;
     }
-
-    public Vector3 Chase()
-    {
-        if (target != null)//is not evading)
-        {
-            rb.velocity = new Vector2(Direction.x, Direction.y) * speed;
-            velocity = rb.velocity;
-           
-        }
-        return velocity;
-    }
-
     public void TakeDamage(float damageAmount)
     {
         health -= damageAmount;
@@ -147,7 +117,6 @@ public class EnemyBehaviour : MonoBehaviour
         {
             rb.velocity = Vector3.zero;
             health = 0;
-         
             DeathSequence();
 
         }
@@ -185,13 +154,6 @@ public class EnemyBehaviour : MonoBehaviour
            
         }
     }
-
-    //private IEnumerator StartChasing()
-    //{
-    //    yield return new WaitForSeconds(5);
-    //    isChasing = true;
-    //}
-
     private void DeathSequence()
     {
         //play animation
@@ -318,45 +280,53 @@ public class EnemyBehaviour : MonoBehaviour
         return avoidanceVector.normalized;
     }
 
-   public Vector3 Evade(Vector3 bulletTarget)
+    Vector3 ChaseUpdated()
+    {
+        Vector3 chasingVector = new Vector3();
+        var player = target;
+        if (player != null)//is not evading)
+        {
+            rb.velocity = new Vector2(Direction.x, Direction.y) * speed;
+            velocity = rb.velocity;
+            chasingVector = velocity;
+        }
+        return chasingVector;
+    }
+
+    public Vector3 Evade(Vector3 bulletTarget)
     {
         acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
         velocity = velocity + acceleration * Time.deltaTime;
         velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
         position = position + velocity * Time.deltaTime;
-        //WrapAround(ref position, -_LevelController.bounds, _LevelController.bounds);
-        //transform.position = position;
         Vector3 newVelocity = (position - bulletTarget).normalized * _Controller._Max_Velocity;
-        return rb.velocity = newVelocity - velocity;    
+        return rb.velocity = newVelocity - velocity;
     }
-
     virtual protected Vector3 Combine()
     {
         Vector3 FinalVector = _Controller._Cohesion_Priority * Cohesion() + _Controller._WanderPriority * Wander()
-            + _Controller._Aligment_Priority * Alignment() + _Controller._Separation_Priority * Separation() +
-            _Controller._Avoidance_Priority * Avoidance();
+            + _Controller._Aligment_Priority * Alignment() + _Controller._Separation_Priority * Separation();
         return FinalVector;
     }
-    void WrapAround(ref Vector3 vector, float min, float max)
-    {
-        vector.x = WrapAroundFloat(vector.x, min, max);
-        vector.y = WrapAroundFloat(vector.y, min, max);
-        vector.z = WrapAroundFloat(vector.z, min, max);
-    }
-    public float WrapAroundFloat(float value, float min, float max)
-    {
-        if (value > max)
-            value = min;
-        else if (value < min)
-            value = max;
-        return value;
-    }
+    //void WrapAround(ref Vector3 vector, float min, float max)
+    //{
+    //    vector.x = WrapAroundFloat(vector.x, min, max);
+    //    vector.y = WrapAroundFloat(vector.y, min, max);
+    //    vector.z = WrapAroundFloat(vector.z, min, max);
+    //}
+    //public float WrapAroundFloat(float value, float min, float max)
+    //{
+    //    if (value > max)
+    //        value = min;
+    //    else if (value < min)
+    //        value = max;
+    //    return value;
+    //}
     public float RandomBinomial()
 
     {
         return Random.Range(0f, 1f) - Random.Range(0f, 1f);
     }
-
     bool isOnFOV(Vector3 vec)
     {
         return Vector3.Angle(this.velocity, -vec - this.position) <= _Controller._Max_Field_Of_View;

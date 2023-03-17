@@ -148,13 +148,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 5
+  maxStregth: 0
   usingMobileInput: 0
   DesiredPattern: 0
   FireMode: 0
   numberOfProjectiles: 5
+  isMoving: 0
   health: {fileID: 0}
-  _fireRate: 0.2
+  _fireRate: 1
   shootkey: 32
+  movementDirection: {x: 0, y: 0}
+  rb: {fileID: 0}
   cycleFireMode: 113
   cyclePatterMode: 101
 --- !u!1 &2514646656023766837
@@ -229,7 +233,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 4
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 0.9811321, g: 0, b: 0, a: 1}
   m_FlipX: 0
