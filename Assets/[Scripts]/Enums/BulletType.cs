@@ -7,7 +7,8 @@ public enum BulletType
     
     SINGLE,
     SHOTGUN,
-    SPIRAL
+    SPIRAL,
+    ROCKET
 }
 
 [System.Serializable]

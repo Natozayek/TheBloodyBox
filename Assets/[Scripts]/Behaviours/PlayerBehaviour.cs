@@ -209,7 +209,7 @@ void Update()
         switch (DesiredPattern)
         {
          
-            case BulletType.SINGLE:
+            case BulletType.SINGLE :
                 {
                     Vector2 direction = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
@@ -267,6 +267,19 @@ void Update()
                 bulletManager.angle = 0.0f;
                 break;
 
+
+            case BulletType.ROCKET:
+                {
+                    Vector2 direction = mousePosition - rb.position;
+                    float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+                    float angle = aimAngle;
+                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.ROCKET, 1, angle);
+                    _Muzzle.gameObject.SetActive(true);
+                    StartCoroutine(TurnOfMuzzle());
+
+                }
+                break;
+
         }
 
 
@@ -309,7 +322,7 @@ void Update()
         {
             if (bulletManager.playerBulletPool.ElementAt(i).gameObject != null)
             {
-                bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().damage += bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().damage * 0.15f;
+                bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._RegularDamage += bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._RegularDamage * 0.15f;
 
               
 
@@ -322,9 +335,9 @@ void Update()
         {
             if (bulletManager.playerBulletPool.ElementAt(i).gameObject != null)
             {
-                bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().speed += bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().speed * 0.05f;
+                bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._Speed += bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._Speed * 0.05f;
 
-                Debug.Log(bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>().speed);
+                Debug.Log(bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._Speed);
             }
         }
     }

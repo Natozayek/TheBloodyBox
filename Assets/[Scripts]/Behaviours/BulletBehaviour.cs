@@ -7,48 +7,51 @@ using UnityEngine;
 
 public class BulletBehaviour : MonoBehaviour
 {
-    static public BulletBehaviour instance;
+    static public BulletBehaviour _Instance;
     [Header("Bullet Properties")]
-    public BulletType bulletType;
-    private BulletManager bulletManager;
-    public Vector3 targetPosition;
-    public float speed = 5;
+    public float _Speed = 5;
+    public float _RegularDamage = 30;
+    public float _RocketDamage = 30;
+    public BulletType _BulletType;
+    [SerializeField] GameObject _RocketReference;
+    
+    private AI_Level_Manager _Level_Controller;
+    private BulletManager _Bullet_Manager;
     private Rigidbody2D rb;
-    public float damage = 30;
-    float timer;
-    public AI_Level_Manager _LevelController;
+    float _Timer;
+    
     void Awake()
     {
-        instance = this;
-        _LevelController = FindObjectOfType<AI_Level_Manager>();
+        _Instance = this;
+        _Level_Controller = FindObjectOfType<AI_Level_Manager>();
     }
     private void OnEnable()
     {
        
-        _LevelController.ListOfBullets.Add(this.gameObject.GetComponent<BulletBehaviour>());
-        timer = 0;
+        _Level_Controller.ListOfBullets.Add(this.gameObject.GetComponent<BulletBehaviour>());
+        _Timer = 0;
         
     }
     private void OnDisable()
     {
-        _LevelController.ListOfBullets.Remove(this.gameObject.GetComponent<BulletBehaviour>());
-        timer = 0;
+        _Level_Controller.ListOfBullets.Remove(this.gameObject.GetComponent<BulletBehaviour>());
+        _Timer = 0;
     }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        bulletManager = FindObjectOfType<BulletManager>();
+        _Bullet_Manager = FindObjectOfType<BulletManager>();
     }
 
      void Update()
     {
-        timer = timer + Time.deltaTime;
+        _Timer = _Timer + Time.deltaTime;
 
-        if(timer >= 10.0f)
+        if(_Timer >= 10.0f)
         {
             rb.velocity = Vector2.zero;
-            bulletManager.ReturnBullet(this.gameObject, bulletType);
-            timer = 0;
+            _Bullet_Manager.ReturnBullet(this.gameObject, _BulletType);
+            _Timer = 0;
         }
 
         //CheckBounds();
@@ -71,8 +74,23 @@ public class BulletBehaviour : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            rb.velocity = Vector2.zero;
-            bulletManager.ReturnBullet(this.gameObject, bulletType);
+            if (_BulletType == BulletType.ROCKET)
+            {
+                rb.velocity = Vector2.zero;
+                _RocketReference.gameObject.SetActive(true);
+                //Create Bullet parent, separate explosion from BulletPrefab
+                //Set active the Explosion Game Object.
+                //Call ExplosionSequence
+                //After the animation set of the gameobject
+
+
+            }
+            else
+            {
+                rb.velocity = Vector2.zero;
+                _Bullet_Manager.ReturnBullet(this.gameObject, _BulletType);
+            }
+           
         }
         
     }

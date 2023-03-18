@@ -5,35 +5,31 @@ using UnityEngine;
 public class EnemyBehaviour : MonoBehaviour
 {
     [Header("Enemy Properties")]
-    public Vector3 position;
-    public Vector3 velocity;
-    public Vector3 acceleration;
-    public float DetectionRadius;
-
-    public AI_Level_Manager _LevelController;
-    public AI_Controller _Controller;
-    Vector3 _Wander_Target;
-    float timer;
-    float z;
-    
-    public EnemyType enemType;
-    public GameObject stainPrefab;
-    public GameObject BloodVFXPrefab;
-    public static EnemyBehaviour Instance;
-    [SerializeField]private EnemyHealthBarController healthBarController;
-    [SerializeField] public float health, maxtHealth = 100f;
-    [SerializeField] public float speed = 5f;
-    [SerializeField] public GameObject bulletReference;
-    //Private properties
-    private EnemyManager enemyManager;
-    private SpawnManager spawnManager;
+    [SerializeField] EnemyHealthBarController _HealthBarController;
+    [SerializeField] public float _Health, _MaxtHealth = 100f;
+    [SerializeField] public float _Speed = 5f;
+    [SerializeField] public EnemyType _EnemyType;
+    [SerializeField] GameObject _StainPrefab;
+    [SerializeField] GameObject _Blood_VFX_Prefab;
     public bool isChasing;
+    public bool isEvading;
+   
+    //Private properties
+    EnemyManager _EnemyManager;
+    SpawnManager _SpawnManager;
+    AI_Level_Manager _LevelController;
+    AI_Controller _Controller;
+
+    Vector3 _Position;
+    Vector3 _Velocity;
+    Vector3 _Acceleration;
+    Vector3 _Wander_Target;
+    Vector2 Direction;
 
     Rigidbody2D rb;
-    Transform target;
-    Vector2 Direction;
-    public bool isEvading;
-    [SerializeField]private CircleCollider2D externalCollider;
+    Transform _Target;
+    float _Timer;
+    public static EnemyBehaviour Instance;
 
     private void Awake()
     {
@@ -54,86 +50,78 @@ public class EnemyBehaviour : MonoBehaviour
     void Start()
     {
         //Enemy properties initialization
-        enemyManager = FindObjectOfType<EnemyManager>();
-        spawnManager = FindObjectOfType<SpawnManager>();
-        z = transform.position.z;
-        health = maxtHealth;
-        target = GameObject.Find("Player").transform;
+        _EnemyManager = FindObjectOfType<EnemyManager>();
+        _SpawnManager = FindObjectOfType<SpawnManager>();
+        _Health = _MaxtHealth;
+        _Target = GameObject.Find("Player").transform;
         rb = GetComponent<Rigidbody2D>();
-        position = transform.position;
+        _Position = transform.position;
 
         //Set target to be chased
-        if (target != null)//is not evading)
+        if (_Target != null)
         {
-            rb.velocity = new Vector2(Direction.x, Direction.y) * speed;
-            velocity = rb.velocity;
-
+            rb.velocity = new Vector2(Direction.x, Direction.y) * _Speed;
+            _Velocity = rb.velocity;
         }
     }
     void Update()
     {
-        if (spawnManager.intermissionOn)
+        if (_SpawnManager.intermissionOn)
         {
             DeathSequence();
         }
-        if(target != null)
+        if(_Target != null)
         {
-            Vector3 tempDirection = (target.position - transform.position).normalized;
+            Vector3 tempDirection = (_Target.position - transform.position).normalized;
             float angle = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg - 90f;
             rb.rotation = angle;
             Direction = tempDirection;
         }
-
         if (isChasing)
         {
             AI_Movement();
         }
 
-        timer = timer + Time.deltaTime;
+        _Timer = _Timer + Time.deltaTime;
 
-        if(timer >= 5 && !isChasing)
+        if(_Timer >= 5 && !isChasing)
         {
             isChasing = true;
-            timer = 0;
+            _Timer = 0;
         }
-        if (timer >= 5 && isEvading)
+        if (_Timer >= 5 && isEvading)
         {
             isChasing = true;
             isEvading = false;
-            timer = 0;
+            _Timer = 0;
         }
-
-
-
-        position.z = 0;
-        z = 0;
-    
+        _Position.z = 0;
 
     }
     private void AI_Movement()
     {
-        if (target != null)//is not evading)
+        if (_Target != null)//is not evading)
         {
             rb.velocity = new Vector2(Direction.x, Direction.y);
-            velocity = rb.velocity; 
+            _Velocity = rb.velocity; 
 
         }
 
-        position = transform.position;
-        acceleration = Combine();
-        acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
-        velocity = velocity + acceleration * Time.deltaTime;
-        velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
-        position = position + velocity * Time.deltaTime;
-        transform.position = position;
+        _Position = transform.position;
+        _Acceleration = Combine();
+        _Acceleration = Vector3.ClampMagnitude(_Acceleration, _Controller._Max_Acceleration);
+        _Velocity = _Velocity + _Acceleration * Time.deltaTime;
+        _Velocity = Vector3.ClampMagnitude(_Velocity, _Controller._Max_Velocity);
+        _Position = _Position + _Velocity * Time.deltaTime;
+        transform.position = _Position;
     }
     public void TakeDamage(float damageAmount)
     {
-        health -= damageAmount;
-        if (health <= 0)
+        _Health -= damageAmount;
+        if (_Health <= 0)
         {
             rb.velocity = Vector3.zero;
-            health = 0;
+            _Health = 0;
             DeathSequence();
 
         }
@@ -141,25 +129,38 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Bullet"))
-            
+        if (other.CompareTag("Bullet"))   
         {
             if(isChasing || isEvading)
             {
                 isChasing = false;
                 Debug.Log(isChasing);
-                timer = 0;
+                _Timer = 0;
 
-                if (health >= 1)
+                if (_Health >= 1)
                 {
-                    TakeDamage(other.gameObject.GetComponent<BulletBehaviour>().damage);
+                    if (other.GetComponent<BulletBehaviour>()._BulletType == BulletType.ROCKET)
+                    {
+                        TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RocketDamage);
+                    }
+                    else
+                    {
+                        TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RegularDamage);
+                    }
+
 
                 }
-
-
-                if (healthBarController != null)
+                if (_HealthBarController != null)
                 {
-                    healthBarController.TakeDamage(other.gameObject.GetComponent<BulletBehaviour>().damage);
+                    if (other.GetComponent<BulletBehaviour>()._BulletType == BulletType.ROCKET)
+                    {
+                        _HealthBarController.TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RocketDamage);
+                    }
+                    else
+                    {
+                        _HealthBarController.TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RegularDamage);
+                    }
+                    
                 }
                 else
                 {
@@ -172,28 +173,26 @@ public class EnemyBehaviour : MonoBehaviour
            
         }
     }
-    private void DeathSequence()
+    void DeathSequence()
     {
         //play animation
         float rand = Random.Range(1, 360);
         this.gameObject.SetActive(false);
-        BloodVFXPrefab.GetComponent<Transform>().position = this.gameObject.transform.position;
-        stainPrefab.GetComponent<Transform>().position = this.gameObject.transform.position;
-        BloodVFXPrefab.SetActive(true);
-        BloodVFXPrefab.transform.Rotate(0, 0, rand);
-        stainPrefab.SetActive(true);
-        stainPrefab.transform.Rotate(0, 0, rand);
+        _Blood_VFX_Prefab.GetComponent<Transform>().position = this.gameObject.transform.position;
+        _StainPrefab.GetComponent<Transform>().position = this.gameObject.transform.position;
+        _Blood_VFX_Prefab.SetActive(true);
+        _Blood_VFX_Prefab.transform.Rotate(0, 0, rand);
+        _StainPrefab.SetActive(true);
+        _StainPrefab.transform.Rotate(0, 0, rand);
         
         SpawnManager.Instance.NotifyKill();
         UIManager.instance.IncreaseEnemiesKilled();
         
     }
-
     internal void ReturnEnemy()
     {
-        enemyManager.ReturnEnemy(this.gameObject, enemType);
+        _EnemyManager.ReturnEnemy(this.gameObject, _EnemyType);
     }
-
     protected Vector3 Wander()
     {
         float jitter = _Controller._Wander_Jitter * Time.deltaTime;//Getting jitter variable
@@ -204,7 +203,8 @@ public class EnemyBehaviour : MonoBehaviour
 
         Vector3 _Target_In_LocalSpace = _Wander_Target + new Vector3(_Controller._Wander_Distance, _Controller._Wander_Distance, 0);
         Vector3 _Target_In_WorldSpace = transform.TransformPoint(_Target_In_LocalSpace);
-        _Target_In_WorldSpace -= this.position; //Stearing before we return it.
+        _Target_In_WorldSpace -= this._Position; //Stearing before we return it.
+
         return _Target_In_WorldSpace.normalized;
     }
     Vector3 Cohesion()
@@ -220,10 +220,10 @@ public class EnemyBehaviour : MonoBehaviour
 
         foreach (var member in neighbours)
         {
-            if (isOnFOV(member.position))
+            if (isOnFOV(member._Position))
             {
                 //Update cohesion vector
-                cohesionVector += member.position;
+                cohesionVector += member._Position;
                 countMembers++;
             }
         }
@@ -231,15 +231,11 @@ public class EnemyBehaviour : MonoBehaviour
         {
             return cohesionVector;
         }
-
         cohesionVector /= countMembers;
-        cohesionVector = cohesionVector - this.position;
+        cohesionVector = cohesionVector - this._Position;
         cohesionVector = Vector3.Normalize(cohesionVector);
         return cohesionVector;
-
-
     }
-
     Vector3 Alignment()
     {
         Vector3 alignVector = new Vector3();
@@ -251,16 +247,15 @@ public class EnemyBehaviour : MonoBehaviour
         }
         foreach (var member in members)
         {
-            if (isOnFOV(member.position))
+            if (isOnFOV(member._Position))
             {
-                alignVector += member.velocity;
+                alignVector += member._Velocity;
             }
         }
 
         return alignVector.normalized;
 
     }
-
     Vector3 Separation()
     {
         Vector3 separateVector = new Vector3();
@@ -271,9 +266,9 @@ public class EnemyBehaviour : MonoBehaviour
         }
         foreach (var member in members)
         {
-            if (isOnFOV(member.position))
+            if (isOnFOV(member._Position))
             {
-                Vector3 MovingTowards = this.position - member.position;
+                Vector3 MovingTowards = this._Position - member._Position;
                 //Check the magnitude
                 if (MovingTowards.magnitude > 0)
                 {
@@ -283,46 +278,18 @@ public class EnemyBehaviour : MonoBehaviour
         }
         return separateVector.normalized;
     }
-
-    Vector3 Avoidance()
-    {
-        Vector3 avoidanceVector = new Vector3();
-        var bulletList = _LevelController.GetBullets(bulletReference.GetComponent<BulletBehaviour>(), _Controller._Avoidance_Radius);
-
-        if (bulletList.Count == 0)
-            return avoidanceVector;
-
-        foreach (var bullet in bulletList)
-        {
-            avoidanceVector += Evade(bullet.transform.position);
-        }
-
-        return avoidanceVector.normalized;
-    }
-
-    Vector3 ChaseUpdated()
-    {
-        Vector3 chasingVector = new Vector3();
-        var player = target;
-        if (player != null)//is not evading)
-        {
-            rb.velocity = new Vector2(Direction.x, Direction.y) * speed;
-            velocity = rb.velocity;
-            chasingVector = velocity;
-        }
-        return chasingVector;
-    }
-
     public Vector3 Evade(Vector3 bulletTarget)
-    {
-        //acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
-        //velocity = velocity + acceleration * Time.deltaTime;
-        //velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
-      //  position = position + velocity * Time.deltaTime;
-        Vector3 newVelocity = (position - bulletTarget).normalized * _Controller._Max_Velocity;
+    {      //What is wrong with this calculation?
+
+          //acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
+         // velocity = velocity + acceleration * Time.deltaTime;
+        //  velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
+       //   position = position + velocity * Time.deltaTime;
+
+        Vector3 newVelocity = (_Position - bulletTarget).normalized * _Controller._Max_Velocity;
         isEvading = true;
-        timer = 0;
-        return rb.velocity = newVelocity - velocity;
+        _Timer = 0;
+        return rb.velocity = newVelocity - _Velocity;
 
     }
     virtual protected Vector3 Combine()
@@ -331,6 +298,43 @@ public class EnemyBehaviour : MonoBehaviour
             + _Controller._Aligment_Priority * Alignment() + _Controller._Separation_Priority * Separation();
         return FinalVector;
     }
+    float RandomBinomial()
+
+    {
+        return Random.Range(0f, 1f) - Random.Range(0f, 1f);
+    }
+    bool isOnFOV(Vector3 vec)
+    {
+        return Vector3.Angle(this._Velocity, -vec - this._Position) <= _Controller._Max_Field_Of_View;
+    }
+
+    //Vector3 Avoidance()
+    //{
+    //    Vector3 avoidanceVector = new Vector3();
+    //    var bulletList = _LevelController.GetBullets(bulletReference.GetComponent<BulletBehaviour>(), _Controller._Avoidance_Radius);
+
+    //    if (bulletList.Count == 0)
+    //        return avoidanceVector;
+
+    //    foreach (var bullet in bulletList)
+    //    {
+    //        avoidanceVector += Evade(bullet.transform.position);
+    //    }
+
+    //    return avoidanceVector.normalized;
+    //}
+    //Vector3 ChaseUpdated()
+    //{
+    //    Vector3 chasingVector = new Vector3();
+    //    var player = _Target;
+    //    if (player != null)//is not evading)
+    //    {
+    //        rb.velocity = new Vector2(Direction.x, Direction.y) * _Speed;
+    //        _Velocity = rb.velocity;
+    //        chasingVector = _Velocity;
+    //    }
+    //    return chasingVector;
+    //}
     //void WrapAround(ref Vector3 vector, float min, float max)
     //{
     //    vector.x = WrapAroundFloat(vector.x, min, max);
@@ -345,14 +349,5 @@ public class EnemyBehaviour : MonoBehaviour
     //        value = max;
     //    return value;
     //}
-    public float RandomBinomial()
-
-    {
-        return Random.Range(0f, 1f) - Random.Range(0f, 1f);
-    }
-    bool isOnFOV(Vector3 vec)
-    {
-        return Vector3.Angle(this.velocity, -vec - this.position) <= _Controller._Max_Field_Of_View;
-    }
 }
 

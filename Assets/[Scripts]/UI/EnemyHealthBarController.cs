@@ -23,8 +23,8 @@ public class EnemyHealthBarController : MonoBehaviour
 
     public void resetHeath()
     {
-        healthBar.maxValue = enemyPrefab.maxtHealth;
-        healthBar.value = enemyPrefab.maxtHealth;
+        healthBar.maxValue = enemyPrefab._MaxtHealth;
+        healthBar.value = enemyPrefab._MaxtHealth;
         value = (int)healthBar.value;
     }
 

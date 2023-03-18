@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3709367707188360992
 SpriteRenderer:
@@ -120,17 +120,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c70e94648f6d6ab4987641498ba22ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounds:
-    horizontal:
-      min: -30
-      max: 30
-    vertical:
-      min: -30
-      max: 30
   bulletType: 2
   targetPosition: {x: 0, y: 0, z: 0}
   speed: 10
   damage: 30
+  _LevelController: {fileID: 0}
 --- !u!61 &-2618661936232878602
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -148,12 +142,12 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.16, y: 0.16}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 1.0769231, y: 0.66923076}
+    newSize: {x: 1.0769231, y: 0.66923076}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.060639136, y: 0.1624466}
+  m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0

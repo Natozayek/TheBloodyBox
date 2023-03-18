@@ -102,9 +102,9 @@ public class SpawnManager : MonoBehaviour
         {
             if (enemyManager.enemyPool.ElementAt(i).gameObject != null)
             {
-                enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().maxtHealth += enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().maxtHealth * 0.1f; ;
-                enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().health = enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().maxtHealth;
-                enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().speed += enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().speed * 0.04f;
+                enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth += enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth * 0.1f; ;
+                enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>()._Health = enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth;
+                enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>()._Speed += enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>()._Speed * 0.04f;
                // = (int)enemyManager.enemyPool.ElementAt(i).gameObject.GetComponentInChildren<EnemyBehaviour>().maxtHealth;
             }
             //Debug.Log(enemyManager.enemyPool.ElementAt(i).gameObject.CompareTag("Enemy"));// += enemyManager.enemyPool.ElementAt(i).gameObject.GetComponent<EnemyBehaviour>().maxtHealth * 0.2f;

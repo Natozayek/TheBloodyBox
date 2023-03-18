@@ -67,58 +67,76 @@ public class BulletManager : MonoBehaviour
     {
         GameObject bullet = null;
     
-                switch (type)
-                {
-                       case BulletType.SPIRAL:
+          switch (type)
+          {
+               case BulletType.SPIRAL:
+                  {
+                        if (playerBulletPool.Count < 1)
+                        {
+                            playerBulletPool.Enqueue(factory.CreateBullet());
+                        }
+                        {
+                            bullet = playerBulletPool.Dequeue();
+                            // stats
+                            playerBulletCount = playerBulletPool.Count;
+                            activePlayerBullets++;
+                        }
+                              bullet.GetComponent<BulletBehaviour>()._BulletType = type;
+                  }
+                  break;
+
+                case BulletType.SINGLE:
+                  {
+                        if (playerBulletPool.Count < 1)
+                        {
+                            playerBulletPool.Enqueue(factory.CreateBullet());
+                        }
+                        {
+                            bullet = playerBulletPool.Dequeue();
+                            // stats
+                            playerBulletCount = playerBulletPool.Count;
+                            activePlayerBullets++;
+                        }
+                            bullet.GetComponent<BulletBehaviour>()._BulletType = type;
+                  }
+                  break;
+
+                 case BulletType.SHOTGUN:
+                 {
+                          if (playerBulletPool.Count < 1)
                           {
-                    if (playerBulletPool.Count < 1)
-                    {
-                        playerBulletPool.Enqueue(factory.CreateBullet());
-                    }
-                    {
-                        bullet = playerBulletPool.Dequeue();
-                        // stats
-                        playerBulletCount = playerBulletPool.Count;
-                        activePlayerBullets++;
-                    }
-                    bullet.GetComponent<BulletBehaviour>().bulletType = type;
-                }
-                          break;
-                        case BulletType.SINGLE:
+                              playerBulletPool.Enqueue(factory.CreateBullet());
+                          }
                           {
-                    if (playerBulletPool.Count < 1)
-                    {
-                        playerBulletPool.Enqueue(factory.CreateBullet());
-                    }
-                    {
-                        bullet = playerBulletPool.Dequeue();
-                        // stats
-                        playerBulletCount = playerBulletPool.Count;
-                        activePlayerBullets++;
-                    }
-                    bullet.GetComponent<BulletBehaviour>().bulletType = type;
-                }
-                          break;
-                         case BulletType.SHOTGUN:
-                         {
-                    if (playerBulletPool.Count < 1)
-                    {
-                        playerBulletPool.Enqueue(factory.CreateBullet());
-                    }
-                    {
-                        bullet = playerBulletPool.Dequeue();
-                        // stats
-                        playerBulletCount = playerBulletPool.Count;
-                        activePlayerBullets++;
-                    }
-                    bullet.GetComponent<BulletBehaviour>().bulletType = type;
-                }
-                          break;
-                }
+                              bullet = playerBulletPool.Dequeue();
+                              // stats
+                              playerBulletCount = playerBulletPool.Count;
+                              activePlayerBullets++;
+                          }
+                              bullet.GetComponent<BulletBehaviour>()._BulletType = type;
+                 }
+                 break;
+
+               case BulletType.ROCKET:
+                   {
+                       if (playerBulletPool.Count < 1)
+                       {
+                           playerBulletPool.Enqueue(factory.CreateBullet());
+                       }
+                       {
+                           bullet = playerBulletPool.Dequeue();
+                           // stats
+                           playerBulletCount = playerBulletPool.Count;
+                           activePlayerBullets++;
+                       }
+                       bullet.GetComponent<BulletBehaviour>()._BulletType = type;
+                   }
+                   break;
+          }
                
                 bullet.SetActive(true);
-                //levelManager.ListOfBullets.Add(bullet.GetComponent<BulletBehaviour>());
                 bullet.transform.position = startPosition;
+
 
                 switch (type)
                 {
@@ -146,8 +164,16 @@ public class BulletManager : MonoBehaviour
                 SpreadShot(targetPos, bullet, angle);
                         break;
 
-                }
-                return bullet;
+
+            case BulletType.ROCKET:
+                bullet.GetComponent<SpriteRenderer>().sprite = Xprites[0];
+                bullet.GetComponent<SpriteRenderer>().color = Color.white;
+                bullet.GetComponent<Transform>().localScale = new Vector3(2, 2, 1);
+                AimShoot(bullet, angle);
+                break;
+
+        }
+        return bullet;
         }
 
 
@@ -155,7 +181,6 @@ public class BulletManager : MonoBehaviour
     public void ReturnBullet(GameObject bullet, BulletType type)
      {
         bullet.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-        //levelManager.ListOfBullets.Remove(bullet.GetComponent<BulletBehaviour>());
         bullet.SetActive(false);
 
             switch (type)
@@ -185,7 +210,16 @@ public class BulletManager : MonoBehaviour
                 }
                 break;
 
-        }
+                 case BulletType.ROCKET:
+                {
+                    playerBulletPool.Enqueue(bullet);
+                    //stats
+                    playerBulletCount = playerBulletPool.Count;
+                    activePlayerBullets--;
+                }
+                break;
+
+            } 
      } 
     public void threeSixtyAngleShoot(Vector3 startPosition, GameObject bullet, float angle)
     {
@@ -210,7 +244,7 @@ public class BulletManager : MonoBehaviour
     private void SpreadShot(Vector3 direction, GameObject bullet, float angle)
     {
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
-        bulletRb.AddForce(direction/ (projectileSpeed/5) , ForceMode2D.Impulse);
+        bulletRb.AddForce(direction, ForceMode2D.Force);
         bullet.GetComponent<Rigidbody2D>().rotation = angle;
     }
 
