@@ -42,7 +42,8 @@ public class PlayerBehaviour : MonoBehaviour
     public Rigidbody2D rb;
     private Camera camera;
     private bool DoubleShootOn = false;
-
+    [SerializeField] private Animator animator;
+    [SerializeField] private GameObject _Muzzle;
     [SerializeField] private KeyCode cycleFireMode = KeyCode.Q;
     [SerializeField] private KeyCode  cyclePatterMode = KeyCode.E;
 
@@ -53,7 +54,7 @@ public class PlayerBehaviour : MonoBehaviour
         bulletSpawnPoint = GameObject.Find("firePoint").transform;
         rb = GetComponent<Rigidbody2D>();
         camera = Camera.main;
-
+        animator = GetComponentInChildren<Animator>();
 
         // Platform Detection for input
         usingMobileInput = Application.platform == RuntimePlatform.Android ||
@@ -124,7 +125,9 @@ void Update()
         {
             if(CanShoot() == true && FireMode != FireMode.AUTO || CanShoot() == true && FireMode == FireMode.AUTO)
             {
-                if(DoubleShootOn)
+                
+
+                if (DoubleShootOn)
                 {
                     Fire();
                     StartCoroutine(DoubleShotOn());
@@ -147,8 +150,11 @@ void Update()
             {
                 //Do nothing
             }
-            
+          
         }
+
+        
+        
 
         // to be moved
         if (Input.GetKeyDown(cycleFireMode))
@@ -159,6 +165,12 @@ void Update()
         {
             CyclePatternsType();
         }
+    }
+
+    private IEnumerator TurnOfMuzzle()
+    {
+        yield return new WaitForSeconds(_fireRate -0.8f);
+        _Muzzle.gameObject.SetActive(false);
     }
     #region TO BE MOVED TO A NEW SCRIPT
     private void CycleFireMode() => FireMode = ((int)FireMode < 2) ? FireMode +1 : 0;
@@ -192,7 +204,7 @@ void Update()
     void Fire()
     {
         int numofBullet = 10;
-       // _canFire = Time.time + _fireRate;
+     
 
         switch (DesiredPattern)
         {
@@ -203,7 +215,9 @@ void Update()
                     float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
                     float angle = aimAngle;
                     var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SINGLE, 1, angle);
-              
+                    _Muzzle.gameObject.SetActive(true);
+                    StartCoroutine(TurnOfMuzzle());
+
                 }
                 break;
             case BulletType.SHOTGUN:
@@ -224,10 +238,11 @@ void Update()
                         var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SHOTGUN, 1, angleSpread + aimAngle);
                         angleSpread += 30f;
                     }
-                  
+
                     //var bullet2 = bulletManager.GetBullet(bulletSpawnPoint.position, direction2, BulletType.SHOTGUN, 1, angle);
                     //var bullet3 = bulletManager.GetBullet(bulletSpawnPoint.position, direction3, BulletType.SHOTGUN, 1, angle);
-
+                    _Muzzle.gameObject.SetActive(true);
+                    StartCoroutine(TurnOfMuzzle());
 
                 }
 
@@ -246,6 +261,8 @@ void Update()
                         angle += angleStep;
                     }
 
+                    _Muzzle.gameObject.SetActive(true);
+                    StartCoroutine(TurnOfMuzzle());
                 }
                 bulletManager.angle = 0.0f;
                 break;

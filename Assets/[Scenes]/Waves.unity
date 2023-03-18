@@ -839,6 +839,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2071409275}
+--- !u!1 &523738169 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5095590799845873284, guid: ce2b6a7a402eca8409e13846259ae251, type: 3}
+  m_PrefabInstance: {fileID: 2514646655045072066}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &541692251
 GameObject:
   m_ObjectHideFlags: 0
@@ -4575,6 +4580,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5095590799845873284, guid: ce2b6a7a402eca8409e13846259ae251, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095590799845873285, guid: ce2b6a7a402eca8409e13846259ae251, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095590799845873286, guid: ce2b6a7a402eca8409e13846259ae251, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305443494335582490, guid: ce2b6a7a402eca8409e13846259ae251, type: 3}
+      propertyPath: _Muzzle
+      value: 
+      objectReference: {fileID: 523738169}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: ce2b6a7a402eca8409e13846259ae251, type: 3}
