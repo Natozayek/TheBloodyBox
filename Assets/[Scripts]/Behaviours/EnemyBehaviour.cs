@@ -18,6 +18,7 @@ public class EnemyBehaviour : MonoBehaviour
     
     public EnemyType enemType;
     public GameObject stainPrefab;
+    public GameObject BloodVFXPrefab;
     public static EnemyBehaviour Instance;
     [SerializeField]private EnemyHealthBarController healthBarController;
     [SerializeField] public float health, maxtHealth = 100f;
@@ -26,7 +27,7 @@ public class EnemyBehaviour : MonoBehaviour
     //Private properties
     private EnemyManager enemyManager;
     private SpawnManager spawnManager;
-    private bool isChasing;
+    public bool isChasing;
 
     Rigidbody2D rb;
     Transform target;
@@ -95,6 +96,14 @@ public class EnemyBehaviour : MonoBehaviour
             isChasing = true;
             timer = 0;
         }
+        if (timer >= 5 && isEvading)
+        {
+            isChasing = true;
+            isEvading = false;
+            timer = 0;
+        }
+
+
 
         position.z = 0;
         z = 0;
@@ -103,6 +112,14 @@ public class EnemyBehaviour : MonoBehaviour
     }
     private void AI_Movement()
     {
+        if (target != null)//is not evading)
+        {
+            rb.velocity = new Vector2(Direction.x, Direction.y);
+            velocity = rb.velocity; 
+
+        }
+
+        position = transform.position;
         acceleration = Combine();
         acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
         velocity = velocity + acceleration * Time.deltaTime;
@@ -130,6 +147,7 @@ public class EnemyBehaviour : MonoBehaviour
             if(isChasing || isEvading)
             {
                 isChasing = false;
+                Debug.Log(isChasing);
                 timer = 0;
 
                 if (health >= 1)
@@ -159,8 +177,10 @@ public class EnemyBehaviour : MonoBehaviour
         //play animation
         float rand = Random.Range(1, 360);
         this.gameObject.SetActive(false);
-        
+        BloodVFXPrefab.GetComponent<Transform>().position = this.gameObject.transform.position;
         stainPrefab.GetComponent<Transform>().position = this.gameObject.transform.position;
+        BloodVFXPrefab.SetActive(true);
+        BloodVFXPrefab.transform.Rotate(0, 0, rand);
         stainPrefab.SetActive(true);
         stainPrefab.transform.Rotate(0, 0, rand);
         
@@ -295,12 +315,15 @@ public class EnemyBehaviour : MonoBehaviour
 
     public Vector3 Evade(Vector3 bulletTarget)
     {
-        acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
-        velocity = velocity + acceleration * Time.deltaTime;
-        velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
-        position = position + velocity * Time.deltaTime;
+        //acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
+        //velocity = velocity + acceleration * Time.deltaTime;
+        //velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
+      //  position = position + velocity * Time.deltaTime;
         Vector3 newVelocity = (position - bulletTarget).normalized * _Controller._Max_Velocity;
+        isEvading = true;
+        timer = 0;
         return rb.velocity = newVelocity - velocity;
+
     }
     virtual protected Vector3 Combine()
     {

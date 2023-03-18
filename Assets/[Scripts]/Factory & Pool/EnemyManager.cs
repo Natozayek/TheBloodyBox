@@ -11,7 +11,8 @@ public class EnemyManager : MonoBehaviour
     public int enemyCount = 0;
     public int ActiveEnemies = 0;
     private Factory factory;
- 
+    Sprite[] Xprites;
+
 
     [Header("Private Variables")]
     private Vector3 startPoint;
@@ -20,6 +21,7 @@ public class EnemyManager : MonoBehaviour
     {
         factory = GameObject.FindObjectOfType<Factory>();
         BuildEnemyPool();
+        Xprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
     }
     void BuildEnemyPool()
     {
@@ -79,6 +81,22 @@ public class EnemyManager : MonoBehaviour
         enemy.SetActive(true);
        // levelManager.ListOfEnemies.Add(enemy.GetComponent<EnemyBehaviour>());
         enemy.transform.position = startPosition;
+
+        switch (type)
+        {
+            case EnemyType.Enemy1:
+                {
+                    enemy.GetComponentInChildren<SpriteRenderer>().sprite = Xprites[1];
+                   
+                    break;
+                }
+            case EnemyType.Enemy2:
+                {
+                    enemy.GetComponentInChildren<SpriteRenderer>().sprite = Xprites[0];
+                    break;
+                }
+
+        }
         return enemy;
         //switch (type)
         //{

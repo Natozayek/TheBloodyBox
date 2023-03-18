@@ -9,6 +9,7 @@ public class StainRemover : MonoBehaviour
     float alpha = 0.9f;
     private bool doOnce = false;
     [SerializeField] GameObject EnemyPrefab;
+    [SerializeField] GameObject bloodPrefab;
 
     float timeElapsed = 0;
    [SerializeField] float lerpDuration = 29;
@@ -34,8 +35,8 @@ public class StainRemover : MonoBehaviour
                         lerpDuration = 20;
                         alpha = 1;
                         this.gameObject.SetActive(false);
-                        gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, alpha);
-                     
+                         bloodPrefab.gameObject.SetActive(false );
+                         gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, alpha);
                          EnemyPrefab.GetComponent<EnemyBehaviour>().ReturnEnemy();
                 
                         
@@ -48,28 +49,4 @@ public class StainRemover : MonoBehaviour
     }
 
 
-
-    //public IEnumerator FadeImage(bool fadeAway)
-    //{
-    //    // fade from opaque to transparent
-    //    if (fadeAway)
-    //    {  
-    //        {
-    //            // set color with i as alpha
-    //            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, alpha);
-    //            alpha -= Time.deltaTime;
-    //            Debug.Log(alpha);
-             
-    //        }
-         
-    //    }
-    //    yield return new WaitForSeconds(1f);
-    //    if (alpha <= 0.2f)
-    //    {
-   
-    //    }
-    //        StartCoroutine(FadeImage(true));
-    //       // fade from transparent to opaque
-
-    //}
 }

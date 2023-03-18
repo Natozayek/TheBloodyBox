@@ -82,7 +82,7 @@ public class SpawnManager : MonoBehaviour
         //Wave specifications 
         waveNumber++;
         UIManager.instance.IncreaseWaves();
-        waveGoal = waveGoal + 10;
+        waveGoal = waveGoal + 4;
         UIManager.instance.IncreaseGoalNumber(waveGoal);
         UIManager.instance.ResetEnemiesKilled();
         UIManager.instance.IntermissionTimer.gameObject.SetActive(false);
@@ -134,7 +134,7 @@ public class SpawnManager : MonoBehaviour
             yield return wait;
           //  int rand = Random.Range(0, enemyList.Count);
             int locationIndex = 0;
-            for (int i = 0;  i < spawnLocations.Length ; i++)
+            for (int i = 0;  i < waveGoal ; i++)
             {
                     enemyManager.GetEnemy(spawnLocations[locationIndex].position, enemyType);
                

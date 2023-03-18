@@ -73,17 +73,17 @@ public class PlayerBehaviour : MonoBehaviour
 
 void Update()
   {
-        if (movementDirection.x == 1 || movementDirection.y == 1 || movementDirection.x == - 1 || movementDirection.y == -1)
-        {
-            isMoving = true;
+        //if (movementDirection.x == 1 || movementDirection.y == 1 || movementDirection.x == - 1 || movementDirection.y == -1)
+        //{
+        //    isMoving = true;
             
-        }
-        if(movementDirection.x == 0 && movementDirection.y == 0)
-        {
-            isMoving = false;
+        //}
+        //if(movementDirection.x == 0 && movementDirection.y == 0)
+        //{
+        //    isMoving = false;
            
-        }
-        Debug.Log(isMoving);
+        //}
+        //Debug.Log(isMoving);
 
         //  WrapAround(gameObject.transform.position, -25.0f, 15);
         if (usingMobileInput)
