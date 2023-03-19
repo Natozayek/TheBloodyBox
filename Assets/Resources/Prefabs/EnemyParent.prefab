@@ -34,7 +34,7 @@ Transform:
   - {fileID: 3585664901769201361}
   - {fileID: 8585137499302571156}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &4211160296761724162
 Rigidbody:
@@ -416,11 +416,23 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2970370766978165729}
     - target: {fileID: 1267147390, guid: 8d14a6112db349140a1087f77aba633f, type: 3}
+      propertyPath: _StainPrefab
+      value: 
+      objectReference: {fileID: 2970370766978165729}
+    - target: {fileID: 1267147390, guid: 8d14a6112db349140a1087f77aba633f, type: 3}
       propertyPath: BloodVFXPrefab
       value: 
       objectReference: {fileID: 8900579948945781180}
     - target: {fileID: 1267147390, guid: 8d14a6112db349140a1087f77aba633f, type: 3}
+      propertyPath: _Blood_VFX_Prefab
+      value: 
+      objectReference: {fileID: 8900579948945781180}
+    - target: {fileID: 1267147390, guid: 8d14a6112db349140a1087f77aba633f, type: 3}
       propertyPath: healthBarController
+      value: 
+      objectReference: {fileID: 3665119118895395652}
+    - target: {fileID: 1267147390, guid: 8d14a6112db349140a1087f77aba633f, type: 3}
+      propertyPath: _HealthBarController
       value: 
       objectReference: {fileID: 3665119118895395652}
     - target: {fileID: 1267147394, guid: 8d14a6112db349140a1087f77aba633f, type: 3}

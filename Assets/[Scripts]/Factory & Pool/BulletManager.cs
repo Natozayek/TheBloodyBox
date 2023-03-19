@@ -149,18 +149,18 @@ public class BulletManager : MonoBehaviour
                         break;
 
                     case BulletType.SINGLE:
-                bullet.GetComponent<SpriteRenderer>().sprite = Xprites[2];
-                bullet.GetComponent<SpriteRenderer>().color = Color.white;
-                bullet.GetComponent<Transform>().localScale = new Vector3(1, 0.5f, 1);
+                        bullet.GetComponent<SpriteRenderer>().sprite = Xprites[2];
+                        bullet.GetComponent<SpriteRenderer>().color = Color.white;
+                        bullet.GetComponent<Transform>().localScale = new Vector3(1, 0.5f, 1);
 
                 AimShoot(bullet, angle);
                 
                 break;
 
                     case BulletType.SHOTGUN:
-                bullet.GetComponent<SpriteRenderer>().sprite = Xprites[1];
-                bullet.GetComponent<SpriteRenderer>().color = Color.white;
-                bullet.GetComponent<Transform>().localScale = new Vector3(1, 1, 1);
+                      bullet.GetComponent<SpriteRenderer>().sprite = Xprites[1];
+                      bullet.GetComponent<SpriteRenderer>().color = Color.white;
+                      bullet.GetComponent<Transform>().localScale = new Vector3(1, 1, 1);
                 SpreadShot(targetPos, bullet, angle);
                         break;
 

@@ -8,13 +8,15 @@ public class SpawnManager : MonoBehaviour
 {
     [Range(10f, 120f)]
     [SerializeField] public float intermission = 60f;
-    public int enemyKillsCounter = 0;
-    [SerializeField]public int waveGoal;
-    public int enemyOnMap = 0;
+    [SerializeField] int enemyKillsCounter = 0;
+    [Range(4.0f, 100f)]
+    [SerializeField] public int waveGoal;
+    [SerializeField] int enemyOnMap = 0;
     public int waveNumber = 1;
+    [SerializeField] private GameObject PowerUpUI;
     public static SpawnManager Instance;
     public bool intermissionOn = false;
-    [SerializeField]private GameObject PowerUpUI;
+    
 
     private EnemyManager enemyManager;
     public EnemyType enemyType;
@@ -25,7 +27,7 @@ public class SpawnManager : MonoBehaviour
     [Range(1, 100)]
     public int enemyNumber = 1;
 
-    [SerializeField]public GameObject enemyPrefab;
+    [SerializeField] GameObject enemyPrefab;
     [SerializeField] private float spawnRate = 2f;
     [SerializeField] public bool isEndless = false;
     [SerializeField] private bool canSpawnEnemy = true;
@@ -38,16 +40,13 @@ public class SpawnManager : MonoBehaviour
     }
     void Start()
     {
-        
-        
         enemyManager = FindObjectOfType<EnemyManager>();
         StartCoroutine(Spawner());
     }
 
     private void Update()
     {
-        //Make 3 2 1 timer to start wave 1; With are you ready button
-        //Accumulate points to improve fire rate, bullet damage in initial weapon (pistol single), weapons drop ( spiral, shotgun) + needing 3 more (grenades, bazooka, mele last)
+        
         if (enemyKillsCounter >= waveGoal)// Set waves 
         {
             intermissionOn = true;
@@ -64,36 +63,30 @@ public class SpawnManager : MonoBehaviour
                 SetNextWave();
             }
             UIManager.instance.DecreaseTimer(intermission);
-            //Destroy all enemies in the scene
-            //Give a minute to upgrade do things
-            //set new goal
-            //Decrease the spawnRate
-            //Increase goal for next wave
-
-
         }
     }
 
     private void SetNextWave()
     {
+        //Reset enemy counters
         enemyKillsCounter = 0;
         enemyOnMap = 0;
 
         //Wave specifications 
-        waveNumber++;
         UIManager.instance.IncreaseWaves();
-        waveGoal = waveGoal + 4;
+        waveNumber++;
+        waveGoal = waveGoal + waveGoal/2;
         UIManager.instance.IncreaseGoalNumber(waveGoal);
         UIManager.instance.ResetEnemiesKilled();
         UIManager.instance.IntermissionTimer.gameObject.SetActive(false);
         intermission = 60;
         UIManager.instance.IntermissionTimerN = intermission;
         isPowerUpSelected = false;
+
         //Release enemies
         canSpawnEnemy = true;
         intermissionOn = false;
         
-
         //Increase Enemy stats for next wave
         poolCount = enemyManager.enemyPool.Count;
         Debug.Log(poolCount);
@@ -120,7 +113,6 @@ public class SpawnManager : MonoBehaviour
 
         StartCoroutine(Spawner());
     }
-
     public void NotifyKill()
     {
         enemyKillsCounter++;
@@ -132,10 +124,15 @@ public class SpawnManager : MonoBehaviour
         while(canSpawnEnemy && !isEndless)
         {
             yield return wait;
-          //  int rand = Random.Range(0, enemyList.Count);
             int locationIndex = 0;
+            Debug.Log(waveGoal);
             for (int i = 0;  i < waveGoal ; i++)
             {
+                if(locationIndex > 3)
+                {
+                    locationIndex = 0;
+                    yield return wait;
+                }
                     enemyManager.GetEnemy(spawnLocations[locationIndex].position, enemyType);
                
                     locationIndex++;

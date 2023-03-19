@@ -11,13 +11,14 @@ public class BulletBehaviour : MonoBehaviour
     [Header("Bullet Properties")]
     public float _Speed = 5;
     public float _RegularDamage = 30;
-    public float _RocketDamage = 30;
+    public float _RocketDamage = 0;
     public BulletType _BulletType;
-    [SerializeField] GameObject _RocketReference;
-    
+    [SerializeField] GameObject _Child_RocketReference;
+    public BulletManager _Bullet_Manager;
+
+    //Private Variables
     private AI_Level_Manager _Level_Controller;
-    private BulletManager _Bullet_Manager;
-    private Rigidbody2D rb;
+    public Rigidbody2D RigidBody2D;
     float _Timer;
     
     void Awake()
@@ -39,7 +40,7 @@ public class BulletBehaviour : MonoBehaviour
     }
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        RigidBody2D = GetComponent<Rigidbody2D>();
         _Bullet_Manager = FindObjectOfType<BulletManager>();
     }
 
@@ -49,7 +50,7 @@ public class BulletBehaviour : MonoBehaviour
 
         if(_Timer >= 10.0f)
         {
-            rb.velocity = Vector2.zero;
+            RigidBody2D.velocity = Vector2.zero;
             _Bullet_Manager.ReturnBullet(this.gameObject, _BulletType);
             _Timer = 0;
         }
@@ -76,18 +77,21 @@ public class BulletBehaviour : MonoBehaviour
         {
             if (_BulletType == BulletType.ROCKET)
             {
-                rb.velocity = Vector2.zero;
-                _RocketReference.gameObject.SetActive(true);
-                //Create Bullet parent, separate explosion from BulletPrefab
-                //Set active the Explosion Game Object.
-                //Call ExplosionSequence
-                //After the animation set of the gameobject
+          
+                _RocketDamage = 0;
+                _Child_RocketReference.gameObject.SetActive(true);
+                GetComponent<SpriteRenderer>().sprite = null;
+                
+                //Create Bullet parent, separate explosion from BulletPrefab - DONE
+                //Set active the Explosion Game Object. -DONE
+                //Call ExplosionSequence -DONE
+                //After the animation set of the gameobject -DONE
 
 
             }
             else
             {
-                rb.velocity = Vector2.zero;
+                RigidBody2D.velocity = Vector2.zero;
                 _Bullet_Manager.ReturnBullet(this.gameObject, _BulletType);
             }
            

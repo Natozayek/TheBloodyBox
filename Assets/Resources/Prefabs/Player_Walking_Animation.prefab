@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 2948251653904603320}
   - component: {fileID: 2948251653904603319}
   m_Layer: 0
-  m_Name: walk_side
+  m_Name: Player_Walking_Animation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

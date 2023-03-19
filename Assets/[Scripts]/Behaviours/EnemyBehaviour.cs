@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyBehaviour : MonoBehaviour
 {
     [Header("Enemy Properties")]
-    [SerializeField] EnemyHealthBarController _HealthBarController;
+    [SerializeField] public  EnemyHealthBarController _HealthBarController;
     [SerializeField] public float _Health, _MaxtHealth = 100f;
     [SerializeField] public float _Speed = 5f;
     [SerializeField] public EnemyType _EnemyType;
@@ -117,7 +117,9 @@ public class EnemyBehaviour : MonoBehaviour
     }
     public void TakeDamage(float damageAmount)
     {
-        _Health -= damageAmount;
+         _Health -= damageAmount;
+
+
         if (_Health <= 0)
         {
             rb.velocity = Vector3.zero;
@@ -137,35 +139,28 @@ public class EnemyBehaviour : MonoBehaviour
                 Debug.Log(isChasing);
                 _Timer = 0;
 
-                if (_Health >= 1)
+                if (_Health > 1)
                 {
-                    if (other.GetComponent<BulletBehaviour>()._BulletType == BulletType.ROCKET)
-                    {
-                        TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RocketDamage);
-                    }
-                    else
+                    if (other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SINGLE || other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SHOTGUN || other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SPIRAL)
                     {
                         TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RegularDamage);
                     }
 
-
-                }
-                if (_HealthBarController != null)
-                {
-                    if (other.GetComponent<BulletBehaviour>()._BulletType == BulletType.ROCKET)
+                    if (_HealthBarController != null)
                     {
-                        _HealthBarController.TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RocketDamage);
+                        if (other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SINGLE || other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SHOTGUN || other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SPIRAL)
+                        {
+                            _HealthBarController.TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RegularDamage);
+                        }
+
+
                     }
                     else
                     {
-                        _HealthBarController.TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RegularDamage);
+                        Debug.Log("null");
                     }
-                    
                 }
-                else
-                {
-                    Debug.Log("null");
-                }
+
                 return;
             }
 
