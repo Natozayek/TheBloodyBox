@@ -17,8 +17,8 @@ public class PlayerBehaviour : MonoBehaviour
     public BulletType DesiredPattern = BulletType.SINGLE;//TBM
     public FireMode FireMode = FireMode.SINGLE;//TBM
     [SerializeField] int numberOfProjectiles = 5;
-    public bool isMoving = false;
-
+    [SerializeField] bool isJoystickFire = false;
+    [SerializeField] bool isJoystick;
     [Header("HealthSystem")]
     public HealthBarController health;
 
@@ -30,11 +30,16 @@ public class PlayerBehaviour : MonoBehaviour
 
     [Header("Inputs")]
     [SerializeField] private KeyCode shootkey = KeyCode.Space;
+    [SerializeField] private KeyCode cycleFireMode = KeyCode.Q;
+    [SerializeField] private KeyCode cyclePatterMode = KeyCode.E;
+    [SerializeField] private FloatingJoystick _MovementJoystick;
+    [SerializeField] private FloatingJoystick _RotationJoystick;
 
     [Header("Private Variables")]
     private Transform bulletSpawnPoint;
     private float _fireTimer = 0.0f;
-    private Vector2 mousePosition;         // Helps us to aim 
+    private Vector2 mousePosition;
+    private Vector2 _JoystickPosition;// Helps us to aim 
     public Vector2 movementDirection;
     private bool _bursting = false;
     private bool _PressingShootKey = false;
@@ -44,8 +49,7 @@ public class PlayerBehaviour : MonoBehaviour
     private bool DoubleShootOn = false;
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject _Muzzle;
-    [SerializeField] private KeyCode cycleFireMode = KeyCode.Q;
-    [SerializeField] private KeyCode  cyclePatterMode = KeyCode.E;
+  
 
     void Start()
     {
@@ -60,33 +64,13 @@ public class PlayerBehaviour : MonoBehaviour
         usingMobileInput = Application.platform == RuntimePlatform.Android ||
                            Application.platform == RuntimePlatform.IPhonePlayer;
     }
-    private bool CanShoot()
-    {
-        if (_fireTimer < _fireRate) { return false;}
-        else if (_bursting) { return false;}
-        else if(_fireTimer > _fireRate) { return true;}
-        else
-        {
-            return false;
-        }
-    }
-
-void Update()
+    void Update()
   {
-        //if (movementDirection.x == 1 || movementDirection.y == 1 || movementDirection.x == - 1 || movementDirection.y == -1)
-        //{
-        //    isMoving = true;
-            
-        //}
-        //if(movementDirection.x == 0 && movementDirection.y == 0)
-        //{
-        //    isMoving = false;
-           
-        //}
-        //Debug.Log(isMoving);
+   
+        _JoystickPosition.x = _RotationJoystick.Direction.x;
+        _JoystickPosition.y = _RotationJoystick.Direction.y;
 
-        //  WrapAround(gameObject.transform.position, -25.0f, 15);
-        if (usingMobileInput)
+        if (isJoystick || usingMobileInput)
         {
             MobileInput();
         }
@@ -94,8 +78,20 @@ void Update()
         {
             ConventionalInput();
         }
-        
+
+
         mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
+
+        if (_RotationJoystick.Horizontal >= 0.2f || _RotationJoystick.Horizontal <= 0.2f 
+           || _RotationJoystick.Vertical >= 0.2f || _RotationJoystick.Vertical <= 0.2f)
+        {
+            isJoystickFire = true;
+        }
+       if(_RotationJoystick.Horizontal == 0
+           || _RotationJoystick.Vertical == 0.0f)
+        {
+            isJoystickFire = false;
+        }
 
         switch (FireMode) // TOOLS - TBM
         {
@@ -121,7 +117,7 @@ void Update()
         if (_fireTimer < _fireRate + 0.5f)
             _fireTimer += Time.deltaTime;
 
-        if (_PressingShootKey)
+        if (_PressingShootKey || isJoystickFire)
         {
             if(CanShoot() == true && FireMode != FireMode.AUTO || CanShoot() == true && FireMode == FireMode.AUTO)
             {
@@ -166,41 +162,73 @@ void Update()
             CyclePatternsType();
         }
     }
+    void OnCollisionStay2D(Collision2D other)
+    {
 
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            health.TakeDamage(1.0f - maxStregth);
+            //TODO: Play the hurt sound
+            if (health.value <= 0)
+            {
+                //Set active Game over Menu, Give restart or return to main options
+
+            }
+        }
+    }
+    private bool CanShoot()
+    {
+        if (_fireTimer < _fireRate) { return false; }
+        else if (_bursting) { return false; }
+        else if (_fireTimer > _fireRate) { return true; }
+        else
+        {
+            return false;
+        }
+    }
     private IEnumerator TurnOfMuzzle()
     {
         yield return new WaitForSeconds(_fireRate -0.8f);
         _Muzzle.gameObject.SetActive(false);
     }
-    #region TO BE MOVED TO A NEW SCRIPT
+    #region Cylce Functions - Change FireMode or BulletType
     private void CycleFireMode() => FireMode = ((int)FireMode < 2) ? FireMode +1 : 0;
-    public void CyclePatternsType() => DesiredPattern = ((int)DesiredPattern < 2) ? DesiredPattern + 1 : 0;
+    public void CyclePatternsType() => DesiredPattern = ((int)DesiredPattern < 3) ? DesiredPattern + 1 : 0;
     #endregion
-
+    #region Input Mode - Mobile or Conventional
     private void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movementDirection * movementSpeed * Time.fixedDeltaTime);
-        Vector2 direction = mousePosition - rb.position;
-        float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
-        rb.rotation = aimAngle;// 
-    }
-    public void MobileInput() //REWORK MOBILE INPUT ADD JOYSTICK
-    {
-        foreach (var touch in Input.touches)
+        if(isJoystick || usingMobileInput)
         {
-            var destination = camera.ScreenToWorldPoint(touch.position);
-            //transform.position = Vector2.Lerp(transform.position, destination, Time.deltaTime * movementSpeed);
+            rb.MovePosition(rb.position + movementDirection * movementSpeed * Time.fixedDeltaTime);
+            //Quaternion lookRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+            Vector2 direction = (_JoystickPosition) - rb.position;
+            float aimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f; ;
+            rb.rotation = aimAngle;// 
         }
+        else
+        {
+            rb.MovePosition(rb.position + movementDirection * movementSpeed * Time.fixedDeltaTime);
+            Vector2 direction = mousePosition - rb.position;
+            float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+            rb.rotation = aimAngle;// 
+        }
+
+    }
+    public void MobileInput() 
+    {
+
+        movementDirection.x = _MovementJoystick.Horizontal;
+        movementDirection.y = _MovementJoystick.Vertical;
     }
     public void ConventionalInput()
     {
         movementDirection.x = Input.GetAxisRaw("Horizontal"); // CHANGE FOR JOYSTICK.HORIZONTAL
         movementDirection.y = Input.GetAxisRaw("Vertical");
-        
-    }
-    
 
-    #region TO TO BE MOVED TO A NEW SCRIPT
+    }
+    #endregion
+    #region Fire Methods - Double and Bursts Coroutines
     void Fire()
     {
         int numofBullet = 10;
@@ -213,7 +241,17 @@ void Update()
                 {
                     Vector2 direction = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
-                    float angle = aimAngle;
+                    float JaimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f;
+                    float angle = 0;
+                    if (isJoystick)
+                    {
+                         angle = JaimAngle;
+                    }
+                    else
+                    {
+                        angle = aimAngle;
+                    }
+                      
                     var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SINGLE, 1, angle);
                     _Muzzle.gameObject.SetActive(true);
                     StartCoroutine(TurnOfMuzzle());
@@ -225,17 +263,36 @@ void Update()
                     float angleSpread = -60f;
                     Vector3 mouseDirection = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(mouseDirection.y, mouseDirection.x) * Mathf.Rad2Deg - 90f;
-                
-                  
-                    var direction2 = Quaternion.Euler(0, 0, 0f) * (mouseDirection - transform.position); //-0
-                    var direction3 = Quaternion.Euler(0, 0, 30f) * (mouseDirection - transform.position); //30 
+                    float JaimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f;
+                    float angle = 0;
+                    if (isJoystick)
+                    {
+                        angle = JaimAngle;
+                    }
+                    else
+                    {
+                        angle = aimAngle;
+                    }
 
+
+                    //var direction2 = Quaternion.Euler(0, 0, 0f) * (mouseDirection - transform.position); //-0
+                    //var direction3 = Quaternion.Euler(0, 0, 30f) * (mouseDirection - transform.position); //30 
+
+                    Vector2 _Direction;
 
                     for (int i = 0; i < numberOfProjectiles; i++)
                     {
                       
-                        var direction = Quaternion.Euler(0, 0, angleSpread) * (mouseDirection - transform.position); //-30 
-                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SHOTGUN, 1, angleSpread + aimAngle);
+                      
+                        if (isJoystick)
+                        {
+                            _Direction = Quaternion.Euler(0, 0, angleSpread) * (_JoystickPosition - new Vector2(transform.position.x, transform.position.y));
+                        }
+                        else
+                        {
+                             _Direction = Quaternion.Euler(0, 0, angleSpread) * (mouseDirection - transform.position);
+                        }//-30 
+                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, _Direction, BulletType.SHOTGUN, 1, angleSpread + angle);
                         angleSpread += 30f;
                     }
 
@@ -253,12 +310,21 @@ void Update()
                     float angleStep = 360 / numofBullet;
                     Vector2 direction = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
-                    float angle = aimAngle;
+                    float JaimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f;
+                    float _Angle = 0;
+                    if (isJoystick)
+                    {
+                        _Angle = JaimAngle;
+                    }
+                    else
+                    {
+                        _Angle = aimAngle;
+                    }
 
                     for (int i = 0; i < numofBullet; i++)
                     {
-                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SPIRAL, 1, angle);
-                        angle += angleStep;
+                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SPIRAL, 1, _Angle);
+                        _Angle += angleStep;
                     }
 
                     _Muzzle.gameObject.SetActive(true);
@@ -272,8 +338,17 @@ void Update()
                 {
                     Vector2 direction = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
-                    float angle = aimAngle;
-                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.ROCKET, 1, angle);
+                    float JaimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f;
+                    float _Angle = 0;
+                    if (isJoystick)
+                    {
+                        _Angle = JaimAngle;
+                    }
+                    else
+                    {
+                        _Angle = aimAngle;
+                    }
+                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.ROCKET, 1, _Angle);
                     _Muzzle.gameObject.SetActive(true);
                     StartCoroutine(TurnOfMuzzle());
 
@@ -299,21 +374,8 @@ void Update()
         _bursting = false;
     }
     #endregion
-    void OnCollisionStay2D(Collision2D other)
-    {
-
-        if (other.gameObject.CompareTag("Enemy"))
-        {
-            health.TakeDamage(1.0f - maxStregth);
-            //TODO: Play the hurt sound
-            if (health.value <= 0)
-            {
-                //Set active Game over Menu, Give restart or return to main options
-               
-            }
-        }
-    }
-
+    
+    #region Power ups - Stats modifiers
     public void increaseBulletPower()
     {
 
@@ -353,7 +415,6 @@ void Update()
     {
         _customFireRate -= 0.1f;
     }
-
     public void ChangeBulletPattern()
     {
           if (DesiredPattern == BulletType.SINGLE)
@@ -389,12 +450,12 @@ void Update()
             maxStregth += 0.1f;
         }
     }
-
     public void SetAutomaticShot()
     {
         FireMode = FireMode.AUTO;
     }
-
+    #endregion
+    #region Tools
     void WrapAround(Vector3 vector, float min, float max)
     {
         vector.x = WrapAroundFloat(vector.x, min, max);
@@ -409,6 +470,7 @@ void Update()
             value = max;
         return value;
     }
+    #endregion
 }
 
 
