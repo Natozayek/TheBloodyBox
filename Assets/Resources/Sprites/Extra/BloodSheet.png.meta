@@ -160,7 +160,7 @@ TextureImporter:
         width: 92
         height: 110
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -168,6 +168,27 @@ TextureImporter:
       bones: []
       spriteID: b9877d4fe91cc2945be999e0a96a8d5a
       internalID: -1579991038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blood_3
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 69
+        width: 70
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbc5c4330654c384daae32927a4ad99e
+      internalID: 1663441466
       vertices: []
       indices: 
       edges: []
@@ -185,6 +206,7 @@ TextureImporter:
     nameFileIdTable:
       Blood_2: -1579991038
       Blood_1: 279702612
+      Blood_3: 1663441466
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 

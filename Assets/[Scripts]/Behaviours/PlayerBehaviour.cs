@@ -192,7 +192,7 @@ public class PlayerBehaviour : MonoBehaviour
         _Muzzle.gameObject.SetActive(false);
     }
     #region Cylce Functions - Change FireMode or BulletType
-    private void CycleFireMode() => FireMode = ((int)FireMode < 2) ? FireMode +1 : 0;
+    public void CycleFireMode() => FireMode = ((int)FireMode < 2) ? FireMode +1 : 0;
     public void CyclePatternsType() => DesiredPattern = ((int)DesiredPattern < 3) ? DesiredPattern + 1 : 0;
     #endregion
     #region Input Mode - Mobile or Conventional
