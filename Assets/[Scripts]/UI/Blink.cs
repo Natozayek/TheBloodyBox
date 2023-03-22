@@ -35,6 +35,7 @@ public class Blink : MonoBehaviour
                 _BloodVFX.SetActive(false);
                 _BloodVFX2.SetActive(false);
                  gameObject.SetActive(false);
+          
             }
             else
             {
