@@ -9,10 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 120447254690425275}
+  - component: {fileID: 1267147390}
   - component: {fileID: 120447254690425272}
   - component: {fileID: 120447254690425274}
-  - component: {fileID: 1267147394}
-  - component: {fileID: 1267147390}
   m_Layer: 9
   m_Name: Enemy
   m_TagString: Enemy
@@ -33,8 +32,33 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1267147390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 120447254690425222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aedb886eba4c12f41a5ab0eff94ad121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _HealthBarController: {fileID: 0}
+  _Health: 0
+  _MaxtHealth: 100
+  _Speed: 2
+  _EnemyType: 0
+  _StainPrefab: {fileID: 0}
+  _Blood_VFX_Prefab: {fileID: 0}
+  _BasicAnimator: []
+  _TankAnimator: []
+  _ExplodingAnimator: []
+  isChasing: 0
+  isEvading: 0
+  _Timer: 0
 --- !u!212 &120447254690425272
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -108,56 +132,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &1267147394
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 120447254690425222}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
---- !u!114 &1267147390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 120447254690425222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aedb886eba4c12f41a5ab0eff94ad121, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  position: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  acceleration: {x: 0, y: 0, z: 0}
-  DetectionRadius: 3
-  _LevelController: {fileID: 0}
-  _Controller: {fileID: 0}
-  enemType: 0
-  stainPrefab: {fileID: 0}
-  healthBarController: {fileID: 0}
-  health: 0
-  maxtHealth: 100
-  speed: 2
-  bulletReference: {fileID: 2918410691271083767, guid: a8a3a10f729a06b478fe88bfcaea10f2, type: 3}
-  isEvading: 0
-  externalCollider: {fileID: 0}

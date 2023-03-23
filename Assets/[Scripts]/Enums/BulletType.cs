@@ -14,7 +14,7 @@ public enum BulletType
 [System.Serializable]
 public enum EnemyType
 {
-    Enemy1,
-    Enemy2,
-    Enemy3,
+    BASIC,
+    TANK,
+    EXPLOSIVE,
 }

@@ -54,7 +54,7 @@ public class LoadingBarController : MonoBehaviour
                 }
                 if(isGameLoading)
                 {
-                    progressValue += 0.05f;
+                    progressValue += 0.1f;
                 }
             }
             yield return new WaitForSeconds(0.25f);

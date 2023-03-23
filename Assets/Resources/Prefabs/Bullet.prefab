@@ -34,7 +34,7 @@ Transform:
   m_Children:
   - {fileID: 3447445769081503275}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3709367707188360992
 SpriteRenderer:
@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Speed: 5
-  _RegularDamage: 30
+  _RegularDamage: 55
   _RocketDamage: 0
   _BulletType: 0
   _Child_RocketReference: {fileID: 7773607919285872431}

@@ -9,9 +9,9 @@ public class BulletBehaviour : MonoBehaviour
 {
     static public BulletBehaviour _Instance;
     [Header("Bullet Properties")]
-    public float _Speed = 5;
-    public float _RegularDamage = 30;
+    public float _RegularDamage = 0;
     public float _RocketDamage = 0;
+    public float _Speed = 0;
     public BulletType _BulletType;
     [SerializeField] GameObject _Child_RocketReference;
     public BulletManager _Bullet_Manager;

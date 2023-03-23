@@ -39,6 +39,7 @@ public class BulletManager : MonoBehaviour
     private const float radius = 1f;
     Sprite[] Xprites;
     [SerializeField] private AI_Level_Manager levelManager;
+    [SerializeField] public StatsVariableIncreaser VariableIncreaser;
 
 
     // Start is called before the first frame update
@@ -82,6 +83,7 @@ public class BulletManager : MonoBehaviour
                             activePlayerBullets++;
                         }
                               bullet.GetComponent<BulletBehaviour>()._BulletType = type;
+                              bullet.GetComponent<BulletBehaviour>()._RegularDamage = bullet.GetComponent<BulletBehaviour>()._RegularDamage * VariableIncreaser._Bullet_Damage_Multiplier;
                   }
                   break;
 
@@ -98,7 +100,9 @@ public class BulletManager : MonoBehaviour
                             activePlayerBullets++;
                         }
                             bullet.GetComponent<BulletBehaviour>()._BulletType = type;
-                  }
+                            bullet.GetComponent<BulletBehaviour>()._RegularDamage = bullet.GetComponent<BulletBehaviour>()._RegularDamage * VariableIncreaser._Bullet_Damage_Multiplier;
+                            bullet.GetComponent<BulletBehaviour>()._Speed = VariableIncreaser._BulletSpeed * VariableIncreaser._BulletSpeed_Multiplier;
+                }
                   break;
 
                  case BulletType.SHOTGUN:
@@ -114,7 +118,9 @@ public class BulletManager : MonoBehaviour
                               activePlayerBullets++;
                           }
                               bullet.GetComponent<BulletBehaviour>()._BulletType = type;
-                 }
+                              bullet.GetComponent<BulletBehaviour>()._RegularDamage = bullet.GetComponent<BulletBehaviour>()._RegularDamage * VariableIncreaser._Bullet_Damage_Multiplier;
+                              bullet.GetComponent<BulletBehaviour>()._Speed = VariableIncreaser._BulletSpeed * VariableIncreaser._BulletSpeed_Multiplier;
+                }
                  break;
 
                case BulletType.ROCKET:
@@ -130,7 +136,9 @@ public class BulletManager : MonoBehaviour
                            activePlayerBullets++;
                        }
                        bullet.GetComponent<BulletBehaviour>()._BulletType = type;
-                   }
+                       bullet.GetComponent<BulletBehaviour>()._RegularDamage = bullet.GetComponent<BulletBehaviour>()._RegularDamage * VariableIncreaser._Bullet_Damage_Multiplier;
+                       bullet.GetComponent<BulletBehaviour>()._Speed = VariableIncreaser._BulletSpeed * VariableIncreaser._BulletSpeed_Multiplier;
+                }
                    break;
           }
                
@@ -229,7 +237,7 @@ public class BulletManager : MonoBehaviour
 
             // Create vectors.
             Vector3 projectileVector = new Vector3(projectileDirXPosition, projectileDirYPosition, 0);
-            Vector3 projectileMoveDirection = (projectileVector - startPosition).normalized * projectileSpeed;
+            Vector3 projectileMoveDirection = (projectileVector - startPosition).normalized * bullet.GetComponent<BulletBehaviour>()._Speed;
 
             bullet.GetComponent<Rigidbody2D>().velocity = new Vector3(projectileMoveDirection.x, projectileMoveDirection.y, 0);
             bullet.GetComponent<Rigidbody2D>().rotation = -angle;
@@ -238,13 +246,14 @@ public class BulletManager : MonoBehaviour
     public void AimShoot(GameObject bullet, float angle)
     {
             Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
-            bulletRb.AddForce(firePoint.up * projectileSpeed, ForceMode2D.Impulse);
+            bulletRb.AddForce(firePoint.up * bullet.GetComponent<BulletBehaviour>()._Speed, ForceMode2D.Impulse);
             bullet.GetComponent<Rigidbody2D>().rotation = angle;
     }
     private void SpreadShot(Vector3 direction, GameObject bullet, float angle)
     {
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
-        bulletRb.AddForce(direction, ForceMode2D.Force);
+        bulletRb.velocity = Vector2.zero;
+        bulletRb.AddForce(direction * bullet.GetComponent<BulletBehaviour>()._Speed, ForceMode2D.Force);
         bullet.GetComponent<Rigidbody2D>().rotation = angle;
     }
 

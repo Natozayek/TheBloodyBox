@@ -14,7 +14,9 @@ public class PowerUPManager : MonoBehaviour
      [SerializeField] private SpawnManager spawnManagerReference;
      [SerializeField] private GameObject parentOjbect;
      [SerializeField] private TextMeshProUGUI nameOfPowerUP;
-      public float waveRound;
+     [SerializeField] private StatsVariableIncreaser VaribleIncreaser;
+
+    public float waveRound = 1;
       public ItemType typeX;
       Random _R = new Random();
       Sprite[] Xprites;
@@ -34,7 +36,8 @@ public class PowerUPManager : MonoBehaviour
             DOUBLESHOT,
             BURSTSHOT,
             CHANGEBULLET,
-            AUTOSHOT
+            AUTOSHOT, 
+            ROCKET
 
     }
 
@@ -43,13 +46,15 @@ public class PowerUPManager : MonoBehaviour
         playerReference = FindObjectOfType<PlayerBehaviour>();
         spawnManagerReference = FindObjectOfType<SpawnManager>();
         Xprites = Resources.LoadAll<Sprite>("Sprites/PowerUps");
+        waveRound = VaribleIncreaser.WaveRound;
     }
 
     private void OnEnable()
     {
-       waveRound = spawnManagerReference.waveNumber;
+        waveRound = VaribleIncreaser.WaveRound;
         var itemTYPE = RandomizePowerUPForDisplay();
         typeX = itemTYPE;
+        
     }
     private void OnDisable()
     { 
@@ -67,13 +72,13 @@ public class PowerUPManager : MonoBehaviour
             switch (selectedType)
             {
                 case ItemType.BulletPowerPlus:
-                playerReference.increaseBulletPower();
+                increaseBulletPower();
                 spawnManagerReference.isPowerUpSelected = true;
                 spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                     break;
             case ItemType.BulletSpeedPlus:
-                playerReference.increaseBulletSpeed();
+                increaseBulletSpeed();
                 spawnManagerReference.isPowerUpSelected = true;
                 spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
@@ -121,6 +126,7 @@ public class PowerUPManager : MonoBehaviour
                 break;
             case ItemType.BURSTSHOT:
                 playerReference.SetBurstShotActive();
+                spawnManagerReference.isPowerUpSelected = true;
                 spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
@@ -131,7 +137,14 @@ public class PowerUPManager : MonoBehaviour
                 spawnManagerReference.intermission = 3;
                 parentOjbect.SetActive(false);
                 break;
-            }
+
+            case ItemType.ROCKET:
+                playerReference.SetRocketShot();
+                spawnManagerReference.isPowerUpSelected = true;
+                spawnManagerReference.intermission = 3;
+                parentOjbect.SetActive(false);
+                break;
+        }
 
            // itemSelected.Play();
             //GetComponent<SpriteRenderer>().enabled = false;
@@ -152,17 +165,26 @@ public class PowerUPManager : MonoBehaviour
 
         if (waveRound < 5 && (ItemSelected.Equals(ExcludeType1) || ItemTYPES.Equals(ExcludeType2) || ItemTYPES.Equals(ExcludeType3)))
         {
+            Debug.Log("Entered to 1st loop");
             ItemSelected = (T)ItemTYPES.GetValue(_R.Next(ItemTYPES.Length - 4));
         }
-        if (waveRound > 5 || waveRound <= 10)
+        if (waveRound >= 5 && waveRound <= 10)
         {
+            Debug.Log("Entered to 2nd loop");
             ItemSelected = (T)ItemTYPES.GetValue(_R.Next(ItemTYPES.Length - 3));
         }
-        if (waveRound >= 11)
+        if (waveRound >= 11 && waveRound <= 15)
         {
+            Debug.Log("Entered to 3nd loop");
+            ItemSelected = (T)ItemTYPES.GetValue(_R.Next(ItemTYPES.Length - 2));
+        }
+        if (waveRound >= 6)
+        {
+            Debug.Log("Entered to 4nd loop");
             ItemSelected = (T)ItemTYPES.GetValue(_R.Next(ItemTYPES.Length));
         }
         return ItemSelected;
+
     }
     //Set up type and sprite of button
     public ItemType RandomizePowerUPForDisplay()
@@ -192,7 +214,7 @@ public class PowerUPManager : MonoBehaviour
 
             case ItemType.IncreaseMaxHP:
                 this.gameObject.GetComponent<Image>().sprite = Xprites[12];
-                nameOfPowerUP.text = "Self-Sustenance: \n Increases Player's Max HP  \n Restores HP. ";
+                nameOfPowerUP.text = "Sustenance: \n Increases Player's Max HP  \n Restores HP. ";
                 break;
 
             case ItemType.IncreaseMaxStrenght:
@@ -230,7 +252,22 @@ public class PowerUPManager : MonoBehaviour
                 this.gameObject.GetComponent<Image>().sprite = Xprites[14];
                 nameOfPowerUP.text = "Unstoppable: \n Activate Automatic shot mode. ";
                 break;
+
+            case ItemType.ROCKET:
+                this.gameObject.GetComponent<Image>().sprite = Xprites[14];
+                nameOfPowerUP.text = "Saturn-V: \n Activate Rocket shot mode. ";
+                break;
         }
+
+    }
+
+    public void increaseBulletPower()
+    {
+        VaribleIncreaser._Bullet_Damage_Multiplier = VaribleIncreaser._Bullet_Damage_Multiplier + 0.12f;
+    }
+    public void increaseBulletSpeed()
+    {
+        VaribleIncreaser._BulletSpeed_Multiplier = VaribleIncreaser._BulletSpeed_Multiplier + 0.1f;
 
     }
 

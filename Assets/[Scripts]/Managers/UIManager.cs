@@ -23,7 +23,7 @@ public class UIManager : MonoBehaviour
     {
        
 
-        WaveN = SpawnManager.Instance.waveNumber + 1;
+        WaveN = SpawnManager.Instance.waveNumber;
         if (SpawnManager.Instance.isEndless)
         {
             GoalN = 999999;

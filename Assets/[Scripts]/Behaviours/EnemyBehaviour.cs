@@ -6,11 +6,12 @@ public class EnemyBehaviour : MonoBehaviour
 {
     [Header("Enemy Properties")]
     [SerializeField] public  EnemyHealthBarController _HealthBarController;
-    [SerializeField] public float _Health, _MaxtHealth = 100f;
-    [SerializeField] public float _Speed = 5f;
+    [SerializeField] public float _Health, _MaxtHealth = 0;
+    [SerializeField] public float _Speed = 1f;
     [SerializeField] public EnemyType _EnemyType;
     [SerializeField] GameObject _StainPrefab;
     [SerializeField] GameObject _Blood_VFX_Prefab;
+    [SerializeField] public GameObject _BasicAnimator, _TankAnimator, _ExplodingAnimator, HealthBar;
     public bool isChasing;
     public bool isEvading;
    
@@ -28,7 +29,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     Rigidbody2D rb;
     Transform _Target;
-    float _Timer;
+    public float _Timer;
     public static EnemyBehaviour Instance;
 
     private void Awake()
@@ -66,11 +67,13 @@ public class EnemyBehaviour : MonoBehaviour
     }
     void Update()
     {
+        RotateSprite();
+
         if (_SpawnManager.intermissionOn)
         {
             DeathSequence();
         }
-        if(_Target != null)
+        if (_Target != null)
         {
             Vector3 tempDirection = (_Target.position - transform.position).normalized;
             float angle = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg - 90f;
@@ -79,17 +82,29 @@ public class EnemyBehaviour : MonoBehaviour
         }
         if (isChasing)
         {
-            AI_Movement();
+            switch(_EnemyType)
+            {
+                case EnemyType.BASIC:
+                    AI_Movement();
+                    break;
+                case EnemyType.TANK:
+                    AI_Movement();
+                    break;
+                case EnemyType.EXPLOSIVE:
+                    AI_Movement();
+                    break;
+            }
+           
         }
 
         _Timer = _Timer + Time.deltaTime;
 
-        if(_Timer >= 5 && !isChasing)
+        if (_Timer >= 3 && !isChasing)
         {
             isChasing = true;
             _Timer = 0;
         }
-        if (_Timer >= 5 && isEvading)
+        if (_Timer >= 3 && isEvading)
         {
             isChasing = true;
             isEvading = false;
@@ -98,11 +113,64 @@ public class EnemyBehaviour : MonoBehaviour
         _Position.z = 0;
 
     }
+
+    private void RotateSprite()
+    {
+        if (Direction.x >= 0.1)
+        {
+            switch (_EnemyType)
+            {
+                case EnemyType.BASIC:
+                    {
+                        _BasicAnimator.gameObject.GetComponentInChildren<Transform>().localScale = new Vector3(1.5f, 1.5f, 0);
+                        break;
+                    }
+                case EnemyType.TANK:
+                    {
+
+                        _TankAnimator.gameObject.GetComponentInChildren<Transform>().localScale = new Vector3(3f, 3f, 0);
+                        break;
+                    }
+                case EnemyType.EXPLOSIVE:
+                    {
+
+                        _ExplodingAnimator.gameObject.GetComponentInChildren<Transform>().localScale = new Vector3(2.0f, 2.0f, 0);
+                        break;
+                    }
+            }
+
+        }
+        if (Direction.x <= 0.1)
+        {
+            switch (_EnemyType)
+            {
+                case EnemyType.BASIC:
+                    {
+                        _BasicAnimator.gameObject.GetComponentInChildren<Transform>().localScale = new Vector3(-1.5f, 1.5f, 0);
+                        break;
+                    }
+                case EnemyType.TANK:
+                    {
+
+                        _TankAnimator.gameObject.GetComponentInChildren<Transform>().localScale = new Vector3(-3f, 3f, 0);
+                        break;
+                    }
+                case EnemyType.EXPLOSIVE:
+                    {
+
+                        _ExplodingAnimator.gameObject.GetComponentInChildren<Transform>().localScale = new Vector3(-2.0f, 2.0f, 0);
+                        break;
+                    }
+            }
+
+        }
+    }
+
     private void AI_Movement()
     {
         if (_Target != null)//is not evading)
         {
-            rb.velocity = new Vector2(Direction.x, Direction.y);
+            rb.velocity = new Vector2(Direction.x, Direction.y) *  _Speed;
             _Velocity = rb.velocity; 
 
         }
@@ -129,14 +197,44 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
+    //To Trigger Animations
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            switch (_EnemyType)
+            {
+                case EnemyType.BASIC:
+                    {
+                      var Animator =  _BasicAnimator.gameObject.GetComponentInChildren<Animator>();
+                        Animator.SetTrigger("attack");
+                        break;
+                    }
+                case EnemyType.TANK:
+                    {
+                      
+                        var Animator = _TankAnimator.gameObject.GetComponentInChildren<Animator>();
+                        Animator.SetTrigger("attack");
+                        break;
+                    }
+                case EnemyType.EXPLOSIVE:
+                    {
+
+                        var Animator = _ExplodingAnimator.gameObject.GetComponentInChildren<Animator>();
+                        Animator.SetTrigger("attack");
+                        DeathSequence();
+                        break;
+                    }
+            }
+
+        }
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Bullet"))   
+        if (other.gameObject.tag == ("Bullet"))   
         {
             if(isChasing || isEvading)
             {
-                isChasing = false;
-                Debug.Log(isChasing);
                 _Timer = 0;
 
                 if (_Health > 1)
@@ -173,6 +271,26 @@ public class EnemyBehaviour : MonoBehaviour
         //play animation
         float rand = Random.Range(1, 360);
         this.gameObject.SetActive(false);
+        HealthBar.gameObject.SetActive(false);
+        switch (_EnemyType)
+        {
+            case EnemyType.BASIC:
+                {
+                    _BasicAnimator.gameObject.SetActive(false);
+                    break;
+                }
+            case EnemyType.TANK:
+                {
+                    _TankAnimator.gameObject.SetActive(false);
+                    break;
+                }
+            case EnemyType.EXPLOSIVE:
+                {
+                    _ExplodingAnimator.gameObject.SetActive(false);
+                    //Explosive and spawn Corrosive Stain Blood;
+                    break;
+                }
+        }
         _Blood_VFX_Prefab.GetComponent<Transform>().position = this.gameObject.transform.position;
         _StainPrefab.GetComponent<Transform>().position = this.gameObject.transform.position;
         _Blood_VFX_Prefab.SetActive(true);
@@ -276,12 +394,14 @@ public class EnemyBehaviour : MonoBehaviour
     public Vector3 Evade(Vector3 bulletTarget)
     {      //What is wrong with this calculation?
 
-          //acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
-         // velocity = velocity + acceleration * Time.deltaTime;
+        //acceleration = Vector3.ClampMagnitude(acceleration, _Controller._Max_Acceleration);
+        // velocity = velocity + acceleration * Time.deltaTime;
         //  velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
-       //   position = position + velocity * Time.deltaTime;
+        //   position = position + velocity * Time.deltaTime;
 
-        Vector3 newVelocity = (_Position - bulletTarget).normalized * _Controller._Max_Velocity;
+        Debug.Log("Evading");
+
+        Vector3 newVelocity = (_Position - bulletTarget).normalized * _Speed;
         isEvading = true;
         _Timer = 0;
         return rb.velocity = newVelocity - _Velocity;

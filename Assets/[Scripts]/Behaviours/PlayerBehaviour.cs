@@ -376,33 +376,8 @@ public class PlayerBehaviour : MonoBehaviour
     #endregion
     
     #region Power ups - Stats modifiers
-    public void increaseBulletPower()
-    {
 
-            
-        for (int i = 0; i < bulletManager.playerBulletPool.Count; i++)
-        {
-            if (bulletManager.playerBulletPool.ElementAt(i).gameObject != null)
-            {
-                bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._RegularDamage += bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._RegularDamage * 0.15f;
 
-              
-
-            }
-        }
-    }
-    public void increaseBulletSpeed()
-    {
-        for (int i = 0; i < bulletManager.playerBulletPool.Count; i++)
-        {
-            if (bulletManager.playerBulletPool.ElementAt(i).gameObject != null)
-            {
-                bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._Speed += bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._Speed * 0.05f;
-
-                Debug.Log(bulletManager.playerBulletPool.ElementAt(i).gameObject.GetComponent<BulletBehaviour>()._Speed);
-            }
-        }
-    }
     public void increaseMAXHP()
     {
         health.IncreasMaxHP();
@@ -429,9 +404,11 @@ public class PlayerBehaviour : MonoBehaviour
         }
         if (DesiredPattern == BulletType.SPIRAL)
         {
-            return ;
+            return;
         }
+    
     }
+
     public void DoubleShotActive()
     {
         if (!DoubleShootOn)
@@ -453,6 +430,11 @@ public class PlayerBehaviour : MonoBehaviour
     public void SetAutomaticShot()
     {
         FireMode = FireMode.AUTO;
+    }
+
+    public void SetRocketShot()
+    {
+        DesiredPattern = BulletType.ROCKET;
     }
     #endregion
     #region Tools

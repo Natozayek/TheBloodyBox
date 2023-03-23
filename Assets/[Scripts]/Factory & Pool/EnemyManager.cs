@@ -11,8 +11,8 @@ public class EnemyManager : MonoBehaviour
     public int enemyCount = 0;
     public int ActiveEnemies = 0;
     private Factory factory;
-    Sprite[] Xprites;
 
+    [SerializeField] private StatsVariableIncreaser VaribleIncreaser;
 
     [Header("Private Variables")]
     private Vector3 startPoint;
@@ -21,7 +21,7 @@ public class EnemyManager : MonoBehaviour
     {
         factory = GameObject.FindObjectOfType<Factory>();
         BuildEnemyPool();
-        Xprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
+
     }
     void BuildEnemyPool()
     {
@@ -34,14 +34,13 @@ public class EnemyManager : MonoBehaviour
 
     }
 
-
     public GameObject GetEnemy(Vector3 startPosition, EnemyType type )
     {
         GameObject enemy = null;
         
         switch (type)
         {
-            case EnemyType.Enemy1:
+            case EnemyType.BASIC:
                 {
                     if (enemyPool.Count < 1)
                     {
@@ -53,11 +52,9 @@ public class EnemyManager : MonoBehaviour
                         enemyCount = enemyPool.Count;
                         ActiveEnemies++;
                     }
-
-                   // enemy.GetComponent<EnemyBehaviour>().enemType = type;
                 }
                 break;
-            case EnemyType.Enemy2:
+            case EnemyType.TANK:
                 {
                     {
                         if (enemyPool.Count < 1)
@@ -71,49 +68,76 @@ public class EnemyManager : MonoBehaviour
                             ActiveEnemies++;
                         }
 
-                      //  enemy.GetComponent<EnemyBehaviour>().enemType = type;
                     }
                 }
                 break;
 
+            case EnemyType.EXPLOSIVE:
+                {
+                    {
+                        if (enemyPool.Count < 1)
+                        {
+                            enemyPool.Enqueue(factory.CreateEnemy());
+                        }
+                        {
+                            enemy = enemyPool.Dequeue();
+                            // stats
+                            enemyCount = enemyPool.Count;
+                            ActiveEnemies++;
+                        }
+
+                    }
+                }
+                break;
+
+
         }
 
         enemy.SetActive(true);
-       // levelManager.ListOfEnemies.Add(enemy.GetComponent<EnemyBehaviour>());
         enemy.transform.position = startPosition;
 
         switch (type)
         {
-            case EnemyType.Enemy1:
+            //Set specifications
+            case EnemyType.BASIC:
                 {
-                    enemy.GetComponentInChildren<SpriteRenderer>().sprite = Xprites[1];
-                   
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._EnemyType = EnemyType.BASIC;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._BasicAnimator.SetActive(true);
+                    enemy.GetComponentInChildren<EnemyBehaviour>().HealthBar.SetActive(true);
+                    enemy.GetComponentInChildren<EnemyBehaviour>().transform.localScale = new Vector3(1.5f, 1.5f, 0);
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Basic_Speed * VaribleIncreaser._SpeedMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth = VaribleIncreaser.Basic_MaxHealth * VaribleIncreaser._HealthMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._Health = enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth;
+                    enemy.gameObject.GetComponentInChildren<EnemyBehaviour>()._HealthBarController.resetHeath();
                     break;
                 }
-            case EnemyType.Enemy2:
+            case EnemyType.TANK:
                 {
-                    enemy.GetComponentInChildren<SpriteRenderer>().sprite = Xprites[0];
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._EnemyType = EnemyType.TANK;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._TankAnimator.SetActive(true);
+                    enemy.GetComponentInChildren<EnemyBehaviour>().HealthBar.SetActive(true);
+                    enemy.GetComponentInChildren<EnemyBehaviour>().transform.localScale = new Vector3(2, 2, 0); 
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Tank_Speed * VaribleIncreaser._SpeedMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth = VaribleIncreaser.Tank_MaxHealth * VaribleIncreaser._HealthMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._Health = enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth;
+                    enemy.gameObject.GetComponentInChildren<EnemyBehaviour>()._HealthBarController.resetHeath();
+                    break;
+                }
+            case EnemyType.EXPLOSIVE:
+                {
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._EnemyType = EnemyType.EXPLOSIVE;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._ExplodingAnimator.SetActive(true);
+                    enemy.GetComponentInChildren<EnemyBehaviour>().HealthBar.SetActive(true);
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Explosive_Speed * VaribleIncreaser._SpeedMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth = VaribleIncreaser.Explosive_MaxHealth * VaribleIncreaser._HealthMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._Health = enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth;
+                    enemy.gameObject.GetComponentInChildren<EnemyBehaviour>()._HealthBarController.resetHeath();
                     break;
                 }
 
         }
         return enemy;
-        //switch (type)
-        //{
-        //    case BulletType.SPIRAL:
-        //        threeSixtyAngleShoot(startPosition, bullet, angle);
-        //        break;
 
-        //    case BulletType.SINGLE:
-        //        AimShoot(bullet, angle);
-        //        break;
-
-        //    case BulletType.SHOTGUN:
-        //        SpreadShot(targetPos, bullet, angle);
-        //        break;
-
-        //}
-        //return bullet;
     }
 
 
@@ -126,7 +150,7 @@ public class EnemyManager : MonoBehaviour
 
         switch (type)
         {
-            case EnemyType.Enemy1:
+            case EnemyType.BASIC:
                 {
                     enemyPool.Enqueue(enemy);
                     //stats
@@ -134,7 +158,7 @@ public class EnemyManager : MonoBehaviour
                     ActiveEnemies--;
                 }
                 break;
-            case EnemyType.Enemy2:
+            case EnemyType.TANK:
                 {
                     enemyPool.Enqueue(enemy);
                     //stats
@@ -142,7 +166,15 @@ public class EnemyManager : MonoBehaviour
                     ActiveEnemies--;
                 }
                 break;
-          
+            case EnemyType.EXPLOSIVE:
+                {
+                    enemyPool.Enqueue(enemy);
+                    //stats
+                    enemyCount = enemyPool.Count;
+                    ActiveEnemies--;
+                }
+                break;
+
         }
     }
 
