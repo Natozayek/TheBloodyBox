@@ -14,8 +14,6 @@ public class EnemyManager : MonoBehaviour
 
     [SerializeField] private StatsVariableIncreaser VaribleIncreaser;
 
-    [Header("Private Variables")]
-    private Vector3 startPoint;
 
     void Start()
     {
