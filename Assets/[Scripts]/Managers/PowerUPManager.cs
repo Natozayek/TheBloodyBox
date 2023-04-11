@@ -7,6 +7,13 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = System.Random;
 
+[System.Serializable]
+public class RandomNumerSelector 
+{
+    public int minNumber;
+    public int maxNumber;
+}
+
 public class PowerUPManager : MonoBehaviour
 {
      [SerializeField] private PlayerBehaviour playerReference;
@@ -15,6 +22,8 @@ public class PowerUPManager : MonoBehaviour
      [SerializeField] private GameObject parentOjbect;
      [SerializeField] private TextMeshProUGUI nameOfPowerUP;
      [SerializeField] private StatsVariableIncreaser VaribleIncreaser;
+
+    [SerializeField] public List<RandomNumerSelector> numberPerRound;
 
     public float waveRound = 1;
       public ItemType typeX;

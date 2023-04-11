@@ -11,7 +11,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] int enemyKillsCounter = 0;
 
     [SerializeField] private float spawnRate = 2f;
-    [SerializeField] public int waveGoal;
+    [SerializeField] public int waveGoal = 7;
     [SerializeField] int enemyOnMap = 0;
     [SerializeField] public int waveNumber = 1;
     [SerializeField] private GameObject PowerUpUI;

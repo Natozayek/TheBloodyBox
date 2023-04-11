@@ -176,6 +176,20 @@ public class PlayerBehaviour : MonoBehaviour
             }
         }
     }
+    void OnTriggerStay2D(Collider2D other)
+    {
+
+        if (other.gameObject.CompareTag("CorrosiveFloor"))
+        {
+            health.TakeDamage(0.5f - maxStregth);
+            //TODO: Play the hurt sound
+            if (health.value <= 0)
+            {
+                //Set active Game over Menu, Give restart or return to main options
+
+            }
+        }
+    }
     private bool CanShoot()
     {
         if (_fireTimer < _fireRate) { return false; }

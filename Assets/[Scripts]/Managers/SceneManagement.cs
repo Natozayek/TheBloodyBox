@@ -7,22 +7,33 @@ using UnityEngine.SceneManagement;
 public class SceneManagement : MonoBehaviour
 {
     [SerializeField] Button Waves, Endless, Settings, Instructions;
-    [SerializeField] GameObject loadingScrean;
-
-    private void Update()
-    {
-        
-    }
+    [SerializeField] GameObject loadingScreen;
+    [SerializeField] GameObject GameScene;
+    [SerializeField] GameObject comingSoon;
+    [SerializeField] GameObject menuScene;
+    [SerializeField] GameObject InitialScene, subMenu;
+    [SerializeField] GameObject StageSelect;
     public void PlayEndless()
     {
-        Debug.Log("Coming Soon");
+        comingSoon.SetActive(true);
+        StartCoroutine(DeactivateCommingSoon());
+    }
+    IEnumerator DeactivateCommingSoon()
+    {
+        yield return new WaitForSeconds(1);
+        comingSoon.SetActive(false);
     }
     public void PlayWaves()
     {
-        gameObject.SetActive(false);
-        loadingScrean.gameObject.SetActive(true);
-        SceneManager.LoadScene("Waves");
-        
-
+        StageSelect.SetActive(true);
+        subMenu.SetActive(false);
+   
+    }
+    public void PlayLevel1()
+    {
+        menuScene.SetActive(false);
+        StageSelect.SetActive(false);
+        InitialScene.SetActive(true);
+        GameScene.SetActive(true);
     }
 }

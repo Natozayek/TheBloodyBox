@@ -14,7 +14,7 @@ public class BloodInitiatior : MonoBehaviour
     {
         timer = timer + Time.deltaTime;
 
-        if(timer > Random.RandomRange(1.5f,durationTime))
+        if(timer > Random.Range(1.5f,durationTime))
         {
             ParticleSystem.Play();
             timer = 0;

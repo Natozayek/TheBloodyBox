@@ -7,7 +7,6 @@ public class StainRemover : MonoBehaviour
     [Range(0f, 60f)]
     [SerializeField] float timer;
     float alpha = 0.9f;
-    private bool doOnce = false;
     [SerializeField] GameObject EnemyPrefab;
     [SerializeField] GameObject bloodPrefab;
 

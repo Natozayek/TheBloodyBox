@@ -9,7 +9,7 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] public float _Health, _MaxtHealth = 0;
     [SerializeField] public float _Speed = 1f;
     [SerializeField] public EnemyType _EnemyType;
-    [SerializeField] GameObject _StainPrefab;
+    [SerializeField] GameObject _StainPrefab, _CorrosiveFloor;
     [SerializeField] GameObject _Blood_VFX_Prefab;
     [SerializeField] public GameObject _BasicAnimator, _TankAnimator, _ExplodingAnimator, HealthBar;
     public bool isChasing;
@@ -287,6 +287,8 @@ public class EnemyBehaviour : MonoBehaviour
             case EnemyType.EXPLOSIVE:
                 {
                     _ExplodingAnimator.gameObject.SetActive(false);
+                    _CorrosiveFloor.GetComponent<Transform>().position = this.gameObject.transform.position;
+                    _CorrosiveFloor.SetActive(true);
                     //Explosive and spawn Corrosive Stain Blood;
                     break;
                 }
@@ -398,8 +400,6 @@ public class EnemyBehaviour : MonoBehaviour
         // velocity = velocity + acceleration * Time.deltaTime;
         //  velocity = Vector3.ClampMagnitude(velocity, _Controller._Max_Velocity);
         //   position = position + velocity * Time.deltaTime;
-
-        Debug.Log("Evading");
 
         Vector3 newVelocity = (_Position - bulletTarget).normalized * _Speed;
         isEvading = true;
