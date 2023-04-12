@@ -103,8 +103,8 @@ public class EnemyManager : MonoBehaviour
                     enemy.GetComponentInChildren<EnemyBehaviour>()._BasicAnimator.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().HealthBar.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().transform.localScale = new Vector3(1.5f, 1.5f, 0);
-                    enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Basic_Speed * VaribleIncreaser._SpeedMultiplier;
-                    enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth = VaribleIncreaser.Basic_MaxHealth * VaribleIncreaser._HealthMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Basic_Speed * VaribleIncreaser._EnemySpeedMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth = VaribleIncreaser.Basic_MaxHealth * VaribleIncreaser._EnemyHealthMultiplier;
                     enemy.GetComponentInChildren<EnemyBehaviour>()._Health = enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth;
                     enemy.gameObject.GetComponentInChildren<EnemyBehaviour>()._HealthBarController.resetHeath();
                     break;
@@ -115,8 +115,8 @@ public class EnemyManager : MonoBehaviour
                     enemy.GetComponentInChildren<EnemyBehaviour>()._TankAnimator.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().HealthBar.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().transform.localScale = new Vector3(2, 2, 0); 
-                    enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Tank_Speed * VaribleIncreaser._SpeedMultiplier;
-                    enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth = VaribleIncreaser.Tank_MaxHealth * VaribleIncreaser._HealthMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Tank_Speed * VaribleIncreaser._EnemySpeedMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth = VaribleIncreaser.Tank_MaxHealth * VaribleIncreaser._EnemyHealthMultiplier;
                     enemy.GetComponentInChildren<EnemyBehaviour>()._Health = enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth;
                     enemy.gameObject.GetComponentInChildren<EnemyBehaviour>()._HealthBarController.resetHeath();
                     break;
@@ -126,8 +126,8 @@ public class EnemyManager : MonoBehaviour
                     enemy.GetComponentInChildren<EnemyBehaviour>()._EnemyType = EnemyType.EXPLOSIVE;
                     enemy.GetComponentInChildren<EnemyBehaviour>()._ExplodingAnimator.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().HealthBar.SetActive(true);
-                    enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Explosive_Speed * VaribleIncreaser._SpeedMultiplier;
-                    enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth = VaribleIncreaser.Explosive_MaxHealth * VaribleIncreaser._HealthMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Explosive_Speed * VaribleIncreaser._EnemySpeedMultiplier;
+                    enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth = VaribleIncreaser.Explosive_MaxHealth * VaribleIncreaser._EnemyHealthMultiplier;
                     enemy.GetComponentInChildren<EnemyBehaviour>()._Health = enemy.GetComponentInChildren<EnemyBehaviour>()._MaxtHealth;
                     enemy.gameObject.GetComponentInChildren<EnemyBehaviour>()._HealthBarController.resetHeath();
                     break;

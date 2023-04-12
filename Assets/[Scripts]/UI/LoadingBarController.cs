@@ -13,6 +13,7 @@ public class LoadingBarController : MonoBehaviour
     [SerializeField] bool isGameLoading = false;
     [SerializeField] GameObject CountDownObject;
     [SerializeField] GameObject GameUI;
+    public HealthBarController healthBarController;
     private void Start()
     {
         StartLoading();
@@ -37,7 +38,12 @@ public class LoadingBarController : MonoBehaviour
                 { 
                     CountDownObject.SetActive(true);
                     GameUI.SetActive(true);
+                    CountDownObject.GetComponent<InitialCountDown>().StartCountDown();
+                    healthBarController.GetComponent<HealthBarController>().StartHealth();
                     gameObject.SetActive(false);
+                    BarFill.fillAmount = 0.0f;
+                    isLoaded = false;
+
                 }
                 if (CountDownObject == null || GameUI == null)
                 {

@@ -69,7 +69,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         RotateSprite();
 
-        if (_SpawnManager.intermissionOn)
+        if (_SpawnManager.intermissionOn || _SpawnManager.GameOverOn)
         {
             DeathSequence();
         }

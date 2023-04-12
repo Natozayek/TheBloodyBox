@@ -15,13 +15,17 @@ public class HealthBarController : MonoBehaviour
     public Slider healthBar;
 
 
-    void Start()
+    //void Start()
+    //{
+    //    StartHealth();
+    //}
+
+    public void StartHealth()
     {
         MaxHealth = InitialHealth;
         healthBar = GetComponentInChildren<Slider>();
         SetHealth();
     }
-
 
     public void SetHealth()
     {

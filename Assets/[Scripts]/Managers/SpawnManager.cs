@@ -17,45 +17,51 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject PowerUpUI;
     public static SpawnManager Instance;
     public bool intermissionOn = false;
-    
+    public bool GameOverOn = false;
+
 
     private EnemyManager enemyManager;
     int poolCount;
     private EnemyType enemyType;
-    
+
     [SerializeField] GameObject enemyPrefab;
     [SerializeField] public bool isEndless = false;
     [SerializeField] private bool canSpawnEnemy = true;
     [SerializeField] private Transform[] Basic_ESpawnLocations;
     [SerializeField] private Transform[] Tank_ESpawnLocations;
     [SerializeField] private Transform[] Explosive_ESpawnLocations;
-    [SerializeField]public bool isPowerUpSelected = false;
+    [SerializeField] public bool isPowerUpSelected = false;
     [SerializeField] private StatsVariableIncreaser VaribleIncreaser;
     [SerializeField] int _BasicEnemyCount, _TankEnemyCount, _ExplosiveEnemyCount;
+    [SerializeField] GameObject _LoadingScreen;
 
     private void Awake()
     {
-        Instance = this;   
+        Instance = this;
     }
-    void Start()
+
+
+    public void InitializeSpawn()
     {
+        canSpawnEnemy = true;
         waveGoal = _BasicEnemyCount + _TankEnemyCount + _ExplosiveEnemyCount;
         enemyManager = FindObjectOfType<EnemyManager>();
         StartCoroutine(BasicEnemySpanwer());
         StartCoroutine(TankEnemySpanwer());
         StartCoroutine(ExplosiveEnemySpanwer());
+        Debug.Log("INitializeSpawn");
     }
 
     private void Update()
     {
-        
-        if (enemyKillsCounter >= waveGoal)// Set waves 
+
+        if (enemyKillsCounter >= waveGoal && !GameOverOn)// Set waves 
         {
             intermissionOn = true;
             UIManager.instance.IntermissionTimer.gameObject.SetActive(true);
             intermission = intermission - Time.deltaTime;
 
-            if(intermission <= 41 && !isPowerUpSelected)
+            if (intermission <= 41 && !isPowerUpSelected)
             {
                 PowerUpUI.gameObject.SetActive(true);
             }
@@ -64,8 +70,10 @@ public class SpawnManager : MonoBehaviour
             {
                 SetNextWave();
             }
+
             UIManager.instance.DecreaseTimer(intermission);
         }
+    
     }
 
     private void SetNextWave()
@@ -75,23 +83,23 @@ public class SpawnManager : MonoBehaviour
         enemyOnMap = 0;
 
         //Wave specifications 
-         UIManager.instance.IncreaseWaves();
-         waveNumber++;
+        UIManager.instance.IncreaseWaves();
+        waveNumber++;
         VaribleIncreaser.WaveRound++;
 
-        if (waveNumber ==  2)
+        if (waveNumber == 2)
         {
-            VaribleIncreaser._SpeedMultiplier = VaribleIncreaser._SpeedMultiplier + 0.1f;
-            VaribleIncreaser._HealthMultiplier = VaribleIncreaser._HealthMultiplier + 0.2f;
+            VaribleIncreaser._EnemySpeedMultiplier = VaribleIncreaser._EnemySpeedMultiplier + 0.1f;
+            VaribleIncreaser._EnemyHealthMultiplier = VaribleIncreaser._EnemyHealthMultiplier + 0.2f;
 
-            Debug.Log(VaribleIncreaser._SpeedMultiplier);
-            Debug.Log(VaribleIncreaser._HealthMultiplier);
+            Debug.Log(VaribleIncreaser._EnemySpeedMultiplier);
+            Debug.Log(VaribleIncreaser._EnemyHealthMultiplier);
 
         }
         if (waveNumber == 10)
         {
-            VaribleIncreaser._SpeedMultiplier = VaribleIncreaser._SpeedMultiplier + 0.1f;
-            VaribleIncreaser._HealthMultiplier = VaribleIncreaser._HealthMultiplier + 0.2f;
+            VaribleIncreaser._EnemySpeedMultiplier = VaribleIncreaser._EnemySpeedMultiplier + 0.1f;
+            VaribleIncreaser._EnemyHealthMultiplier = VaribleIncreaser._EnemyHealthMultiplier + 0.2f;
 
         }
 
@@ -109,14 +117,47 @@ public class SpawnManager : MonoBehaviour
         //Release enemies
         canSpawnEnemy = true;
         intermissionOn = false;
-        
+
         //Increase Enemy stats for next wave
         poolCount = enemyManager.enemyPool.Count;
 
         StartCoroutine(BasicEnemySpanwer());
         StartCoroutine(TankEnemySpanwer());
         StartCoroutine(ExplosiveEnemySpanwer());
+
+
     }
+    public void ResetVaribles()
+    {
+        //Reset enemy counters
+        enemyKillsCounter = 0;
+        enemyOnMap = 0;
+
+
+        waveNumber = 1;
+        VaribleIncreaser.WaveRound = 1;
+        VaribleIncreaser._EnemySpeedMultiplier = 1;
+        VaribleIncreaser._EnemyHealthMultiplier = 1;
+
+        _BasicEnemyCount = 3;
+        _TankEnemyCount = 2;
+        _ExplosiveEnemyCount = 2;
+        waveGoal = _BasicEnemyCount + _TankEnemyCount + _ExplosiveEnemyCount; 
+
+        UIManager.instance.IncreaseGoalNumber(waveGoal);
+        UIManager.instance.ResetEnemiesKilled();
+        //Open Loading Screen;
+        
+        _LoadingScreen.SetActive(true);
+        _LoadingScreen.GetComponent<LoadingBarController>().StartLoading();
+        //Initialize Timer
+        GameOverOn = false;
+
+    
+
+    }
+
+
     public void NotifyKill()
     {
         enemyKillsCounter++;

@@ -15,9 +15,16 @@ public class StainRemover : MonoBehaviour
 
     void Update()
     {
+          if (SpawnManager.Instance.GameOverOn)
+          {
+            this.gameObject.SetActive(false);
+            bloodPrefab.gameObject.SetActive(false);
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, alpha);
+            EnemyPrefab.GetComponent<EnemyBehaviour>().ReturnEnemy();
 
+          }
         
-            if (SpawnManager.Instance.intermissionOn)
+        if (SpawnManager.Instance.intermissionOn)
             {
                       timer = timer+ Time.deltaTime;
                        if (timer > 1.0f)
@@ -42,9 +49,9 @@ public class StainRemover : MonoBehaviour
                         }      
             }
             else
-        {
+            {
             timeElapsed = 0;
-        }
+            }
     }
 
 

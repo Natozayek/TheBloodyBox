@@ -17,8 +17,8 @@ public class StatsVariableIncreaser : MonoBehaviour
     public float Explosive_Speed = 3;
 
     [Header("Enemy Multiplier Variables")]
-    public float _SpeedMultiplier = 1;
-    public float _HealthMultiplier = 1;
+    public float _EnemySpeedMultiplier = 1;
+    public float _EnemyHealthMultiplier = 1;
 
     [Header("Bullet Variables")]
     public float _BulletSpeed = 5;

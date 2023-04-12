@@ -6,16 +6,15 @@ using UnityEngine.UI;
 public class InitialCountDown : MonoBehaviour
 {
     public Text  CountDown;
-    bool isLoaded = false;
+    public bool isLoaded = false;
     [SerializeField] SpawnManager spawner;
+
     
-    private void Start()
-    {
-      StartCountDown();
-    }
+
     public void StartCountDown()
     {
         StartCoroutine(Loading());
+       
     }
     IEnumerator Loading()
     {
@@ -25,11 +24,18 @@ public class InitialCountDown : MonoBehaviour
         while (!isLoaded)
         {
             CountDown.text = CountDownStart.ToString();
+            Debug.Log(CountDownStart);
             if (CountDownStart <= 0)
             {
+                
                 isLoaded = true;
                 spawner.enabled = true;
+                spawner.InitializeSpawn();
+                isLoaded = false;
+                CountDown.text = "";
+                CountDownStart = 3.0f;
                 gameObject.SetActive(false);
+
 
             }
             else
@@ -40,5 +46,7 @@ public class InitialCountDown : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
         }
+
+   
     }
 }

@@ -14,11 +14,14 @@ public class PlayerBehaviour : MonoBehaviour
     [Range(0f, 0.5f)]
     [SerializeField] private float maxStregth;
     [SerializeField]private bool usingMobileInput = false;
+
     public BulletType DesiredPattern = BulletType.SINGLE;//TBM
     public FireMode FireMode = FireMode.SINGLE;//TBM
     [SerializeField] int numberOfProjectiles = 5;
     [SerializeField] bool isJoystickFire = false;
     [SerializeField] bool isJoystick;
+    [SerializeField] GameObject _PlayerBody, _PlayerWeapon, _DeathAnimation;
+
     [Header("HealthSystem")]
     public HealthBarController health;
 
@@ -36,6 +39,8 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] private FloatingJoystick _RotationJoystick;
 
     [Header("Private Variables")]
+    SpawnManager _SpawnManager;
+    BulletManager _BulletManager;
     private Transform bulletSpawnPoint;
     private float _fireTimer = 0.0f;
     private Vector2 mousePosition;
@@ -43,17 +48,19 @@ public class PlayerBehaviour : MonoBehaviour
     public Vector2 movementDirection;
     private bool _bursting = false;
     private bool _PressingShootKey = false;
-    private BulletManager bulletManager;
+   
     public Rigidbody2D rb;
     private Camera camera;
     private bool DoubleShootOn = false;
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject _Muzzle;
+    [SerializeField] private GameObject _GameOverScene;
   
 
     void Start()
     {
-        bulletManager = FindObjectOfType<BulletManager>();
+        _BulletManager = FindObjectOfType<BulletManager>();
+        _SpawnManager = FindObjectOfType<SpawnManager>();
         health = FindObjectOfType<HealthBarController>().GetComponent<HealthBarController>();
         bulletSpawnPoint = GameObject.Find("firePoint").transform;
         rb = GetComponent<Rigidbody2D>();
@@ -171,7 +178,8 @@ public class PlayerBehaviour : MonoBehaviour
             //TODO: Play the hurt sound
             if (health.value <= 0)
             {
-                //Set active Game over Menu, Give restart or return to main options
+
+                DeathSequence();
 
             }
         }
@@ -185,30 +193,50 @@ public class PlayerBehaviour : MonoBehaviour
             //TODO: Play the hurt sound
             if (health.value <= 0)
             {
-                //Set active Game over Menu, Give restart or return to main options
+
+                DeathSequence();
 
             }
         }
     }
-    private bool CanShoot()
+
+    private void DeathSequence()
     {
-        if (_fireTimer < _fireRate) { return false; }
-        else if (_bursting) { return false; }
-        else if (_fireTimer > _fireRate) { return true; }
-        else
-        {
-            return false;
-        }
+        _SpawnManager.GameOverOn = true;
+        _PlayerBody.SetActive(false);
+        _PlayerWeapon.SetActive(false);
+        _DeathAnimation.SetActive(true);
+        // Play death sound
+        StartCoroutine(TurnOnGameOverScene());
+
     }
+
+
+
+
+    #region IENUMERATORS FOR MUZZLE AND DEATH ANIMATIONS
     private IEnumerator TurnOfMuzzle()
     {
         yield return new WaitForSeconds(_fireRate -0.8f);
         _Muzzle.gameObject.SetActive(false);
     }
+
+    private IEnumerator TurnOnGameOverScene()
+    {
+        yield return new WaitForSeconds(2);
+        _GameOverScene.SetActive(true);
+        _DeathAnimation.SetActive(false);
+        _PlayerBody.SetActive(true);
+        _PlayerWeapon.SetActive(true);
+    }
+
+    #endregion
+
     #region Cylce Functions - Change FireMode or BulletType
     public void CycleFireMode() => FireMode = ((int)FireMode < 2) ? FireMode +1 : 0;
     public void CyclePatternsType() => DesiredPattern = ((int)DesiredPattern < 3) ? DesiredPattern + 1 : 0;
     #endregion
+
     #region Input Mode - Mobile or Conventional
     private void FixedUpdate()
     {
@@ -242,6 +270,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     }
     #endregion
+
     #region Fire Methods - Double and Bursts Coroutines
     void Fire()
     {
@@ -266,7 +295,7 @@ public class PlayerBehaviour : MonoBehaviour
                         angle = aimAngle;
                     }
                       
-                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SINGLE, 1, angle);
+                    var bullet = _BulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SINGLE, 1, angle);
                     _Muzzle.gameObject.SetActive(true);
                     StartCoroutine(TurnOfMuzzle());
 
@@ -306,7 +335,7 @@ public class PlayerBehaviour : MonoBehaviour
                         {
                              _Direction = Quaternion.Euler(0, 0, angleSpread) * (mouseDirection - transform.position);
                         }//-30 
-                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, _Direction, BulletType.SHOTGUN, 1, angleSpread + angle);
+                        var bullet = _BulletManager.GetBullet(bulletSpawnPoint.position, _Direction, BulletType.SHOTGUN, 1, angleSpread + angle);
                         angleSpread += 30f;
                     }
 
@@ -337,14 +366,14 @@ public class PlayerBehaviour : MonoBehaviour
 
                     for (int i = 0; i < numofBullet; i++)
                     {
-                        var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SPIRAL, 1, _Angle);
+                        var bullet = _BulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SPIRAL, 1, _Angle);
                         _Angle += angleStep;
                     }
 
                     _Muzzle.gameObject.SetActive(true);
                     StartCoroutine(TurnOfMuzzle());
                 }
-                bulletManager.angle = 0.0f;
+                _BulletManager.angle = 0.0f;
                 break;
 
 
@@ -362,7 +391,7 @@ public class PlayerBehaviour : MonoBehaviour
                     {
                         _Angle = aimAngle;
                     }
-                    var bullet = bulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.ROCKET, 1, _Angle);
+                    var bullet = _BulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.ROCKET, 1, _Angle);
                     _Muzzle.gameObject.SetActive(true);
                     StartCoroutine(TurnOfMuzzle());
 
@@ -372,6 +401,16 @@ public class PlayerBehaviour : MonoBehaviour
         }
 
 
+    }
+    private bool CanShoot()
+    {
+        if (_fireTimer < _fireRate) { return false; }
+        else if (_bursting) { return false; }
+        else if (_fireTimer > _fireRate) { return true; }
+        else
+        {
+            return false;
+        }
     }
     private IEnumerator DoubleShotOn()
     {
