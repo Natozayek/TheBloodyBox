@@ -121,9 +121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c70e94648f6d6ab4987641498ba22ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Speed: 5
   _RegularDamage: 55
   _RocketDamage: 0
+  _Speed: 5
   _BulletType: 0
   _Child_RocketReference: {fileID: 7773607919285872431}
   _Bullet_Manager: {fileID: 0}
@@ -167,7 +167,7 @@ GameObject:
   - component: {fileID: 4786026103130275118}
   m_Layer: 0
   m_Name: AOEDamage
-  m_TagString: Bullet
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -203,6 +203,7 @@ MonoBehaviour:
   _ExplosionAnimation: {fileID: 6907599054349690549}
   _BulletBehaviour: {fileID: 5967259268293571943}
   _Animator: {fileID: 0}
+  _BulletType: 3
 --- !u!58 &4786026103130275118
 CircleCollider2D:
   m_ObjectHideFlags: 0

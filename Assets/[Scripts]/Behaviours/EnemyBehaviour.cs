@@ -67,6 +67,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
     void Update()
     {
+        
         RotateSprite();
 
         if (_SpawnManager.intermissionOn || _SpawnManager.GameOverOn)
@@ -192,6 +193,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             rb.velocity = Vector3.zero;
             _Health = 0;
+            gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
             DeathSequence();
 
         }
@@ -231,7 +233,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == ("Bullet"))   
+        if (other.gameObject.tag == ("Bullet"))  
         {
             if(isChasing || isEvading)
             {
@@ -239,10 +241,20 @@ public class EnemyBehaviour : MonoBehaviour
 
                 if (_Health > 1)
                 {
-                    if (other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SINGLE || other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SHOTGUN || other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SPIRAL)
+                    if (other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.ROCKET)
                     {
-                        TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RegularDamage);
+                        TakeDamage(0);
                     }
+
+                    if ((other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SINGLE || other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SHOTGUN || other.gameObject.GetComponent<BulletBehaviour>()._BulletType == BulletType.SPIRAL))
+                    {
+                        if(this.gameObject != null)
+                        {
+                            TakeDamage(other.gameObject.GetComponent<BulletBehaviour>()._RegularDamage);
+                        }
+                        
+                    }
+                    
 
                     if (_HealthBarController != null)
                     {

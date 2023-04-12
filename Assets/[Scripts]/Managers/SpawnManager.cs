@@ -10,7 +10,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] public float intermission = 60f;
     [SerializeField] int enemyKillsCounter = 0;
 
-    [SerializeField] private float spawnRate = 2f;
+    [SerializeField] private float spawnRate = 7f;
     [SerializeField] public int waveGoal = 7;
     [SerializeField] int enemyOnMap = 0;
     [SerializeField] public int waveNumber = 1;
@@ -34,6 +34,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private StatsVariableIncreaser VaribleIncreaser;
     [SerializeField] int _BasicEnemyCount, _TankEnemyCount, _ExplosiveEnemyCount;
     [SerializeField] GameObject _LoadingScreen;
+    [SerializeField] GameObject _WinScreen;
 
     private void Awake()
     {
@@ -55,7 +56,13 @@ public class SpawnManager : MonoBehaviour
     private void Update()
     {
 
-        if (enemyKillsCounter >= waveGoal && !GameOverOn)// Set waves 
+        if (enemyKillsCounter >= waveGoal && waveNumber == 10)
+        {
+            GameOverOn = true;
+            _WinScreen.SetActive(true);
+        }
+
+        if (enemyKillsCounter >= waveGoal && !GameOverOn && waveNumber <=9)// Set waves 
         {
             intermissionOn = true;
             UIManager.instance.IntermissionTimer.gameObject.SetActive(true);
@@ -156,7 +163,6 @@ public class SpawnManager : MonoBehaviour
     
 
     }
-
 
     public void NotifyKill()
     {

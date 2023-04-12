@@ -19,11 +19,12 @@ public class UIManager : MonoBehaviour
     {
         Initialize();
     }
-    void Initialize()
+    public void Initialize()
     {
        
 
         WaveN = SpawnManager.Instance.waveNumber;
+        Debug.Log(WaveN);
         if (SpawnManager.Instance.isEndless)
         {
             GoalN = 999999;

@@ -48,7 +48,7 @@ public class BulletBehaviour : MonoBehaviour
     {
         _Timer = _Timer + Time.deltaTime;
 
-        if(_Timer >= 10.0f)
+        if(_Timer >= 4.0f)
         {
             RigidBody2D.velocity = Vector2.zero;
             _Bullet_Manager.ReturnBullet(this.gameObject, _BulletType);

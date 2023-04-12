@@ -100,6 +100,7 @@ public class EnemyManager : MonoBehaviour
             case EnemyType.BASIC:
                 {
                     enemy.GetComponentInChildren<EnemyBehaviour>()._EnemyType = EnemyType.BASIC;
+                    enemy.GetComponentInChildren<CapsuleCollider2D>().enabled = true;
                     enemy.GetComponentInChildren<EnemyBehaviour>()._BasicAnimator.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().HealthBar.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().transform.localScale = new Vector3(1.5f, 1.5f, 0);
@@ -112,6 +113,7 @@ public class EnemyManager : MonoBehaviour
             case EnemyType.TANK:
                 {
                     enemy.GetComponentInChildren<EnemyBehaviour>()._EnemyType = EnemyType.TANK;
+                    enemy.GetComponentInChildren<CapsuleCollider2D>().enabled = true;
                     enemy.GetComponentInChildren<EnemyBehaviour>()._TankAnimator.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().HealthBar.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().transform.localScale = new Vector3(2, 2, 0); 
@@ -124,6 +126,7 @@ public class EnemyManager : MonoBehaviour
             case EnemyType.EXPLOSIVE:
                 {
                     enemy.GetComponentInChildren<EnemyBehaviour>()._EnemyType = EnemyType.EXPLOSIVE;
+                    enemy.GetComponentInChildren<CapsuleCollider2D>().enabled = true;
                     enemy.GetComponentInChildren<EnemyBehaviour>()._ExplodingAnimator.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>().HealthBar.SetActive(true);
                     enemy.GetComponentInChildren<EnemyBehaviour>()._Speed = VaribleIncreaser.Explosive_Speed * VaribleIncreaser._EnemySpeedMultiplier;

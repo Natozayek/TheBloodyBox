@@ -17,7 +17,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     public BulletType DesiredPattern = BulletType.SINGLE;//TBM
     public FireMode FireMode = FireMode.SINGLE;//TBM
-    [SerializeField] int numberOfProjectiles = 5;
+    [SerializeField] int numberOfProjectiles = 3;
     [SerializeField] bool isJoystickFire = false;
     [SerializeField] bool isJoystick;
     [SerializeField] GameObject _PlayerBody, _PlayerWeapon, _DeathAnimation;
@@ -88,9 +88,9 @@ public class PlayerBehaviour : MonoBehaviour
 
 
         mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
-
-        if (_RotationJoystick.Horizontal >= 0.2f || _RotationJoystick.Horizontal <= 0.2f 
-           || _RotationJoystick.Vertical >= 0.2f || _RotationJoystick.Vertical <= 0.2f)
+     
+        if (_RotationJoystick.Horizontal >= 0.5f || _RotationJoystick.Horizontal <= 0.5f 
+           || _RotationJoystick.Vertical >= 0.5f || _RotationJoystick.Vertical <= 0.5f)
         {
             isJoystickFire = true;
         }
@@ -99,6 +99,12 @@ public class PlayerBehaviour : MonoBehaviour
         {
             isJoystickFire = false;
         }
+
+        var hor = _RotationJoystick.Horizontal;
+        var ver = _RotationJoystick.Vertical;
+
+        //Debug.Log(ver);
+        //Debug.Log(hor);
 
         switch (FireMode) // TOOLS - TBM
         {
@@ -223,7 +229,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private IEnumerator TurnOnGameOverScene()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1.5f);
         _GameOverScene.SetActive(true);
         _DeathAnimation.SetActive(false);
         _PlayerBody.SetActive(true);
@@ -303,7 +309,7 @@ public class PlayerBehaviour : MonoBehaviour
                 break;
             case BulletType.SHOTGUN:
                 {
-                    float angleSpread = -60f;
+                    float angleSpread = -45f;
                     Vector3 mouseDirection = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(mouseDirection.y, mouseDirection.x) * Mathf.Rad2Deg - 90f;
                     float JaimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f;
@@ -336,7 +342,7 @@ public class PlayerBehaviour : MonoBehaviour
                              _Direction = Quaternion.Euler(0, 0, angleSpread) * (mouseDirection - transform.position);
                         }//-30 
                         var bullet = _BulletManager.GetBullet(bulletSpawnPoint.position, _Direction, BulletType.SHOTGUN, 1, angleSpread + angle);
-                        angleSpread += 30f;
+                        angleSpread += 45f;
                     }
 
                     //var bullet2 = bulletManager.GetBullet(bulletSpawnPoint.position, direction2, BulletType.SHOTGUN, 1, angle);

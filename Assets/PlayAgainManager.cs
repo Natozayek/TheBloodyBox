@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayAgainManager : MonoBehaviour
 {
-    [SerializeField] GameObject _LoadingScreen, _GameScene, _GameOverScreen, _GameUI, _CountDownTimer;
+    [SerializeField] GameObject _LoadingScreen, _GameScene, _GameOverScreen, _WinScreen, _GameUI, _CountDownTimer;
     SpawnManager _SpawnManager;
+    UIManager _UIManager;
 
   
        
@@ -17,11 +18,14 @@ public class PlayAgainManager : MonoBehaviour
     public void PlayAgain()
     {
         _SpawnManager = FindObjectOfType<SpawnManager>();
-
-        if(_SpawnManager != null )
+        _UIManager = FindObjectOfType<UIManager>();
+        if (_SpawnManager != null && _UIManager != null)
         {
             _GameOverScreen.SetActive(false);
+            _WinScreen.SetActive(false);
             _SpawnManager.ResetVaribles();
+            _UIManager.Initialize();
+
 
         }
         else
