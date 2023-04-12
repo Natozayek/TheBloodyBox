@@ -103,8 +103,8 @@ public class PlayerBehaviour : MonoBehaviour
         var hor = _RotationJoystick.Horizontal;
         var ver = _RotationJoystick.Vertical;
 
-        //Debug.Log(ver);
-        //Debug.Log(hor);
+        Debug.Log(ver);
+        Debug.Log(hor);
 
         switch (FireMode) // TOOLS - TBM
         {
@@ -249,8 +249,6 @@ public class PlayerBehaviour : MonoBehaviour
         if(isJoystick || usingMobileInput)
         {
             rb.MovePosition(rb.position + movementDirection * movementSpeed * Time.fixedDeltaTime);
-            //Quaternion lookRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-            Vector2 direction = (_JoystickPosition) - rb.position;
             float aimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f; ;
             rb.rotation = aimAngle;// 
         }
@@ -292,7 +290,7 @@ public class PlayerBehaviour : MonoBehaviour
                     float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
                     float JaimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f;
                     float angle = 0;
-                    if (isJoystick)
+                    if (isJoystick || usingMobileInput)
                     {
                          angle = JaimAngle;
                     }
@@ -313,8 +311,9 @@ public class PlayerBehaviour : MonoBehaviour
                     Vector3 mouseDirection = mousePosition - rb.position;
                     float aimAngle = Mathf.Atan2(mouseDirection.y, mouseDirection.x) * Mathf.Rad2Deg - 90f;
                     float JaimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f;
+                  //  float JaimAngle = Mathf.Atan2(_JoystickPosition.y, _JoystickPosition.x) * Mathf.Rad2Deg - 90f; ;
                     float angle = 0;
-                    if (isJoystick)
+                    if (isJoystick || usingMobileInput)
                     {
                         angle = JaimAngle;
                     }
@@ -333,9 +332,10 @@ public class PlayerBehaviour : MonoBehaviour
                     {
                       
                       
-                        if (isJoystick)
+                        if (isJoystick || usingMobileInput)
                         {
-                            _Direction = Quaternion.Euler(0, 0, angleSpread) * (_JoystickPosition - new Vector2(transform.position.x, transform.position.y));
+                            Vector3 jpos = _JoystickPosition;
+                            _Direction = Quaternion.Euler(0, 0, angleSpread) * jpos; /** (jpos - transform.position)*/;
                         }
                         else
                         {

@@ -253,7 +253,7 @@ public class BulletManager : MonoBehaviour
     {
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
         bulletRb.velocity = Vector2.zero;
-        bulletRb.AddForce(direction * bullet.GetComponent<BulletBehaviour>()._Speed/3, ForceMode2D.Impulse);
+        bulletRb.AddForce(direction * bullet.GetComponent<BulletBehaviour>()._Speed, ForceMode2D.Impulse);
         bullet.GetComponent<Rigidbody2D>().rotation = angle;
     }
 
