@@ -30,7 +30,7 @@ public class StainRemover : MonoBehaviour
                        if (timer > 1.0f)
                        {
                            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, alpha);
-                           alpha -= Time.deltaTime;
+                           alpha -= Time.deltaTime * 2;
                            timer = 0;
                             lerpDuration--;
                             

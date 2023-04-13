@@ -55,6 +55,7 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject _Muzzle;
     [SerializeField] private GameObject _GameOverScene;
+    [SerializeField] private AudioSource SingleShot, Shotgun, LaserSpiral, Rocket;
   
 
     void Start()
@@ -169,9 +170,19 @@ public class PlayerBehaviour : MonoBehaviour
             CyclePatternsType();
         }
     }
+    void OnCollisionEnter2D(Collision2D other)
+    {
+       
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            var audioSource = gameObject.GetComponent<AudioSource>();
+            audioSource.GetComponent<AudioSource>().Play();
+        }
+    }
     void OnCollisionStay2D(Collision2D other)
     {
-
+        var audioSource = gameObject.GetComponent<AudioSource>();
+        audioSource.GetComponent<AudioSource>().Play();
         if (other.gameObject.CompareTag("Enemy"))
         {
             health.TakeDamage(1.0f - maxStregth);
@@ -303,7 +314,7 @@ public class PlayerBehaviour : MonoBehaviour
                     var bullet = _BulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.SINGLE, 1, angle);
                     _Muzzle.gameObject.SetActive(true);
                     StartCoroutine(TurnOfMuzzle());
-
+                    SingleShot.Play();
                 }
                 break;
             case BulletType.SHOTGUN:
@@ -350,7 +361,7 @@ public class PlayerBehaviour : MonoBehaviour
                     //var bullet3 = bulletManager.GetBullet(bulletSpawnPoint.position, direction3, BulletType.SHOTGUN, 1, angle);
                     _Muzzle.gameObject.SetActive(true);
                     StartCoroutine(TurnOfMuzzle());
-
+                    Shotgun.Play();
                 }
 
                 break;
@@ -379,6 +390,7 @@ public class PlayerBehaviour : MonoBehaviour
 
                     _Muzzle.gameObject.SetActive(true);
                     StartCoroutine(TurnOfMuzzle());
+                    LaserSpiral.Play();
                 }
                 _BulletManager.angle = 0.0f;
                 break;
@@ -401,7 +413,7 @@ public class PlayerBehaviour : MonoBehaviour
                     var bullet = _BulletManager.GetBullet(bulletSpawnPoint.position, direction, BulletType.ROCKET, 1, _Angle);
                     _Muzzle.gameObject.SetActive(true);
                     StartCoroutine(TurnOfMuzzle());
-
+                    Rocket.Play();
                 }
                 break;
 

@@ -204,6 +204,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+
             switch (_EnemyType)
             {
                 case EnemyType.BASIC:
@@ -235,6 +236,8 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (other.gameObject.tag == ("Bullet"))  
         {
+            var audioSource = gameObject.GetComponent<AudioSource>();
+            audioSource.GetComponent<AudioSource>().Play();
             if(isChasing || isEvading)
             {
                 _Timer = 0;

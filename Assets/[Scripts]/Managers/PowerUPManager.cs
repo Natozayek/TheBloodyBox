@@ -376,7 +376,7 @@ public class PowerUPManager : MonoBehaviour
                 }
             case 7:
                 {
-                    ItemSelected = (T)ItemTYPES.GetValue(0);
+                    ItemSelected = (T)ItemTYPES.GetValue(1);
                     break;
                 }
             case 8:
@@ -421,12 +421,12 @@ public class PowerUPManager : MonoBehaviour
                 }
             case 4:
                 {
-                    ItemSelected = (T)ItemTYPES.GetValue(5);
+                    ItemSelected = (T)ItemTYPES.GetValue(2);
                     break;
                 }
             case 5:
                 {
-                    ItemSelected = (T)ItemTYPES.GetValue(6);
+                    ItemSelected = (T)ItemTYPES.GetValue(8);
                     break;
                 }
             case 6:
@@ -477,27 +477,27 @@ public class PowerUPManager : MonoBehaviour
                 }
             case 3:
                 {
-                    ItemSelected = (T)ItemTYPES.GetValue(2);
+                    ItemSelected = (T)ItemTYPES.GetValue(3);
                     break;
                 }
             case 4:
                 {
-                    ItemSelected = (T)ItemTYPES.GetValue(3);
+                    ItemSelected = (T)ItemTYPES.GetValue(4);
                     break;
                 }
             case 5:
                 {
-                    ItemSelected = (T)ItemTYPES.GetValue(4);
+                    ItemSelected = (T)ItemTYPES.GetValue(5);
                     break;
                 }
             case 6:
                 {
-                    ItemSelected = (T)ItemTYPES.GetValue(5);
+                    ItemSelected = (T)ItemTYPES.GetValue(0);
                     break;
                 }
             case 7:
                 {
-                    ItemSelected = (T)ItemTYPES.GetValue(0);
+                    ItemSelected = (T)ItemTYPES.GetValue(2);
                     break;
                 }
             case 8:
@@ -576,12 +576,12 @@ public class PowerUPManager : MonoBehaviour
                 button.GetComponentInChildren<TextMeshProUGUI>().text = "Trigger happy: \n Increased fire rate. ";
                 break;
 
-            case ItemType.CHANGEBULLET://6
+            case ItemType.CHANGEBULLET://5
                 button.GetComponent<Image>().sprite = Xprites[2];
                 button.GetComponentInChildren<TextMeshProUGUI>().text = "Enhanced bullet: \n Gives the player a new projectile pattern.  ";
                 break;
 
-            case ItemType.DOUBLESHOT://7
+            case ItemType.DOUBLESHOT://6
                 button.GetComponent<Image>().sprite = Xprites[1];
                 button.GetComponentInChildren<TextMeshProUGUI>().text = "Double powered: \n Shoot extra bullet. ";
                 break;
@@ -596,7 +596,7 @@ public class PowerUPManager : MonoBehaviour
                 break;
 
             case ItemType.ROCKET://10
-                button.GetComponent<Image>().sprite = Xprites[14];
+                button.GetComponent<Image>().sprite = Xprites[6];
                 button.GetComponentInChildren<TextMeshProUGUI>().text = "Saturn-V: \n Activate Rocket shot mode. ";
                 break;
         }

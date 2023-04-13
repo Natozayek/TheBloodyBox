@@ -70,7 +70,7 @@ public class SpawnManager : MonoBehaviour
             UIManager.instance.IntermissionTimer.gameObject.SetActive(true);
             intermission = intermission - Time.deltaTime;
 
-            if (intermission <= 41 && !isPowerUpSelected)
+            if (intermission <= 51 && !isPowerUpSelected)
             {
                 PowerUpUI.gameObject.SetActive(true);
             }
