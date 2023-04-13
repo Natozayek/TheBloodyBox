@@ -89,8 +89,8 @@ public class PlayerBehaviour : MonoBehaviour
 
         mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
      
-        if (_RotationJoystick.Horizontal >= 0.5f || _RotationJoystick.Horizontal <= 0.5f 
-           || _RotationJoystick.Vertical >= 0.5f || _RotationJoystick.Vertical <= 0.5f)
+        if (_RotationJoystick.Horizontal >= 0.5f || _RotationJoystick.Horizontal <= -0.5f 
+           || _RotationJoystick.Vertical >= 0.5f || _RotationJoystick.Vertical <= -0.5f)
         {
             isJoystickFire = true;
         }
@@ -99,12 +99,6 @@ public class PlayerBehaviour : MonoBehaviour
         {
             isJoystickFire = false;
         }
-
-        var hor = _RotationJoystick.Horizontal;
-        var ver = _RotationJoystick.Vertical;
-
-        Debug.Log(ver);
-        Debug.Log(hor);
 
         switch (FireMode) // TOOLS - TBM
         {
@@ -216,7 +210,14 @@ public class PlayerBehaviour : MonoBehaviour
         StartCoroutine(TurnOnGameOverScene());
 
     }
-
+    public void ResetVariables()
+    {
+        movementSpeed = 12;
+        maxStregth = 0;
+        _fireRate = 1;
+        DesiredPattern = BulletType.SINGLE;
+        FireMode = FireMode.SINGLE;
+    }
 
 
 

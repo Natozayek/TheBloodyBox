@@ -36,6 +36,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] GameObject _LoadingScreen;
     [SerializeField] GameObject _WinScreen;
 
+    PlayerBehaviour _playerBehaviour;
+
     private void Awake()
     {
         Instance = this;
@@ -96,7 +98,7 @@ public class SpawnManager : MonoBehaviour
 
         if (waveNumber == 2)
         {
-            VaribleIncreaser._EnemySpeedMultiplier = VaribleIncreaser._EnemySpeedMultiplier + 0.1f;
+            VaribleIncreaser._EnemySpeedMultiplier = VaribleIncreaser._EnemySpeedMultiplier + 0.07f;
             VaribleIncreaser._EnemyHealthMultiplier = VaribleIncreaser._EnemyHealthMultiplier + 0.2f;
 
             Debug.Log(VaribleIncreaser._EnemySpeedMultiplier);
@@ -145,7 +147,11 @@ public class SpawnManager : MonoBehaviour
         VaribleIncreaser.WaveRound = 1;
         VaribleIncreaser._EnemySpeedMultiplier = 1;
         VaribleIncreaser._EnemyHealthMultiplier = 1;
+        VaribleIncreaser._Bullet_Damage_Multiplier = 1;
+        VaribleIncreaser._BulletSpeed_Multiplier = 1;
 
+        _playerBehaviour = FindObjectOfType<PlayerBehaviour>();
+        _playerBehaviour.ResetVariables();
         _BasicEnemyCount = 3;
         _TankEnemyCount = 2;
         _ExplosiveEnemyCount = 2;

@@ -84,7 +84,8 @@ public class BulletManager : MonoBehaviour
                         }
                               bullet.GetComponent<BulletBehaviour>()._BulletType = type;
                               bullet.GetComponent<BulletBehaviour>()._RegularDamage = bullet.GetComponent<BulletBehaviour>()._RegularDamage * VariableIncreaser._Bullet_Damage_Multiplier;
-                  }
+                              bullet.GetComponent<BulletBehaviour>()._Speed = VariableIncreaser._BulletSpeed * VariableIncreaser._BulletSpeed_Multiplier;
+                }
                   break;
 
                 case BulletType.SINGLE:
